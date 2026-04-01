@@ -8,21 +8,26 @@ Uma ferramenta bonita, leve e totalmente funcional (ou era pra ser!) para acompa
 
 ## ✨ Funcionalidades
 
-- **Meta Mensal** com barra de progresso (salva automaticamente)
+- **Meta Mensal** com barra de progresso (salva automaticamente no navegador)
 - **Streak (sequência de dias)** editável
-- **Conversor Pontos → Reais** em tempo real
-- **Taxa de conversão** personalizável e dinâmica
+- **Conversor Pontos → Reais** em tempo real com resultado em destaque
+- **Taxa de conversão** totalmente personalizável e dinâmica
 - **Histórico completo** (até 30 dias)
   - Adicionar pontos do dia
-  - Editar ou excluir itens individuais (clicando no registro)
-  - Valor em reais exibido em amarelo dourado
+  - Botão de edição individual (✏️) para editar ou excluir itens
+  - Valor em reais exibido ao lado de cada entrada
   - Total acumulado visível
-- **Estimativa inteligente** de dias restantes para bater a meta (baseada na média real)
-- **Tempo restante no mês** (mostra dias ou "Xh Ymin" quando estiver perto do fim)
-- **Dark Mode / Light Mode** com persistência
-- **Animações suaves** (fade-in ao adicionar itens)
-- **Totalmente responsivo** (otimizado para mobile)
-- **Todos os dados salvos** no navegador (`localStorage`)
+- **Estimativa inteligente** de dias restantes para bater a meta (baseada na média real de pontos)
+- **Tempo restante no mês** (mostra dias ou "Xh Ymin" quando estiver perto do fim do mês)
+- **Dark Mode / Light Mode** com persistência (melhorada a legibilidade no Light Mode)
+- **Modo Horizontal (Landscape)** com layout otimizado para desktop e tablets
+  - Alternância manual via botão no rodapé (apenas em desktop)
+  - Preferência salva automaticamente
+- **Animações suaves** (fade-in ao adicionar itens no histórico, animação no layout ao mudar para modo horizontal no mobile/PC)
+- **Exportar e Importar dados** via JSON (backup completo)
+- **Botão de Changelog** direto no cabeçalho (leva às Releases no GitHub)
+- **Totalmente responsivo** (otimizado para mobile e desktop)
+- **Todos os dados salvos** localmente no navegador (`localStorage`)
 
 ## 🛠 Tecnologias Utilizadas
 
@@ -66,19 +71,15 @@ Quanto mais dias você adicionar, mais precisa fica a projeção de quantos dias
 
 ## 📌 Versão Atual
 
-**1.0-rc2** — Versão estável, algumas features não listadas em testes
+**1.0.1**
 
 ## 📝 To Do List* 
 
-- Uma maneira de Exportar/Importar Dados em json ou algo parecido, pela conveniência de talvez limpar o cache do PC e ter o histórico salvo
-- Mudar a maneira de edição do histórico de pontos — invés de ser um click no valor, um botão.
-- Atualizar a func do exemplo padrão para salvar á sua preferência/necessidade (caso a Microsoft mude os preços dos gifts!) no LocalStorage da mesma forma de outras funcs — no momento ele atualiza se você recarregar a página.
 - Adicionar as explicações dadas neste README no próprio HTML para conviniência, assim como no card dos dias restantes.
 
 *Talvez será adicionado, não dou certeza:*
 
 - Um gráfico usando Chart.js ou algo parecido para visualizar o progresso da meta mensal. Isso aumentaria o tamanho do HTML de uma certa forma e eu não sei como ou se seria útil mas assumo eu que seria xd
-- Modo Horizontal com suporte Desktop/Mobile.
 
 *Não tenho um timeframe exato mas pretendo continuar modificando e atualizando isso aqui. Talvez adicionarei a change-log na própria HTML se necessário.
 
