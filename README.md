@@ -35,7 +35,7 @@ Uma ferramenta bonita, leve e totalmente funcional para acompanhar seus pontos d
 
 ## 🚀 Como usar
 
-1. Baixe o arquivo `rewards pc mobile 1.0.1.html`
+1. Baixe o arquivo `rewardspcmobile1.0rc2.html`
 2. Abra diretamente no navegador (Chrome, Edge, Firefox ou Safari)
 3. Comece a usar! Tudo é salvo automaticamente no seu navegador.
 
