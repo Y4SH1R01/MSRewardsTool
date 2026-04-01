@@ -66,11 +66,26 @@ Quanto mais dias você adicionar, mais precisa fica a projeção de quantos dias
 
 ## 📌 Versão Atual
 
-**1.0-rc2** — Versão estável e finalizada
+**1.0-rc2** — Versão estável, algumas features não listadas em testes
+
+## 📝 To Do List* 
+
+- Uma maneira de Exportar/Importar Dados em json ou algo parecido, pela conveniência de talvez limpar o cache do PC e ter o histórico salvo
+- Mudar a maneira de edição do histórico de pontos — invés de ser um click no valor, um botão.
+- Atualizar a func do exemplo padrão para salvar á sua preferência/necessidade (caso a Microsoft mude os preços dos gifts!) no LocalStorage da mesma forma de outras funcs — no momento ele atualiza se você recarregar a página.
+- Adicionar as explicações dadas neste README no próprio HTML para conviniência, assim como no card dos dias restantes.
+
+*Talvez será adicionado, não dou certeza:*
+
+- Um gráfico usando Chart.js ou algo parecido para visualizar o progresso da meta mensal. Isso aumentaria o tamanho do HTML de uma certa forma e eu não sei como ou se seria útil mas assumo eu que seria xd
+
+*Não tenho um timeframe exato mas pretendo continuar modificando e atualizando isso aqui. Talvez adicionarei a change-log na própria HTML se necessário.
 
 ## 🙌 Agradecimentos
 
 Feito com carinho para a comunidade brasileira de caçadores do Microsoft Rewards.
+Agradecimento especial á quem se interessou á testar as versões betas que eu compartilhei via Discord.
+
 Inspirado no software/calculadora de um Tweet do User [Augusto Masetti no X](https://x.com/augustomasetti)
 
 Se você usa e gosta do projeto, considere dar uma ⭐ no repositório!
