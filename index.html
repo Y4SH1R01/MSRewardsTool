@@ -6,8 +6,21 @@
   <title>Rewards Tool</title>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Segoe+UI:wght@400;500;600;700&display=swap');
-    :root { --bg:#0a0a0a; --card:#1c1c1c; --text:#fff; --accent:#22c55e; --gold:#fde047; }
-    body.light { --bg:#f8f9fa; --card:#ffffff; --text:#1f1f1f; --accent:#16a34a; --gold:#eab308; }
+    :root { 
+      --bg:#0a0a0a; 
+      --card:#1c1c1c; 
+      --text:#fff; 
+      --accent:#22c55e; 
+      --gold:#fde047;           /* Dark mode - amarelo brilhante */
+      --gold-light:#d97706;     /* Light mode - amarelo escuro legível */
+    }
+    body.light { 
+      --bg:#f8f9fa; 
+      --card:#ffffff; 
+      --text:#1f1f1f; 
+      --accent:#16a34a; 
+      --gold: var(--gold-light); 
+    }
 
     body {
       margin: 0;
@@ -19,6 +32,7 @@
       justify-content: center;
       min-height: 100vh;
       padding: 12px;
+      transition: all 0.4s ease;
     }
 
     .app {
@@ -28,6 +42,7 @@
       border-radius: 24px;
       overflow: hidden;
       box-shadow: 0 20px 60px rgba(0,0,0,0.65);
+      transition: max-width 0.5s ease, border-radius 0.4s ease;
     }
 
     .header {
@@ -62,13 +77,50 @@
       white-space: nowrap;
     }
 
-    .theme-btn {
-      position: absolute;
-      right: 22px;
+    .header-btn {
       background: none;
       border: none;
       font-size: 26px;
       cursor: pointer;
+      padding: 4px;
+    }
+
+    .changelog-btn { position: absolute; right: 62px; font-size: 24px; opacity: 0.85; }
+    .changelog-btn:hover { opacity: 1; }
+    .theme-btn { position: absolute; right: 22px; }
+
+    /* Modo Horizontal só para PC */
+    @media (min-width: 481px) and (orientation: landscape) {
+      .app {
+        max-width: 860px;
+        border-radius: 20px;
+        padding: 10px;
+      }
+
+      .main {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 18px;
+      }
+
+      .section {
+        flex: 1;
+        min-width: 380px;
+      }
+
+      .estimate, .converter, .history {
+        flex: 1;
+        min-width: 380px;
+      }
+
+      .streak { flex: 0 0 100%; }
+
+      .history-list { max-height: 380px; }
+
+      .clear-btn, .export-btn, .import-btn, .add-history button {
+        padding: 16px;
+        font-size: 16px;
+      }
     }
 
     .add-history {
@@ -101,23 +153,31 @@
       font-size: 15px;
     }
 
-    .clear-btn {
-      margin-top: 12px;
-      width: 100%;
+    .clear-btn, .export-btn, .import-btn {
       padding: 14px;
-      background: #ef4444;
-      color: #fff;
       border: none;
       border-radius: 10px;
       font-weight: 600;
       cursor: pointer;
       font-size: 15.5px;
+      width: 100%;
+    }
+
+    .clear-btn { background: #ef4444; color: #fff; margin-top: 12px; }
+    .export-btn { background: #3b82f6; color: #fff; }
+    .import-btn { background: #22c55e; color: #000; }
+
+    .backup-buttons {
+      display: flex;
+      gap: 10px;
+      margin-top: 8px;
+    }
+    .backup-buttons button {
+      flex: 1;
     }
 
     @media (max-width: 480px) {
-      .add-history input {
-        max-width: 50%;
-      }
+      .add-history input { max-width: 50%; }
     }
 
     .history-item {
@@ -130,16 +190,37 @@
       animation: fadeIn 0.4s ease forwards;
       opacity: 0;
     }
-    @keyframes fadeIn {
-      to { opacity: 1; }
-    }
+    @keyframes fadeIn { to { opacity: 1; } }
     body.light .history-item { border-bottom: 1px solid #ddd; }
 
     .history-date { color: #aaa; min-width: 85px; }
-    .history-points { text-align: right; color: #4ade80; font-weight: 600; }
+    .history-points { 
+      text-align: right; 
+      color: #4ade80; 
+      font-weight: 600; 
+      flex: 1;
+    }
     .history-points .pts-value { font-size: 16.5px; }
-    .history-reais { color: #fde047; font-size: 14.8px; font-weight: 600; margin-top: 2px; }
+
+    /* Cor do R$ no histórico - legível na Light */
+    .history-reais { 
+      color: var(--gold); 
+      font-size: 14.8px; 
+      font-weight: 600; 
+      margin-top: 2px; 
+    }
+
     .arrow { color: #ef4444; font-size: 18px; margin: 0 8px; }
+
+    .edit-history-btn {
+      background: none;
+      border: none;
+      font-size: 20px;
+      cursor: pointer;
+      padding: 4px 8px;
+      opacity: 0.7;
+    }
+    .edit-history-btn:hover { opacity: 1; }
 
     .estimate {
       background:#111;
@@ -215,10 +296,27 @@
     .input-container input { background:none; border:none; color:var(--text); width:100%; outline:none; font-size:42px; font-weight:500; }
     .input-container .label { color:#888; font-size:20px; margin-left:12px; }
 
-    .result { background:#111; border-radius:12px; padding:18px; margin-top:14px; text-align:center; }
+    .result { 
+      background:#111; 
+      border-radius:12px; 
+      padding:18px; 
+      margin-top:14px; 
+      text-align:center; 
+    }
     body.light .result { background:#f1f3f5; }
-    .result small { color:#4ade80; font-size:14px; letter-spacing:1px; }
-    .result .value { font-size:52px; color:#fde047; font-weight:600; }
+
+    .result small { 
+      color: var(--accent); 
+      font-size:14px; 
+      letter-spacing:1px; 
+      font-weight: 500;
+    }
+
+    .result .value { 
+      font-size:52px; 
+      color: var(--gold); 
+      font-weight:600; 
+    }
 
     .meta-title { display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; font-size:17px; }
     .meta-value { font-weight:600; color:#4ade80; }
@@ -233,7 +331,31 @@
     .history h3 { margin:0 0 14px 0; font-size:18px; }
     .history-list { max-height:240px; overflow-y:auto; }
 
-    .footer { text-align:center; padding:16px; font-size:13px; color:#666; }
+    .footer {
+      text-align: center;
+      padding: 16px;
+      font-size: 13px;
+      color: #666;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .footer-btn {
+      background: none;
+      border: 1px solid #555;
+      color: #aaa;
+      padding: 6px 12px;
+      border-radius: 8px;
+      font-size: 13px;
+      cursor: pointer;
+    }
+    .footer-btn:hover {
+      background: #333;
+      color: #fff;
+    }
   </style>
 </head>
 <body>
@@ -253,7 +375,9 @@
         </svg>
       </div>
       <div class="header-title" id="header-title"></div>
-      <button class="theme-btn" onclick="toggleTheme()">☀️</button>
+      
+      <button onclick="abrirChangelog()" class="header-btn changelog-btn" title="Ver histórico de atualizações">📜</button>
+      <button class="header-btn theme-btn" onclick="toggleTheme()">☀️</button>
     </div>
 
     <div class="example">
@@ -337,22 +461,32 @@
           <input type="text" id="hist-pontos" placeholder="Pontos do dia (ex: 620)">
           <button onclick="addToHistory()">Adicionar</button>
         </div>
+
         <button onclick="clearHistory()" class="clear-btn">🗑 Limpar Histórico</button>
+
+        <div class="backup-buttons">
+          <button onclick="exportarDados()" class="export-btn">📤 Exportar JSON</button>
+          <button onclick="importarDados()" class="import-btn">📥 Importar JSON</button>
+        </div>
       </div>
     </div>
 
     <div class="footer">
       Microsoft Rewards Tool — Feito para caçadores brasileiros
+      <button onclick="toggleLayoutMode()" class="footer-btn" id="layout-btn">↔️ Modo Horizontal</button>
     </div>
   </div>
 
   <script>
-    let metaMensal = parseFloat(localStorage.getItem('metaMensal')) || 0;   // ← Alterado para 0
+    // ... (o script permanece exatamente igual ao anterior - sem alterações)
+    let metaMensal = parseFloat(localStorage.getItem('metaMensal')) || 0;
     let totalMensal = parseFloat(localStorage.getItem('totalMensal')) || 0;
     let streak = parseInt(localStorage.getItem('rewardsStreak')) || 0;
     let history = JSON.parse(localStorage.getItem('rewardsHistory')) || [];
-    let exemploPontos = 5165;
-    let exemploReais = 30.00;
+    let exemploPontos = parseFloat(localStorage.getItem('exemploPontos')) || 5165;
+    let exemploReais = parseFloat(localStorage.getItem('exemploReais')) || 30.00;
+
+    let isHorizontalMode = localStorage.getItem('horizontalMode') === 'true';
 
     function renderHeaderTitle() {
       const headerTitle = document.getElementById('header-title');
@@ -421,16 +555,18 @@
         div.style.animationDelay = (index * 50) + 'ms';
         div.innerHTML = `
           <span class="history-date">${item.date}</span>
-          <span class="history-points" onclick="editarItemHistorico(${index})">
+          <span class="history-points">
             <span class="arrow">➜</span>
             <span class="pts-value">+${formatarNumero(item.pontos)} pts</span>
             <div class="history-reais">${formatarReais(parseFloat(reais))}</div>
           </span>
+          <button onclick="editarItemHistorico(${index})" class="edit-history-btn" title="Editar ou excluir">✏️</button>
         `;
         list.appendChild(div);
       });
     }
 
+    // Funções restantes (editarItemHistorico, addToHistory, exportar, importar, etc.) permanecem iguais
     function editarItemHistorico(index) {
       const item = history[index];
       const opcao = prompt(`Item: ${item.date} (+${item.pontos} pts)\n\n1 = Editar pontos\n2 = Excluir item\n\nDigite 1 ou 2:`, "1");
@@ -478,6 +614,71 @@
       document.getElementById('hist-pontos').value = '';
     }
 
+    function exportarDados() {
+      const dados = {
+        metaMensal, totalMensal, streak, history,
+        exemploPontos, exemploReais,
+        theme: localStorage.getItem('rewardsTheme') || 'dark'
+      };
+
+      const blob = new Blob([JSON.stringify(dados, null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'MSRewardsTool_backup.json';
+      a.click();
+      URL.revokeObjectURL(url);
+
+      alert('✅ Backup exportado com sucesso!');
+    }
+
+    function importarDados() {
+      const input = document.createElement('input');
+      input.type = 'file';
+      input.accept = '.json';
+      input.onchange = e => {
+        const file = e.target.files[0];
+        if (!file) return;
+
+        const reader = new FileReader();
+        reader.onload = ev => {
+          try {
+            const dados = JSON.parse(ev.target.result);
+
+            if (dados.metaMensal !== undefined) metaMensal = dados.metaMensal;
+            if (dados.totalMensal !== undefined) totalMensal = dados.totalMensal;
+            if (dados.streak !== undefined) streak = dados.streak;
+            if (dados.history) history = dados.history;
+            if (dados.exemploPontos !== undefined) exemploPontos = dados.exemploPontos;
+            if (dados.exemploReais !== undefined) exemploReais = dados.exemploReais;
+            if (dados.theme) {
+              localStorage.setItem('rewardsTheme', dados.theme);
+              if (dados.theme === 'light') document.body.classList.add('light');
+              else document.body.classList.remove('light');
+            }
+
+            localStorage.setItem('metaMensal', metaMensal);
+            localStorage.setItem('totalMensal', totalMensal);
+            localStorage.setItem('rewardsStreak', streak);
+            localStorage.setItem('rewardsHistory', JSON.stringify(history));
+            localStorage.setItem('exemploPontos', exemploPontos);
+            localStorage.setItem('exemploReais', exemploReais);
+
+            renderHistory();
+            atualizarTudo();
+            document.getElementById('streak').textContent = streak;
+            document.getElementById('meta-value').textContent = `${formatarNumero(metaMensal)} pts`;
+
+            alert('✅ Dados importados com sucesso!');
+          } catch (err) {
+            alert('❌ Erro ao importar o arquivo.');
+          }
+        };
+        reader.readAsText(file);
+      };
+      input.click();
+    }
+
     function clearHistory() {
       if (confirm("Limpar TODO o histórico e zerar o total mensal?")) {
         history = [];
@@ -492,7 +693,7 @@
     function editMeta() {
       let novo = prompt("Nova meta mensal (pontos):", metaMensal);
       if (novo === null || novo === "") return;
-      metaMensal = parseFloat(novo.replace(/\D/g, '')) || 0;   // ← Default agora é 0
+      metaMensal = parseFloat(novo.replace(/\D/g, '')) || 0;
       localStorage.setItem('metaMensal', metaMensal);
       atualizarTudo();
     }
@@ -521,15 +722,42 @@
       if (r === null) return;
       exemploPontos = parseFloat(p.replace(/\D/g, '')) || 5165;
       exemploReais = parseFloat(r.replace(',', '.')) || 30;
+
+      localStorage.setItem('exemploPontos', exemploPontos);
+      localStorage.setItem('exemploReais', exemploReais);
+
       document.getElementById('exemplo-pontos').textContent = formatarNumero(exemploPontos);
       document.getElementById('exemplo-reais').textContent = formatarReais(exemploReais);
       atualizarTudo();
+    }
+
+    function abrirChangelog() {
+      window.open('https://github.com/Y4SH1R01/MSRewardsTool/releases', '_blank');
     }
 
     function toggleTheme() {
       const isLight = document.body.classList.toggle('light');
       localStorage.setItem('rewardsTheme', isLight ? 'light' : 'dark');
       document.querySelector('.theme-btn').textContent = isLight ? '🌙' : '☀️';
+    }
+
+    function toggleLayoutMode() {
+      isHorizontalMode = !isHorizontalMode;
+      localStorage.setItem('horizontalMode', isHorizontalMode);
+      applyLayoutMode();
+    }
+
+    function applyLayoutMode() {
+      const app = document.querySelector('.app');
+      const btn = document.getElementById('layout-btn');
+      
+      if (isHorizontalMode) {
+        app.style.maxWidth = '860px';
+        btn.textContent = '↕️ Modo Vertical';
+      } else {
+        app.style.maxWidth = '480px';
+        btn.textContent = '↔️ Modo Horizontal';
+      }
     }
 
     function loadTheme() {
@@ -546,8 +774,12 @@
       document.getElementById('meta-value').textContent = `${formatarNumero(metaMensal)} pts`;
       document.getElementById('exemplo-pontos').textContent = formatarNumero(exemploPontos);
       document.getElementById('exemplo-reais').textContent = formatarReais(exemploReais);
+      
       atualizarTudo();
       renderHistory();
+
+      isHorizontalMode = localStorage.getItem('horizontalMode') === 'true';
+      applyLayoutMode();
     };
   </script>
 </body>
