@@ -4,7 +4,7 @@
 
 Uma ferramenta bonita, leve e totalmente funcional para acompanhar seus pontos do Microsoft Rewards no dia a dia.
 
-![Preview](https://i.imgur.com/seu-link-de-print-aqui.png)  
+![Preview](https://i.imgur.com/r9gmLh9.png)  
 *(adicione uma screenshot aqui depois)*
 
 ## ✨ Funcionalidades
@@ -47,11 +47,12 @@ Quanto mais dias você adicionar, mais precisa fica a projeção de quantos dias
 
 ## 📌 Versão Atual
 
-**1.0.1** — Versão estável e finalizada
+**1.0-rc2** — Versão estável e finalizada
 
 ## 🙌 Agradecimentos
 
 Feito com carinho para a comunidade brasileira de caçadores do Microsoft Rewards.
+
 Inspirado no software/calculadora de um Tweet do User [Augusto Masetti no X](https://x.com/augustomasetti)
 
 Se você usa e gosta do projeto, considere dar uma ⭐ no repositório!
