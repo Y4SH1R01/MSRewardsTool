@@ -81,7 +81,7 @@ Quanto mais dias você adicionar, mais precisa fica a projeção de quantos dias
 
 - Um gráfico usando Chart.js ou algo parecido para visualizar o progresso da meta mensal. Isso aumentaria o tamanho do HTML de uma certa forma e eu não sei como ou se seria útil mas assumo eu que seria xd
 
-*Não tenho um timeframe exato mas pretendo continuar modificando e atualizando isso aqui. Talvez adicionarei a change-log na própria HTML se necessário.
+*Não tenho um timeframe exato mas pretendo continuar modificando e atualizando isso aqui.
 
 ## 🙌 Agradecimentos
 
