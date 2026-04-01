@@ -2,7 +2,7 @@
 
 **Calculadora completa para Microsoft Rewards — Feita especialmente para caçadores brasileiros.**
 
-Uma ferramenta bonita, leve e totalmente funcional para acompanhar seus pontos do Microsoft Rewards no dia a dia.
+Uma ferramenta bonita, leve e totalmente funcional (ou era pra ser!) para acompanhar seus pontos do Microsoft Rewards no dia a dia.
 
 ![Preview](https://i.imgur.com/r9gmLh9.png)
 
@@ -35,14 +35,34 @@ Uma ferramenta bonita, leve e totalmente funcional para acompanhar seus pontos d
 
 ## 🚀 Como usar
 
-1. Baixe o arquivo `rewardspcmobile1.0rc2.html`
+1. Baixe o arquivo `index.html`
 2. Abra diretamente no navegador (Chrome, Edge, Firefox ou Safari)
 3. Comece a usar! Tudo é salvo automaticamente no seu navegador.
 
-## 📋 Como funciona a média diária
+**OU**
 
-A ferramenta calcula a média usando **apenas os dias que você registrou** no histórico.  
-Quanto mais dias você adicionar, mais precisa fica a projeção de quantos dias faltam para bater sua meta mensal.
+[Abra este link em Deployment na minha página do Github!](https://y4sh1r01.github.io/MSRewardsTool/)
+
+## 📋 Como funciona a média diária, o exemplo de pontos, a inserção de sequência diária e como modificar eles
+
+Esse exemplo é totalmente editável caso necessário ao caso da Microsoft aumentar ou abaixar os pontos necessários para comprar os gift cards de 15, 30 reais por exemplo, assim como todos os elementos com botões de edição.
+
+⬇️⬇️⬇️
+
+![Preview](https://i.imgur.com/ouerH23.png)
+
+A ferramenta de média diária calcula a média usando **apenas os dias que você registrou** no histórico.  
+Quanto mais dias você adicionar, mais precisa fica a projeção de quantos dias faltam para bater sua meta mensal, também inserível como na imagem abaixo.
+
+⬇️⬇️⬇️
+
+![Preview](https://i.imgur.com/gR9s6Vi.png)
+
+**Ela também adiciona +1 na contagem de dias da sequência diária cada vez que você adicionar seus pontos diários no histórico e salva até 30 dias seguidos no mesmo.** 
+
+⬇️⬇️⬇️
+
+![Preview](https://i.imgur.com/df3ViWI.png)
 
 ## 📌 Versão Atual
 
