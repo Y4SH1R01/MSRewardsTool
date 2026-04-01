@@ -57,5 +57,6 @@ Se você usa e gosta do projeto, considere dar uma ⭐ no repositório!
 
 ---
 
-**Desenvolvido por:** Mateus (Y4SH1R01)
-**Data:** Abril 2026
+**Desenvolvido por:** Mateus (Y4SH1R01) com ajuda do Grok 4.20 Quick Thinking/Specialist.
+
+**Data:** Março-Abril 2026
