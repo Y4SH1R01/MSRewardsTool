@@ -408,7 +408,7 @@
       </div>
 
       <div class="estimate">
-        <span onclick="mostrarTooltip('Estimativa Mensal','Mostra quantos dias faltam para acabar o mês e projeções baseadas no seu histórico.<br><br>• Média diária = total de pontos ÷ dias registrados<br>• A projeção \"Faltam para meta\" só aparece a partir do 7º dia (para evitar números imprecisos nos primeiros dias, quando há bônus de streak).')" class="tooltip-icon">ℹ️</span>
+        <span onclick="mostrarTooltip('Estimativa Mensal','Mostra quantos dias faltam para acabar o mês e projeções baseadas no seu histórico.<br><br>• Média diária = total de pontos ÷ dias registrados<br>• A projeção &quot;Faltam para meta&quot; só aparece a partir do 7º dia (para evitar números imprecisos nos primeiros dias, quando há bônus de streak).')" class="tooltip-icon">ℹ️</span>
         <div id="tempo-mensal">Faltam <strong>0 dias</strong> para acabar o mês</div>
         <div class="estimate-grid">
           <div class="estimate-box">
@@ -469,7 +469,7 @@
     </div>
 
     <div class="footer">
-      Microsoft Rewards Tool — Feito para caçadores brasileiros • <strong>v1.1.0</strong>
+      Microsoft Rewards Tool — Feito para caçadores brasileiros • <strong>v1.1.0a</strong>
       <button onclick="abrirChangelog()" class="footer-btn">Ver Changelog</button>
       <button onclick="toggleLayoutMode()" class="footer-btn" id="layout-btn">↔️ Modo Horizontal</button>
     </div>
@@ -494,7 +494,7 @@
     let exemploReais = parseFloat(localStorage.getItem('exemploReais')) || 30.00;
     let isHorizontalMode = localStorage.getItem('horizontalMode') === 'true';
 
-    const VERSION = "1.1.0";
+    const VERSION = "1.1.0a";
 
     function renderHeaderTitle() {
       const headerTitle = document.getElementById('header-title');
