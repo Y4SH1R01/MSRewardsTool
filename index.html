@@ -206,7 +206,6 @@
         body.light .add-history input[type="text"] {
             background:#f1f3f5;
         }
-        /* Dark mode fix for calendar icon */
         .add-history input[type="date"]::-webkit-calendar-picker-indicator {
             filter: invert(1);
         }
@@ -392,6 +391,20 @@
             margin-top:6px;
             display:block;
         }
+        .streak-mode {
+            display: block;
+            font-size: 12px;
+            margin-top: 4px;
+            font-weight: 600;
+        }
+        .manual-mode {
+            color: #fde047;
+        }
+        .auto-mode {
+            color: #888;
+        }
+        body.light .auto-mode { color: #666; }
+        
         .converter {
             background:#111;
             border:3px solid #22c55e;
@@ -780,7 +793,9 @@
                     <button onclick="editStreak()" class="streak-edit">✏️</button>
                 </div>
                 <small>dias consecutivos</small>
+                <span id="streak-mode-indicator" class="streak-mode auto-mode">Modo automático</span>
                 <span onclick="mostrarTooltip('Sequência de Dias (Streak)', 'Dias consecutivos em que você completa o Conjunto Diário.<br><br>' +
+                    'O sistema conta automaticamente os dias seguidos no seu histórico, do mais recente para trás.<br><br>' +
                     'No Rewards brasileiro, os bônus de streak são:<br>' +
                     '🎯 <strong>3º dia:</strong> +45 pontos<br>' +
                     '🎯 <strong>8º dia:</strong> +75 pontos<br>' +
@@ -788,7 +803,7 @@
                     '🎯 <strong>20º dia:</strong> +105 pontos<br>' +
                     '🎯 <strong>27º dia:</strong> +105 pontos<br>' +
                     '🎯 <strong>A partir do 34º dia:</strong> +150 pontos a cada 10 dias<br><br>' +
-                    '⚠️ <strong>Atenção:</strong> Se você não registrar pontos em um dia, a sequência <strong>será resetada automaticamente</strong>!')" class="tooltip-icon">ℹ️</span>
+                    '⚠️ <strong>Atenção:</strong> Se você não registrar pontos em um dia, a sequência será quebrada automaticamente!')" class="tooltip-icon">ℹ️</span>
             </div>
 
             <!-- CONVERSOR -->
@@ -818,7 +833,7 @@
                     Total acumulado: <strong id="total-acumulado">0 pts</strong>
                 </div>
                 <div class="add-history">
-                    <input type="date" id="hist-date">
+                    <input type="date" id="hist-date" max="">
                     <input type="text" id="hist-pontos" placeholder="Pontos (ex: 620)" maxlength="5">
                     <button onclick="addToHistory()">Adicionar</button>
                 </div>
@@ -830,7 +845,7 @@
                     <button onclick="importarCSV()" class="import-btn">📄 Importar CSV</button>
                 </div>
                 <span onclick="mostrarTooltip('Histórico de Pontos', 'Registre aqui os pontos que você ganha todo dia.<br><br>' +
-                    'Usado para calcular sua média diária e projeções de meta.<br><br>' +
+                    'Usado para calcular sua média diária, projeções de meta e sequência de dias.<br><br>' +
                     'Dica da comunidade brasileira: registre todos os dias para ter projeções precisas e acompanhar seu progresso real.')" class="tooltip-icon">ℹ️</span>
             </div>
 
@@ -855,7 +870,7 @@
         </div>
 
         <div class="footer">
-            Microsoft Rewards Tool — Feito para caçadores brasileiros • <strong>v1.2.0</strong>
+            Microsoft Rewards Tool — Feito para caçadores brasileiros • <strong>v1.2.1</strong>
             <button onclick="abrirChangelog()" class="footer-btn">Ver Changelog</button>
             <button onclick="toggleLayoutMode()" class="footer-btn" id="layout-btn">↔️ Modo Horizontal</button>
             <button onclick="restoreBackup()" class="footer-btn">💾 Restaurar Backup</button>
@@ -897,7 +912,7 @@
             27: 105
         };
 
-        const VERSION = "1.2.0";
+        const VERSION = "1.2.1";
         const DATA_VERSION = "1.1.0";
         let isHorizontalMode = localStorage.getItem('horizontalMode') === 'true';
 
@@ -907,6 +922,12 @@
             const month = String(date.getMonth() + 1).padStart(2, '0');
             const day = String(date.getDate()).padStart(2, '0');
             return `${year}-${month}-${day}`;
+        }
+
+        function getPreviousDay(dateStr) {
+            const d = new Date(dateStr + 'T12:00:00'); 
+            d.setDate(d.getDate() - 1);
+            return getLocalDateString(d);
         }
 
         // ==================== GERENCIAMENTO DE ESTADO ====================
@@ -920,7 +941,8 @@
                 exemploReais: parseFloat(localStorage.getItem('exemploReais')) || 30,
                 lastStreakDate: localStorage.getItem('lastStreakDate') || null,
                 lastMonth: localStorage.getItem('lastMonth') || null,
-                monthlyArchives: JSON.parse(localStorage.getItem('monthlyArchives')) || {}
+                monthlyArchives: JSON.parse(localStorage.getItem('monthlyArchives')) || {},
+                streakManualOverride: localStorage.getItem('streakManualOverride') === 'true'
             },
 
             save() {
@@ -933,6 +955,7 @@
                 localStorage.setItem('lastStreakDate', this.data.lastStreakDate);
                 localStorage.setItem('lastMonth', this.data.lastMonth);
                 localStorage.setItem('monthlyArchives', JSON.stringify(this.data.monthlyArchives));
+                localStorage.setItem('streakManualOverride', this.data.streakManualOverride);
                 if (Math.random() < 0.2) this.createBackup();
             },
 
@@ -946,7 +969,7 @@
             },
 
             addToHistory(pontos, fullDate) {
-                const dateObj = new Date(fullDate + 'T00:00:00'); // Force local timezone parsing
+                const dateObj = new Date(fullDate + 'T00:00:00'); 
                 const displayDate = dateObj.toLocaleDateString('pt-BR', { day: 'numeric', month: 'short' }).replace('.', '');
 
                 const existingIndex = this.data.history.findIndex(h => h.fullDate === fullDate);
@@ -955,29 +978,44 @@
                     this.data.history.splice(existingIndex, 1);
                 }
 
-                this.data.history.unshift({
+                this.data.history.push({
                     fullDate,
                     displayDate,
                     pontos,
                     timestamp: Date.now()
                 });
 
+                this.data.history.sort((a, b) => b.fullDate.localeCompare(a.fullDate));
                 this.data.totalMensal += pontos;
 
-                // Only update streak if the added date is today
                 const todayStr = getLocalDateString();
-                if (fullDate === todayStr && this.data.lastStreakDate !== fullDate) {
-                    this.data.streak++;
-                    this.data.lastStreakDate = fullDate;
+                const oldStreak = this.data.streak;
+
+                if (this.data.streakManualOverride) {
+                    // Manual mode: simple increment if adding for today and not yet added
+                    if (fullDate === todayStr && this.data.lastStreakDate !== todayStr) {
+                        this.data.streak++;
+                        this.data.lastStreakDate = todayStr;
+                    }
+                } else {
+                    // Auto mode: recalculate dynamically
+                    this.data.streak = calculateStreak();
                 }
 
                 this.save();
-                return true;
+                
+                // Return true if streak increased and hit a milestone
+                return this.data.streak > oldStreak && this.isStreakMilestone();
             },
 
             removeFromHistory(index) {
                 this.data.totalMensal -= this.data.history[index].pontos;
                 this.data.history.splice(index, 1);
+                
+                if (!this.data.streakManualOverride) {
+                    this.data.streak = calculateStreak();
+                }
+                
                 this.save();
             },
 
@@ -993,6 +1031,7 @@
                 this.data.totalMensal = 0;
                 this.data.streak = 0;
                 this.data.lastStreakDate = null;
+                this.data.streakManualOverride = false; // Reset to auto on clear
                 this.save();
             },
 
@@ -1001,8 +1040,9 @@
                 this.save();
             },
 
-            setStreak(newStreak) {
-                this.data.streak = validatePositiveNumber(newStreak, 1000);
+            setStreak(newStreak, isManual) {
+                this.data.streak = newStreak;
+                this.data.streakManualOverride = isManual;
                 this.save();
             },
 
@@ -1053,6 +1093,34 @@
             }
         };
 
+        // ==================== DYNAMIC STREAK CALCULATOR ====================
+        function calculateStreak() {
+            if (AppState.data.history.length === 0) return 0;
+            
+            const uniqueDates = [...new Set(AppState.data.history.map(h => h.fullDate))].sort().reverse();
+            
+            const today = getLocalDateString();
+            const yesterday = getPreviousDay(today);
+            
+            if (uniqueDates[0] !== today && uniqueDates[0] !== yesterday) {
+                return 0;
+            }
+            
+            let streak = 0;
+            let checkDate = uniqueDates[0];
+            
+            for (let i = 0; i < uniqueDates.length; i++) {
+                if (uniqueDates[i] === checkDate) {
+                    streak++;
+                    checkDate = getPreviousDay(checkDate);
+                } else if (uniqueDates[i] < checkDate) {
+                    break;
+                }
+            }
+            
+            return streak;
+        }
+
         // ==================== FUNÇÕES DE VALIDAÇÃO ====================
         function validatePositiveNumber(input, max = Infinity) {
             const num = parseFloat(String(input).replace(/\D/g, '')) || 0;
@@ -1074,7 +1142,7 @@
         }
 
         function formatarReais(valor) {
-            return `R$ ${valor.toFixed(2).replace('.', ',')}`;
+            return valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
         }
 
         function showToast(message, duration = 2500) {
@@ -1161,18 +1229,6 @@
         }
 
         // ==================== FUNÇÕES DE STREAK ====================
-        function checkAndUpdateStreak() {
-            const hoje = getLocalDateString();
-            if (AppState.data.lastStreakDate !== hoje) {
-                const hasTodayEntry = AppState.data.history.some(item => item.fullDate === hoje);
-                if (!hasTodayEntry) {
-                    AppState.data.streak = 0;
-                    AppState.data.lastStreakDate = null;
-                    AppState.save();
-                }
-            }
-        }
-
         function triggerStreakMilestone() {
             const section = document.getElementById('streak-section');
             section.classList.add('streak-milestone');
@@ -1190,6 +1246,11 @@
 
         // ==================== FUNÇÕES PRINCIPAIS ====================
         function atualizarInterfaceCompleta() {
+            // Recalculate streak if in auto mode
+            if (!AppState.data.streakManualOverride) {
+                AppState.data.streak = calculateStreak();
+            }
+
             const pontosInput = parseFloat(document.getElementById('pontos').value.replace(/\D/g, '')) || 0;
             const taxa = AppState.getConversionRate();
             document.getElementById('resultado').textContent = formatarReais(pontosInput / taxa);
@@ -1203,6 +1264,16 @@
             calcularEstimativaMeta();
             document.getElementById('total-acumulado').textContent = `${formatarNumero(AppState.data.totalMensal)} pts`;
             document.getElementById('streak').textContent = AppState.data.streak;
+            
+            const modeIndicator = document.getElementById('streak-mode-indicator');
+            if (AppState.data.streakManualOverride) {
+                modeIndicator.textContent = "Modo manual (✏️ para automático)";
+                modeIndicator.className = "streak-mode manual-mode";
+            } else {
+                modeIndicator.textContent = "Modo automático";
+                modeIndicator.className = "streak-mode auto-mode";
+            }
+
             updateStats();
             document.getElementById('exemplo-pontos').textContent = formatarNumero(AppState.data.exemploPontos);
             document.getElementById('exemplo-reais').textContent = formatarReais(AppState.data.exemploReais);
@@ -1250,6 +1321,7 @@
                 }
                 return item;
             });
+            AppState.data.history.sort((a, b) => b.fullDate.localeCompare(a.fullDate)); 
             AppState.save();
         }
 
@@ -1265,17 +1337,18 @@
             
             let selectedDate = dateInput.value;
             if (!selectedDate) {
-                selectedDate = getLocalDateString(); // Default to today if empty
+                selectedDate = getLocalDateString(); 
             }
 
-            AppState.addToHistory(pts, selectedDate);
+            const hitMilestone = AppState.addToHistory(pts, selectedDate);
             atualizarInterfaceCompleta();
             input.value = '';
             
-            if (AppState.isStreakMilestone()) {
+            if (hitMilestone) {
                 triggerStreakMilestone();
+            } else {
+                showToast(`+${formatarNumero(pts)} pontos adicionados!`, 1800);
             }
-            showToast(`+${formatarNumero(pts)} pontos adicionados!`, 1800);
         }
 
         function editarItemHistorico(index) {
@@ -1285,8 +1358,10 @@
             if (opcao === "1") {
                 let novo = prompt("Novo valor de pontos:", item.pontos);
                 if (novo === null) return;
-                AppState.editHistoryItem(index, validatePositiveNumber(novo, 5000));
-                showToast(`Item atualizado para ${formatarNumero(novo)} pts`, 1800);
+                const validado = validatePositiveNumber(novo, 5000);
+                if (validado <= 0) return;
+                AppState.editHistoryItem(index, validado);
+                showToast(`Item atualizado para ${formatarNumero(validado)} pts`, 1800);
             } else if (opcao === "2") {
                 if (confirm(`Excluir este item do histórico?\n\nData: ${item.displayDate}\nPontos: +${formatarNumero(item.pontos)}`)) {
                     AppState.removeFromHistory(index);
@@ -1315,17 +1390,27 @@
         }
 
         function editStreak() {
-            let novo = prompt("Nova sequência de dias:", AppState.data.streak);
+            const currentMode = AppState.data.streakManualOverride ? "Manual" : "Automático";
+            let novo = prompt(`Sequência atual: ${AppState.data.streak} dias (Modo: ${currentMode})\n\nDigite o novo valor para definir manualmente, ou digite "auto" para restaurar o cálculo automático:`, AppState.data.streak);
             if (novo === null) return;
-            const newStreak = validatePositiveNumber(novo, 1000);
-            if (newStreak < AppState.data.streak) {
-                if (!confirm(`Reduzir a sequência de ${AppState.data.streak} para ${newStreak} dias?`)) {
-                    return;
+            
+            novo = novo.trim().toLowerCase();
+            
+            if (novo === 'auto' || novo === 'automático') {
+                AppState.data.streakManualOverride = false;
+                AppState.data.streak = calculateStreak();
+                AppState.save();
+                atualizarInterfaceCompleta();
+                showToast("✨ Cálculo automático de sequência restaurado!", 1800);
+            } else {
+                const newStreak = validatePositiveNumber(novo, 1000);
+                if (newStreak < AppState.data.streak) {
+                    if (!confirm(`Reduzir a sequência de ${AppState.data.streak} para ${newStreak} dias?`)) return;
                 }
+                AppState.setStreak(newStreak, true); // true sets manual override
+                atualizarInterfaceCompleta();
+                showToast(`Sequência manual definida para ${newStreak} dias.`, 1800);
             }
-            AppState.setStreak(newStreak);
-            atualizarInterfaceCompleta();
-            showToast(`Sequência atualizada para ${newStreak} dias.`, 1800);
         }
 
         function editarExemplo() {
@@ -1350,6 +1435,7 @@
                 lastStreakDate: AppState.data.lastStreakDate,
                 lastMonth: AppState.data.lastMonth,
                 monthlyArchives: AppState.data.monthlyArchives,
+                streakManualOverride: AppState.data.streakManualOverride,
                 version: VERSION,
                 exportedAt: new Date().toISOString()
             };
@@ -1417,8 +1503,9 @@
                             AppState.data.lastStreakDate = dados.lastStreakDate || null;
                             AppState.data.lastMonth = dados.lastMonth || null;
                             AppState.data.monthlyArchives = dados.monthlyArchives || {};
+                            AppState.data.streakManualOverride = dados.streakManualOverride || false;
+                            
                             normalizeHistory();
-                            AppState.save();
                             atualizarInterfaceCompleta();
                             showToast('✅ Dados importados com sucesso!');
                         }
@@ -1470,7 +1557,7 @@
                         if (confirm(`Importar ${newHistory.length} entradas do CSV?`)) {
                             AppState.data.history = newHistory;
                             AppState.data.totalMensal = newHistory.reduce((sum, item) => sum + item.pontos, 0);
-                            AppState.save();
+                            normalizeHistory();
                             atualizarInterfaceCompleta();
                             showToast(`✅ ${newHistory.length} entradas importadas!`);
                         }
@@ -1494,7 +1581,7 @@
                 const backupData = JSON.parse(backup);
                 if (confirm(`Restaurar backup de ${new Date(backupData.timestamp).toLocaleString('pt-BR')}?`)) {
                     AppState.data = backupData.data;
-                    AppState.save();
+                    normalizeHistory(); 
                     atualizarInterfaceCompleta();
                     showToast("Backup restaurado!");
                 }
@@ -1527,6 +1614,8 @@
             AppState.data.totalMensal = 0;
             AppState.data.history = [];
             AppState.data.lastStreakDate = null;
+            AppState.data.streak = 0;
+            AppState.data.streakManualOverride = false; // Reset to auto
             AppState.save();
             document.getElementById('month-change-modal').style.display = 'none';
             atualizarInterfaceCompleta();
@@ -1535,8 +1624,10 @@
 
         function archiveMonthlyData() {
             const hoje = new Date();
-            const monthKey = `${hoje.getFullYear()}-${String(hoje.getMonth()).padStart(2, '0')}`;
-            const monthName = hoje.toLocaleString('pt-BR', { month: 'long', year: 'numeric' });
+            const prevMonth = new Date(hoje.getFullYear(), hoje.getMonth() - 1, 1);
+            const monthKey = `${prevMonth.getFullYear()}-${String(prevMonth.getMonth() + 1).padStart(2, '0')}`;
+            const monthName = prevMonth.toLocaleString('pt-BR', { month: 'long', year: 'numeric' });
+            
             const archiveData = {
                 month: monthKey,
                 monthName: monthName,
@@ -1630,8 +1721,10 @@
             applyLayoutMode();
             setupInputValidation();
             
-            // Set default date to today
-            document.getElementById('hist-date').value = getLocalDateString();
+            const todayStr = getLocalDateString();
+            const dateInput = document.getElementById('hist-date');
+            dateInput.value = todayStr;
+            dateInput.max = todayStr;
             
             atualizarInterfaceCompleta();
             const pontosInput = document.getElementById('pontos');
