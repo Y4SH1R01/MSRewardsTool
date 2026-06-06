@@ -125,7 +125,7 @@
             background: var(--card);
             position: relative;
         }
-		.stats {
+        .stats {
             background: #111;
         }
             body.light .stats {
@@ -189,18 +189,29 @@
             gap:10px;
             margin-top:16px;
             align-items:center;
+            flex-wrap: wrap;
         }
-        .add-history input {
-            flex:1;
+        .add-history input[type="date"],
+        .add-history input[type="text"] {
             padding:14px 16px;
             background:#222;
             border:none;
             border-radius:10px;
             color:var(--text);
             font-size:15.5px;
+            flex: 1;
+            min-width: 100px;
         }
-        body.light .add-history input {
+        body.light .add-history input[type="date"],
+        body.light .add-history input[type="text"] {
             background:#f1f3f5;
+        }
+        /* Dark mode fix for calendar icon */
+        .add-history input[type="date"]::-webkit-calendar-picker-indicator {
+            filter: invert(1);
+        }
+        body.light .add-history input[type="date"]::-webkit-calendar-picker-indicator {
+            filter: invert(0);
         }
         .add-history button {
             padding:14px 20px;
@@ -212,6 +223,7 @@
             cursor:pointer;
             white-space:nowrap;
             font-size:15px;
+            flex-shrink: 0;
         }
         .clear-btn, .export-btn, .import-btn {
             padding:14px;
@@ -596,34 +608,34 @@
             color:#aaa;
         }
         .stats-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 10px;
-  margin-top: 12px;
-}
-.stat-box {
-    background: rgba(255, 255, 255, 0.08);
-    border-radius: 12px;
-    padding: 12px;
-    text-align: center;
-}
-.stat-box small,
-.stat-box strong {
-    display: block;
-}
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-top: 12px;
+        }
+        .stat-box {
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 12px;
+            padding: 12px;
+            text-align: center;
+        }
+        .stat-box small,
+        .stat-box strong {
+            display: block;
+        }
 
-.stat-box small {
-    margin-bottom: 4px;
-    color: #aaa;
-    font-size: 13px;
-}
+        .stat-box small {
+            margin-bottom: 4px;
+            color: #aaa;
+            font-size: 13px;
+        }
 
-body.light .stat-box small {
-    color: #666;
-}
-body.light .stat-box {
-    background: rgba(0, 0, 0, 0.08);
-}
+        body.light .stat-box small {
+            color: #666;
+        }
+        body.light .stat-box {
+            background: rgba(0, 0, 0, 0.08);
+        }
         #month-change-modal {
             display: none;
             position: fixed;
@@ -722,7 +734,7 @@ body.light .stat-box {
                         <button onclick="editMeta()" class="edit-btn">Editar</button>
                         <span id="meta-value" class="meta-value">0 pts</span>
                         <span onclick="mostrarTooltip('Meta Mensal', 'Defina sua meta pessoal mensal de pontos.<br>' +
-						    'A barra verde mostra seu progresso em tempo real.<br><br>' +
+                            'A barra verde mostra seu progresso em tempo real.<br><br>' +
                             '📌 <strong>Dica:</strong> No Brasil, o Nível 2 do Microsoft Rewards é atingido com <strong>500 pts/mês</strong>.<br>' +
                             'Ao alcançá-lo, você desbloqueia:<br>' +
                             '✅ Mais pontos em buscas (de 30 para 150 entre PC/Mobile!)<br>' +
@@ -806,7 +818,8 @@ body.light .stat-box {
                     Total acumulado: <strong id="total-acumulado">0 pts</strong>
                 </div>
                 <div class="add-history">
-                    <input type="text" id="hist-pontos" placeholder="Pontos do dia (ex: 620)" maxlength="5">
+                    <input type="date" id="hist-date">
+                    <input type="text" id="hist-pontos" placeholder="Pontos (ex: 620)" maxlength="5">
                     <button onclick="addToHistory()">Adicionar</button>
                 </div>
                 <button onclick="clearHistory()" class="clear-btn">🗑 Limpar Histórico</button>
@@ -888,6 +901,14 @@ body.light .stat-box {
         const DATA_VERSION = "1.1.0";
         let isHorizontalMode = localStorage.getItem('horizontalMode') === 'true';
 
+        // ==================== HELPER: LOCAL DATE FIX ====================
+        function getLocalDateString(date = new Date()) {
+            const year = date.getFullYear();
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const day = String(date.getDate()).padStart(2, '0');
+            return `${year}-${month}-${day}`;
+        }
+
         // ==================== GERENCIAMENTO DE ESTADO ====================
         const AppState = {
             data: {
@@ -924,10 +945,9 @@ body.light .stat-box {
                 localStorage.setItem('rewardsBackup', JSON.stringify(backup));
             },
 
-            addToHistory(pontos) {
-                const hoje = new Date();
-                const fullDate = hoje.toISOString().split('T')[0];
-                const displayDate = hoje.toLocaleDateString('pt-BR', { day: 'numeric', month: 'short' }).replace('.', '');
+            addToHistory(pontos, fullDate) {
+                const dateObj = new Date(fullDate + 'T00:00:00'); // Force local timezone parsing
+                const displayDate = dateObj.toLocaleDateString('pt-BR', { day: 'numeric', month: 'short' }).replace('.', '');
 
                 const existingIndex = this.data.history.findIndex(h => h.fullDate === fullDate);
                 if (existingIndex !== -1) {
@@ -944,7 +964,9 @@ body.light .stat-box {
 
                 this.data.totalMensal += pontos;
 
-                if (this.data.lastStreakDate !== fullDate) {
+                // Only update streak if the added date is today
+                const todayStr = getLocalDateString();
+                if (fullDate === todayStr && this.data.lastStreakDate !== fullDate) {
                     this.data.streak++;
                     this.data.lastStreakDate = fullDate;
                 }
@@ -1023,12 +1045,12 @@ body.light .stat-box {
             },
 
             getStreakBonus() {
-  const streak = this.data.streak;
-  if (streak >= 34 && (streak - 34) % 10 === 0) {
-    return 150; // Agora retorna sempre 150 para cada milestone de 10 dias
-  }
-  return STREAK_MILESTONES[streak] || 0;
-}
+                const streak = this.data.streak;
+                if (streak >= 34 && (streak - 34) % 10 === 0) {
+                    return 150; 
+                }
+                return STREAK_MILESTONES[streak] || 0;
+            }
         };
 
         // ==================== FUNÇÕES DE VALIDAÇÃO ====================
@@ -1140,7 +1162,7 @@ body.light .stat-box {
 
         // ==================== FUNÇÕES DE STREAK ====================
         function checkAndUpdateStreak() {
-            const hoje = new Date().toISOString().split('T')[0];
+            const hoje = getLocalDateString();
             if (AppState.data.lastStreakDate !== hoje) {
                 const hasTodayEntry = AppState.data.history.some(item => item.fullDate === hoje);
                 if (!hasTodayEntry) {
@@ -1152,19 +1174,19 @@ body.light .stat-box {
         }
 
         function triggerStreakMilestone() {
-  const section = document.getElementById('streak-section');
-  section.classList.add('streak-milestone');
-  const streak = AppState.data.streak;
-  let milestoneText = "";
+            const section = document.getElementById('streak-section');
+            section.classList.add('streak-milestone');
+            const streak = AppState.data.streak;
+            let milestoneText = "";
 
-  if (STREAK_MILESTONES.hasOwnProperty(streak)) {
-    milestoneText = `🔥 Milestone alcançado! ${streak} dias consecutivos (+${STREAK_MILESTONES[streak]} pts)`;
-  } else if (streak >= 34 && (streak - 34) % 10 === 0) {
-    milestoneText = `🔥 Milestone alcançado! ${streak} dias consecutivos (+150 pts)`; // Sem multiplicação
-  }
-  showToast(milestoneText || `🔥 Sequência de ${streak} dias!`, 3000);
-  setTimeout(() => section.classList.remove('streak-milestone'), 1800);
-}
+            if (STREAK_MILESTONES.hasOwnProperty(streak)) {
+                milestoneText = `🔥 Milestone alcançado! ${streak} dias consecutivos (+${STREAK_MILESTONES[streak]} pts)`;
+            } else if (streak >= 34 && (streak - 34) % 10 === 0) {
+                milestoneText = `🔥 Milestone alcançado! ${streak} dias consecutivos (+150 pts)`;
+            }
+            showToast(milestoneText || `🔥 Sequência de ${streak} dias!`, 3000);
+            setTimeout(() => section.classList.remove('streak-milestone'), 1800);
+        }
 
         // ==================== FUNÇÕES PRINCIPAIS ====================
         function atualizarInterfaceCompleta() {
@@ -1188,14 +1210,14 @@ body.light .stat-box {
         }
 
         function updateStats() {
-  const stats = AppState.getStats();
-  const setText = (id, value) => {
-    const el = document.getElementById(id);
-    if (el) el.textContent = value;
-  };
-  setText('stat-best', `${formatarNumero(stats.best)} pts`);
-  setText('stat-worst', `${formatarNumero(stats.worst)} pts`);
-  setText('stat-total', `${formatarNumero(stats.total)} pts`);
+            const stats = AppState.getStats();
+            const setText = (id, value) => {
+                const el = document.getElementById(id);
+                if (el) el.textContent = value;
+            };
+            setText('stat-best', `${formatarNumero(stats.best)} pts`);
+            setText('stat-worst', `${formatarNumero(stats.worst)} pts`);
+            setText('stat-total', `${formatarNumero(stats.total)} pts`);
         }
 
         function renderHistory() {
@@ -1234,14 +1256,22 @@ body.light .stat-box {
         // ==================== FUNÇÕES DE HISTÓRICO ====================
         function addToHistory() {
             const input = document.getElementById('hist-pontos');
+            const dateInput = document.getElementById('hist-date');
             const pts = validatePositiveNumber(input.value, 5000);
             if (pts <= 0) {
                 showToast("Valor inválido. Use entre 1 e 5000 pontos.", 2000);
                 return;
             }
-            AppState.addToHistory(pts);
+            
+            let selectedDate = dateInput.value;
+            if (!selectedDate) {
+                selectedDate = getLocalDateString(); // Default to today if empty
+            }
+
+            AppState.addToHistory(pts, selectedDate);
             atualizarInterfaceCompleta();
             input.value = '';
+            
             if (AppState.isStreakMilestone()) {
                 triggerStreakMilestone();
             }
@@ -1427,9 +1457,9 @@ body.light .stat-box {
                                     let fullDate, displayDate;
                                     if (/^\d{4}-\d{2}-\d{2}$/.test(dateStr)) {
                                         fullDate = dateStr;
-                                        displayDate = new Date(dateStr).toLocaleDateString('pt-BR', { day: 'numeric', month: 'short' }).replace('.', '');
+                                        displayDate = new Date(dateStr + 'T00:00:00').toLocaleDateString('pt-BR', { day: 'numeric', month: 'short' }).replace('.', '');
                                     } else {
-                                        fullDate = new Date(dateStr).toISOString().split('T')[0];
+                                        fullDate = getLocalDateString(new Date(dateStr));
                                         displayDate = dateStr;
                                     }
                                     newHistory.push({ fullDate, displayDate, pontos, timestamp: Date.now() });
@@ -1479,8 +1509,9 @@ body.light .stat-box {
             const currentMonth = `${hoje.getFullYear()}-${String(hoje.getMonth() + 1).padStart(2, '0')}`;
             if (!AppState.data.lastMonth || AppState.data.lastMonth !== currentMonth) {
                 const lastCheckDate = localStorage.getItem('lastMonthCheckDate');
-                if (lastCheckDate !== hoje.toISOString().split('T')[0]) {
-                    localStorage.setItem('lastMonthCheckDate', hoje.toISOString().split('T')[0]);
+                const todayStr = getLocalDateString(hoje);
+                if (lastCheckDate !== todayStr) {
+                    localStorage.setItem('lastMonthCheckDate', todayStr);
                     const monthName = hoje.toLocaleString('pt-BR', { month: 'long', year: 'numeric' });
                     document.getElementById('month-change-message').textContent =
                         `O mês de ${monthName} começou! Deseja resetar os dados mensais?`;
@@ -1598,6 +1629,10 @@ body.light .stat-box {
             checkNewMonth();
             applyLayoutMode();
             setupInputValidation();
+            
+            // Set default date to today
+            document.getElementById('hist-date').value = getLocalDateString();
+            
             atualizarInterfaceCompleta();
             const pontosInput = document.getElementById('pontos');
             pontosInput.addEventListener('input', debounce(function() {
