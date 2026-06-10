@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
+    <link rel="icon" type="image/png" href="rewards.png">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Rewards Tool</title>
@@ -405,6 +406,39 @@
         }
         body.light .auto-mode { color: #666; }
         
+        /* TIER BADGES */
+        .tier-badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 999px;
+            font-size: 12px;
+            font-weight: 700;
+            margin-left: 8px;
+            vertical-align: middle;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .tier-membro {
+            background: rgba(150, 150, 150, 0.2);
+            color: #aaa;
+            border: 1px solid #555;
+        }
+        body.light .tier-membro { background: rgba(0,0,0,0.05); color: #555; border-color: #aaa; }
+        
+        .tier-prata {
+            background: rgba(192, 192, 192, 0.2);
+            color: #e0e0e0;
+            border: 1px solid #c0c0c0;
+        }
+        body.light .tier-prata { background: rgba(0,0,0,0.08); color: #555; border-color: #888; }
+        
+        .tier-gold {
+            background: rgba(253, 224, 71, 0.2);
+            color: #fde047;
+            border: 1px solid #fde047;
+        }
+        body.light .tier-gold { background: rgba(250, 200, 50, 0.15); color: #8a7000; border-color: #b8960f; }
+
         .converter {
             background:#111;
             border:3px solid #22c55e;
@@ -529,16 +563,27 @@
             max-height:240px;
             overflow-y:auto;
         }
+        
+        /* FOOTER REWORK */
         .footer {
             text-align:center;
             padding:16px;
             font-size:13px;
             color:#666;
             display:flex;
-            justify-content:center;
+            flex-direction: column;
             align-items:center;
-            gap:12px;
-            flex-wrap:wrap;
+            gap: 12px;
+        }
+        .footer-text {
+            line-height: 1.4;
+        }
+        .footer-buttons {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
         }
         .footer-btn {
             background:none;
@@ -548,11 +593,16 @@
             border-radius:8px;
             font-size:13px;
             cursor:pointer;
+            text-decoration: none;
         }
         .footer-btn:hover {
             background:#333;
             color:#fff;
         }
+        body.light .footer-btn:hover {
+            background: #e0e0e0;
+        }
+
         @media (max-width:480px) {
             #layout-btn {
                 display:none;
@@ -709,18 +759,9 @@
     <div class="app">
         <div class="header">
             <div class="header-logo">
-                <svg width="52" height="52" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M70 40 L55 95 L40 160 L70 155 Z" fill="#3b82f6"/>
-                    <path d="M130 40 L145 95 L160 160 L130 155 Z" fill="#3b82f6"/>
-                    <polygon points="70,40 130,40 145,95 55,95" fill="#2563eb"/>
-                    <path d="M65 50 L58 85 L48 140" stroke="#ffffff" stroke-width="12" stroke-linecap="round"/>
-                    <path d="M135 50 L142 85 L152 140" stroke="#ffffff" stroke-width="12" stroke-linecap="round"/>
-                    <circle cx="100" cy="95" r="48" fill="#fbbf24"/>
-                    <circle cx="100" cy="95" r="38" fill="#f59e0b"/>
-                    <circle cx="100" cy="95" r="28" fill="#fcd34d"/>
-                    <path d="M100 75 L106 88 L120 88 L109 97 L112 110 L100 103 L88 110 L91 97 L80 88 L94 88 Z" fill="#1e40af"/>
-                </svg>
-            </div>
+                   <!-- Certifique-se de que o arquivo rewards.png esteja na mesma pasta do index.html -->
+                    <img src="rewards.png" alt="Rewards Tool Logo" width="40" height="40" style="flex-shrink: 0; display: block;">
+             </div>
             <div class="header-title" id="header-title"></div>
             <button class="header-btn theme-btn" onclick="toggleTheme()">☀️</button>
         </div>
@@ -742,17 +783,17 @@
             <!-- META MENSAL -->
             <div class="section meta">
                 <div class="meta-title">
-                    <span>Meta Mensal</span>
+                    <span>Meta Mensal <span id="current-tier" class="tier-badge tier-membro">Membro</span></span>
                     <div class="meta-value-group">
                         <button onclick="editMeta()" class="edit-btn">Editar</button>
                         <span id="meta-value" class="meta-value">0 pts</span>
-                        <span onclick="mostrarTooltip('Meta Mensal', 'Defina sua meta pessoal mensal de pontos.<br>' +
-                            'A barra verde mostra seu progresso em tempo real.<br><br>' +
-                            '📌 <strong>Dica:</strong> No Brasil, o Nível 2 do Microsoft Rewards é atingido com <strong>500 pts/mês</strong>.<br>' +
-                            'Ao alcançá-lo, você desbloqueia:<br>' +
-                            '✅ Mais pontos em buscas (de 30 para 150 entre PC/Mobile!)<br>' +
-                            '✅ Bônus de desconto em recompensas da Microsoft (Cartão-Presente e recompensas selecionadas) e cashback!<br>' +
-                            'ℹ️Veja mais no botão de informação do lado do seu nível na página do Rewards.')" class="tooltip-icon" style="position:static;">ℹ️</span>
+                        <span onclick="mostrarTooltip('Meta Mensal & Níveis', 'Defina sua meta pessoal mensal de pontos.<br>A barra verde mostra seu progresso em tempo real.<br><br>' +
+                            '<strong>O badge de nível ao lado atualiza automaticamente com base nos seus pontos mensais!</strong><br><br>' +
+							'📌 <strong>Níveis do MS Rewards Brasil:</strong><br>' +
+                            '🥉 <strong>Membro:</strong> Até 499 pts/mês (Buscas: 15, ganhos por dólar gasto na MS Store: 1x)<br>' +
+                            '🥈 <strong>Prata:</strong> 500 a 2999 pts/mês (Buscas: 30, ganhos por dólar gasto na MS Store: 10x)<br>' +
+                            '🥇 <strong>Gold:</strong> 3000+ pts/mês (Buscas: 60, ganhos por dólar gasto na MS Store: 10x)<br><br>' +
+                            '💡 <strong>Dica:</strong> Clique no botão &quot;🔗 Sobre Níveis&quot; no rodapé da página para abrir a página oficial da Microsoft com a tabela completa de níveis e benefícios <strong>(requer login no Rewards!)</strong>')" class="tooltip-icon" style="position:static;">ℹ️</span>
                     </div>
                 </div>
                 <div class="progress-bar"><div class="progress" id="progress"></div></div>
@@ -796,13 +837,7 @@
                 <span id="streak-mode-indicator" class="streak-mode auto-mode">Modo automático</span>
                 <span onclick="mostrarTooltip('Sequência de Dias (Streak)', 'Dias consecutivos em que você completa o Conjunto Diário.<br><br>' +
                     'O sistema conta automaticamente os dias seguidos no seu histórico, do mais recente para trás.<br><br>' +
-                    'No Rewards brasileiro, os bônus de streak são:<br>' +
-                    '🎯 <strong>3º dia:</strong> +45 pontos<br>' +
-                    '🎯 <strong>8º dia:</strong> +75 pontos<br>' +
-                    '🎯 <strong>13º dia:</strong> +75 pontos<br>' +
-                    '🎯 <strong>20º dia:</strong> +105 pontos<br>' +
-                    '🎯 <strong>27º dia:</strong> +105 pontos<br>' +
-                    '🎯 <strong>A partir do 34º dia:</strong> +150 pontos a cada 10 dias<br><br>' +
+                    'No novo MS Rewards, manter a sequência garante seus bônus diários e multiplicadores do seu nível atual (Prata ou Gold).<br><br>' +
                     '⚠️ <strong>Atenção:</strong> Se você não registrar pontos em um dia, a sequência será quebrada automaticamente!')" class="tooltip-icon">ℹ️</span>
             </div>
 
@@ -870,10 +905,13 @@
         </div>
 
         <div class="footer">
-            Microsoft Rewards Tool — Feito para caçadores brasileiros • <strong>v1.2.1</strong>
-            <button onclick="abrirChangelog()" class="footer-btn">Ver Changelog</button>
-            <button onclick="toggleLayoutMode()" class="footer-btn" id="layout-btn">↔️ Modo Horizontal</button>
-            <button onclick="restoreBackup()" class="footer-btn">💾 Restaurar Backup</button>
+            <span class="footer-text">Microsoft Rewards Tool — Feito para caçadores brasileiros • <strong>v1.2.2</strong></span>
+            <div class="footer-buttons">
+                <a href="https://rewards.bing.com/about" target="_blank" rel="noopener noreferrer" class="footer-btn">🔗 Sobre Níveis</a>
+                <button onclick="abrirChangelog()" class="footer-btn">Ver Changelog</button>
+                <button onclick="toggleLayoutMode()" class="footer-btn" id="layout-btn">↔️ Modo Horizontal</button>
+                <button onclick="restoreBackup()" class="footer-btn">💾 Restaurar Backup</button>
+            </div>
         </div>
     </div>
 
@@ -904,15 +942,7 @@
 
     <script>
         // ==================== CONFIGURAÇÕES INICIAIS ====================
-        const STREAK_MILESTONES = {
-            3: 45,
-            8: 75,
-            13: 75,
-            20: 105,
-            27: 105
-        };
-
-        const VERSION = "1.2.1";
+        const VERSION = "1.2.2";
         const DATA_VERSION = "1.1.0";
         let isHorizontalMode = localStorage.getItem('horizontalMode') === 'true';
 
@@ -928,6 +958,13 @@
             const d = new Date(dateStr + 'T12:00:00'); 
             d.setDate(d.getDate() - 1);
             return getLocalDateString(d);
+        }
+
+        function isStreakMilestone(streak) {
+            const baseMilestones = [7, 14, 21, 28, 30];
+            if (baseMilestones.includes(streak)) return true;
+            if (streak > 30 && (streak - 30) % 10 === 0) return true; // Every 10 days after 30
+            return false;
         }
 
         // ==================== GERENCIAMENTO DE ESTADO ====================
@@ -992,20 +1029,17 @@
                 const oldStreak = this.data.streak;
 
                 if (this.data.streakManualOverride) {
-                    // Manual mode: simple increment if adding for today and not yet added
                     if (fullDate === todayStr && this.data.lastStreakDate !== todayStr) {
                         this.data.streak++;
                         this.data.lastStreakDate = todayStr;
                     }
                 } else {
-                    // Auto mode: recalculate dynamically
                     this.data.streak = calculateStreak();
                 }
 
                 this.save();
                 
-                // Return true if streak increased and hit a milestone
-                return this.data.streak > oldStreak && this.isStreakMilestone();
+                return this.data.streak > oldStreak && isStreakMilestone(this.data.streak);
             },
 
             removeFromHistory(index) {
@@ -1031,7 +1065,7 @@
                 this.data.totalMensal = 0;
                 this.data.streak = 0;
                 this.data.lastStreakDate = null;
-                this.data.streakManualOverride = false; // Reset to auto on clear
+                this.data.streakManualOverride = false;
                 this.save();
             },
 
@@ -1074,22 +1108,6 @@
                     worst: Math.min(...pontos),
                     total: total
                 };
-            },
-
-            isStreakMilestone() {
-                const streak = this.data.streak;
-                if (streak >= 34) {
-                    return (streak - 34) % 10 === 0;
-                }
-                return STREAK_MILESTONES.hasOwnProperty(streak);
-            },
-
-            getStreakBonus() {
-                const streak = this.data.streak;
-                if (streak >= 34 && (streak - 34) % 10 === 0) {
-                    return 150; 
-                }
-                return STREAK_MILESTONES[streak] || 0;
             }
         };
 
@@ -1233,20 +1251,31 @@
             const section = document.getElementById('streak-section');
             section.classList.add('streak-milestone');
             const streak = AppState.data.streak;
-            let milestoneText = "";
-
-            if (STREAK_MILESTONES.hasOwnProperty(streak)) {
-                milestoneText = `🔥 Milestone alcançado! ${streak} dias consecutivos (+${STREAK_MILESTONES[streak]} pts)`;
-            } else if (streak >= 34 && (streak - 34) % 10 === 0) {
-                milestoneText = `🔥 Milestone alcançado! ${streak} dias consecutivos (+150 pts)`;
-            }
-            showToast(milestoneText || `🔥 Sequência de ${streak} dias!`, 3000);
+            showToast(`🔥 Milestone! ${streak} dias consecutivos!`, 3000);
             setTimeout(() => section.classList.remove('streak-milestone'), 1800);
+        }
+
+        // ==================== TIER SYSTEM ====================
+        function updateTier() {
+            const pts = AppState.data.totalMensal;
+            let tier = "Membro";
+            let tierClass = "tier-membro";
+            
+            if (pts >= 3000) {
+                tier = "Gold";
+                tierClass = "tier-gold";
+            } else if (pts >= 500) {
+                tier = "Prata";
+                tierClass = "tier-prata";
+            }
+            
+            const el = document.getElementById('current-tier');
+            el.textContent = tier;
+            el.className = `tier-badge ${tierClass}`;
         }
 
         // ==================== FUNÇÕES PRINCIPAIS ====================
         function atualizarInterfaceCompleta() {
-            // Recalculate streak if in auto mode
             if (!AppState.data.streakManualOverride) {
                 AppState.data.streak = calculateStreak();
             }
@@ -1274,6 +1303,7 @@
                 modeIndicator.className = "streak-mode auto-mode";
             }
 
+            updateTier();
             updateStats();
             document.getElementById('exemplo-pontos').textContent = formatarNumero(AppState.data.exemploPontos);
             document.getElementById('exemplo-reais').textContent = formatarReais(AppState.data.exemploReais);
@@ -1407,9 +1437,14 @@
                 if (newStreak < AppState.data.streak) {
                     if (!confirm(`Reduzir a sequência de ${AppState.data.streak} para ${newStreak} dias?`)) return;
                 }
-                AppState.setStreak(newStreak, true); // true sets manual override
+                AppState.setStreak(newStreak, true);
                 atualizarInterfaceCompleta();
-                showToast(`Sequência manual definida para ${newStreak} dias.`, 1800);
+                
+                if (isStreakMilestone(newStreak)) {
+                    triggerStreakMilestone();
+                } else {
+                    showToast(`Sequência manual definida para ${newStreak} dias.`, 1800);
+                }
             }
         }
 
@@ -1615,7 +1650,7 @@
             AppState.data.history = [];
             AppState.data.lastStreakDate = null;
             AppState.data.streak = 0;
-            AppState.data.streakManualOverride = false; // Reset to auto
+            AppState.data.streakManualOverride = false;
             AppState.save();
             document.getElementById('month-change-modal').style.display = 'none';
             atualizarInterfaceCompleta();
@@ -1733,7 +1768,7 @@
                 const taxa = AppState.getConversionRate();
                 document.getElementById('resultado').textContent = formatarReais(pontos / taxa);
             }, 300));
-            if (AppState.isStreakMilestone()) {
+            if (isStreakMilestone(AppState.data.streak)) {
                 setTimeout(() => triggerStreakMilestone(), 600);
             }
         };
