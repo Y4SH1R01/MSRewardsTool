@@ -8,7 +8,7 @@
 
 Uma Single-File Application (SFA) que roda direto no navegador, sem dependências, para acompanhar seus pontos diários, streak, meta mensal e conversão em reais.
 
-<img width="882" height="812" alt="Preview da Interface do Rewards Tool" src="https://github.com/user-attachments/assets/80287fb1-542d-48da-9433-872e15d3fc8c" />
+<img width="891" height="821" alt="image" src="https://github.com/user-attachments/assets/7ef6b865-ba1d-4f8f-aae2-92bd900d228e" />
 
 ---
 
