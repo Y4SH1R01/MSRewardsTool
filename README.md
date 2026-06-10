@@ -1,90 +1,101 @@
-# Microsoft Rewards Tool
+# 🎮 Microsoft Rewards Tool
 
-**Ferramenta completa e bonita para Microsoft Rewards — Feita especialmente para caçadores brasileiros.**
+[![Versão](https://img.shields.io/badge/Versão-1.2.2-brightgreen)]()
+[![Licença](https://img.shields.io/badge/Licença-GPL--3.0-blue)]()
+[![Status](https://img.shields.io/badge/Status-Ativo-success)]()
 
-Uma ferramenta leve, moderna e totalmente funcional para acompanhar seus pontos diários, streak, meta mensal e conversão em reais.
+**Ferramenta completa, moderna e leve para Microsoft Rewards — Feita especialmente para caçadores brasileiros.**
 
-<img width="882" height="812" alt="image" src="https://github.com/user-attachments/assets/80287fb1-542d-48da-9433-872e15d3fc8c" />
+Uma Single-File Application (SFA) que roda direto no navegador, sem dependências, para acompanhar seus pontos diários, streak, meta mensal e conversão em reais.
 
-## ✨ Funcionalidades
-
-### Principais recursos
-- **Meta Mensal** com barra de progresso em tempo real (salva automaticamente).
-- **Sistema de Streak Híbrido (Automático/Manual):** No modo **Automático** (padrão), o streak calcula dinamicamente pelo histórico e reseta se pular um dia. No modo **Manual**, você ajusta o valor livremente via botão ✏️. Animação especial ao atingir milestones.
-- **Seção de Estatísticas:** Card integrado ao final da dashboard exibindo o seu **Melhor dia**, **Pior dia** e o **Total acumulado no mês** em um layout em grid de 3 colunas.
-- **Detecção Inteligente de Novo Mês:** Modal automático na virada do mês que permite *Resetar e Arquivar*, *Somente Arquivar* ou *Ignorar*, guardando o histórico e exportando um JSON de backup automaticamente para você acompanhar sua performance mês a mês.
-- **Conversor Pontos → Reais** em tempo real com taxa personalizável e dinâmica.
-  > **Nota:** Exemplo inicial de 5.165 pts = R$ 30,00, modificável para qualquer valor. Entrada otimizada com `debounce` para máxima fluidez e formatação de moeda correta (ex: R$ 1.500,00).
-- **Estimativa Avançada:** Projeção de dias para bater a meta (a partir do 7º dia registrado) e uma caixa de **Projeção Final** calculando quantos pontos você terá no fim do mês baseado na sua média atual.
-- **Histórico Completo com Seletor de Data:** Adicione pontos a qualquer dia passado usando o seletor de datas, edite ou exclua itens com valor em reais e total acumulado. A lista é ordenada cronologicamente de forma inteligente, mesmo ao adicionar dias fora de ordem. Ação de limpar histórico reforçada (reseta também o streak atual).
-- **Backup e Restauração:** Criação de backups preventivos automáticos em segundo plano e botão **"💾 Restaurar Backup"** no footer para recuperação rápida.
-- **Importação e Exportação Total:** Salve ou restaure backups completos via **JSON** e envie/traga seus dados diretamente de planilhas via **CSV** (Excel, Google Sheets).
-- **Tooltips Enriquecidos:** Modais explicativos detalhados em todos os cards (regras do Nível 2, vantagens de busca, cashback, funcionamento das médias e tabela completa de bônus do Streak).
-- **Interface Otimizada:** Tema Dark/Light persistente, modo horizontal (Landscape) para desktop/tablet, layout *full-bleed* (sem fendas laterais) e animações suaves.
-
-### Dados salvos automaticamente
-Tudo fica encapsulado com segurança na arquitetura interna (`AppState`) e guardado no `localStorage` do seu navegador: meta, streak (e seu modo atual), histórico, arquivos mensais (`monthlyArchives`), backups, exemplo de conversão e preferência de tema.
-
-## 🛠️ Tecnologias e Arquitetura
-
-O projeto é estruturado como uma **Single-File Application (SFA)**, concentrando toda a interface, estilização e lógica de negócios em um único arquivo `index.html`, rodando de forma 100% nativa e sem dependências externas.
-
-### 🌐 HTML5 & CSS3 (Interface e Responsividade)
-- **Layout Híbrido (Flex & Grid):** Uso de Flexbox para o alinhamento fluido dos cards da dashboard e **CSS Grid Layout** para organizar a seção de Estatísticas em uma malha responsiva de 3 colunas.
-- **Design Adaptável:** Media queries otimizadas para smartphones e suporte ao **Modo Horizontal (Landscape)** para desktops ou tablets.
-- **Tematização Nativa:** Gerenciamento dos temas Dark e Light controlado via **Variáveis CSS (`:root`)**, garantindo trocas de cores instantâneas e sem atrasos visuais.
-- **Micro-interações:** Uso de transições suaves e animações customizadas via `@keyframes`, como o efeito visual de impacto ao atingir um marco de sequência (*Streak Milestone*).
-
-### ⚡ Vanilla JavaScript (ES6+ e Lógica)
-A lógica da aplicação é estruturada utilizando padrões modernos de manipulação do DOM e gerenciamento de dados:
-
-- **Centralização de Estado (`AppState`):** Toda a inteligência do app fica encapsulada em um único objeto global de estado, funcionando como uma fonte única de verdade e eliminando conflitos de escopo.
-- **Tratamento de Fuso Horário Local:** Funções dedicadas (`getLocalDateString`) para cálculo de datas que previnem bugs de conversão UTC (especialmente ao registrar pontos à noite), garantindo que a data salva seja sempre a local.
-- **Persistência e Backup Automático:** Sincronização imediata de dados com o `localStorage`. Conta com uma rotina probabilística que gera **backups preventivos automáticos** em segundo plano durante as operações de salvamento.
-- **Manipulação de Arquivos (JSON/CSV):** Uso nativo das APIs `FileReader` e `Blob` do navegador, permitindo a importação e exportação bidirecional de dados em JSON e planilhas CSV.
-- **Otimização com Debounce:** O conversor de pontos utiliza uma função de *debounce de 300ms* no campo de entrada, evitando re-renderizações excessivas enquanto o usuário digita valores grandes.
-- **Segurança e Sanitização:** Inclusão das funções utilitárias `escapeHtml()` para mitigar brechas de XSS e `validatePositiveNumber()` para blindar os cálculos matemáticos contra valores corrompidos ou negativos.
-
-## 🚀 Como usar
-
-1. Baixe o arquivo **`index.html`**
-2. Abra diretamente no seu navegador (Recomendados: Edge ou Chrome, provavelmente funciona no Firefox)
-3. Comece a registrar seus pontos diários — tudo é salvo automaticamente e seus dados antigos continuam preservados após as atualizações.
-
-### OU
-
-**Versão online (GitHub Pages):**
-→ [https://y4sh1r01.github.io/MSRewardsTool/](https://y4sh1r01.github.io/MSRewardsTool/)
-
-## 📋 Versão Atual, Change-Log, To-Do:
-
-1.2.1
-
-[Ver change-log completo nas Releases](https://github.com/Y4SH1R01/MSRewardsTool/releases)
-
-*To-Do atual:*
-- Remover/modificar informações de/e modals como: a antiga descrição das contagens de dias consecutivos com os marcos e bônus reais do MS Rewards Brasil anterior (3º, 8º, 13º, 20º, 27º dia e +150 pts a cada 10 dias após o 34º) e o bônus do baú, já que foram removidos na atualização.
-- Adicionar um link direto pro novo Sobre feito pela MS na página do rewards (verificar se precisa estar logado pra visualizar)
-- *Pensar em novas melhorias.*
-
-## 📌 Observações
-
-- A ferramenta usa **apenas os dias que você registra** para calcular a média diária e as projeções finais.
-- Quanto mais consistente você for em adicionar os pontos, mais precisa fica a projeção da meta.
-- No modo automático, o streak conta os dias consecutivos no histórico e **é zerado** se pular um dia. Você pode alternar para o modo manual a qualquer momento clicando em ✏️.
-
-## 🙌 Agradecimentos
-
-Feito com carinho para a comunidade brasileira de caçadores do Microsoft Rewards.
-
-Inspirado originalmente em uma ferramenta mostrada num tweet do usuário [Augusto Masetti](https://x.com/augustomasetti) no X.
-
-Desenvolvido por **Mateus (Y4SH1R01)** com assistência inicial do Grok 4.2.0-Quick Thinking e Specialist. Atualizações da v1.2.0 feitas com auxílio do Kimi-k2.6 e Mistral 3.5b. Correções e features adicionadas na v1.2.1 com auxílio da GLM-5.1.
-
-Se você usa e gosta do projeto, considere dar uma ⭐ no repositório!
+<img width="882" height="812" alt="Preview da Interface do Rewards Tool" src="https://github.com/user-attachments/assets/80287fb1-542d-48da-9433-872e15d3fc8c" />
 
 ---
 
-**Licença:** GPL-3.0
+## ✨ Funcionalidades Principais
 
-**Última atualização:** Junho de 2026.
+### 🎯 Metas e Progressão
+- **Meta Mensal:** Barra de progresso em tempo real que salva automaticamente.
+- **Sistema de Níveis (Tiers):** Badge dinâmico (Membro 🥉, Prata 🥈, Gold 🥇) que atualiza com base nos seus pontos mensais, seguindo as regras do MS Rewards Brasil.
+- **Estimativa Avançada:** Projeção de dias para bater a meta (ativa a partir do 7º dia) e **Projeção Final** estimando seu saldo no fim do mês.
+
+### 🔥 Streak Inteligente
+- **Sistema Híbrido:** No modo **Automático** (padrão), o streak calcula dinamicamente pelo histórico e reseta se pular um dia. No modo **Manual**, você ajusta o valor livremente via botão ✏️.
+- **Celebração de Marcos:** Animação especial (Streak Burst) ao atingir milestones (7, 14, 21, 28, 30 dias...).
+
+### 💰 Conversões e Estatísticas
+- **Conversor Pontos → Reais:** Taxa personalizável e dinâmica em tempo real. *(Padrão inicial: 5.165 pts = R$ 30,00)*.
+- **Estatísticas Detalhadas:** Grid mostrando seu Melhor Dia, Pior Dia e Total Acumulado no mês.
+
+### 📅 Histórico e Dados
+- **Histórico com Seletor de Data:** Adicione, edite ou exclua pontos de qualquer dia passado. Ordenação inteligente e exibição do valor em Reais.
+- **Detecção de Novo Mês:** Modal automático na virada do mês permitindo *Resetar e Arquivar*, *Somente Arquivar* ou *Ignorar*.
+- **Importação e Exportação Total:** Suporte completo para **JSON** e **CSV** (Excel, Google Sheets).
+- **Backup Automático:** Rotina preventiva que salva backups em segundo plano, com botão de restauração rápida no footer.
+
+### 🎨 Interface e Experiência
+- **Temas Dark/Light:** Persistente com transições suaves via CSS Variables.
+- **Layout Adaptável:** Modo Vertical (padrão) e **Modo Horizontal** para Desktops/Tablets.
+- **Tooltips Enriquecidos:** Modais explicativos (ℹ️) detalhando regras de níveis, cálculos e dicas da comunidade.
+
+---
+
+## 🛠️ Tecnologias e Arquitetura
+
+Este projeto foi construído como uma **Single-File Application (SFA)**. Toda a interface, estilização e lógica vivem dentro de um único `index.html`, rodando de forma 100% nativa no navegador, **sem dependências externas**.
+
+- **HTML5 & CSS3:** Layout híbrido (Flex & Grid), Design Responsivo via Media Queries e Tematização nativa com Variáveis CSS (`:root`).
+- **Vanilla JavaScript (ES6+):**
+  - **`AppState`:** Fonte única de verdade. Toda a inteligência e estado do app ficam encapsulados em um objeto global, eliminando conflitos de escopo.
+  - **Correção de Fuso Local:** A função `getLocalDateString` previne bugs de conversão UTC (garantindo que pontos registrados à noite não vazem para o dia anterior).
+  - **Debounce:** O conversor usa *debounce de 300ms* para evitar re-renderizações excessivas durante a digitação.
+  - **Sanitização e Validação:** Funções como `escapeHtml()` (mitigação de XSS) e `validatePositiveNumber()` (blinda cálculos contra valores inválidos).
+  - **APIs Nativas:** Uso de `FileReader` e `Blob` para manipulação de arquivos (Import/Export) e `localStorage` para persistência de dados e backups.
+
+---
+
+## 🚀 Como Usar
+
+Você não precisa instalar nada! Basta:
+
+1. Baixe o arquivo **`index.html`** (e o ícone `rewards.png` na mesma pasta caso queira xd).
+2. Abra o `index.html` diretamente no seu navegador (Recomendados: Edge ou Chrome/Brave. Funciona(?) no Firefox).
+3. Comece a registrar seus pontos diários. Tudo é salvo automaticamente no seu navegador!
+
+**Ou use a versão online (GitHub Pages):**
+👉 [https://y4sh1r01.github.io/MSRewardsTool/](https://y4sh1r01.github.io/MSRewardsTool/)
+
+---
+
+## 📋 Versão Atual e Change-Log
+
+**Versão Atual:** 1.2.2
+
+[Ver change-log completo nas Releases](https://github.com/Y4SH1R01/MSRewardsTool/releases)
+
+### 📌 To-Do
+
+- [ ] Pensar em novas melhorias e features para a comunidade.
+
+---
+
+## 💡 Observações Importantes
+
+- A ferramenta usa **apenas os dias que você registra** para calcular a média diária e as projeções finais. Quanto mais consistente, mais precisa a projeção.
+- No modo automático, o streak conta os dias consecutivos no histórico e **é zerado** se pular um dia. Você pode alternar para o modo manual a qualquer momento clicando em ✏️.
+- Seus dados são salvos no `localStorage` do navegador. Se você limpar os dados de navegação, eles serão apagados (use a função de Exportar JSON para manter backups seguros em disco).
+
+---
+
+## 🙌 Agradecimentos
+
+Feito com carinho para a comunidade brasileira do Microsoft Rewards. Inspirado originalmente em uma ferramenta mostrada num tweet do usuário [Augusto Masetti](https://x.com/augustomasetti) no X.
+
+**Desenvolvido por Mateus (Y4SH1R01)**
+* Assistência inicial: Grok 4.2.0-Quick Thinking e Specialist.
+* Atualização v1.2.0: Kimi-k2.6 e Mistral 3.5b.
+* Correções e features v1.2.1/v1.2.2: GLM-5.1.
+
+Se você usa e gosta do projeto, considere dar uma ⭐ no repositório!
+
+Última atualização: Junho de 2026.
