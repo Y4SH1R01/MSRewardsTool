@@ -69,7 +69,7 @@ Você não precisa instalar nada! Basta:
 
 ## 📋 Versão Atual e Change-Log
 
-**Versão Atual:** 1.2.2
+**Versão Atual:** 1.2.2a
 
 [Ver change-log completo nas Releases](https://github.com/Y4SH1R01/MSRewardsTool/releases)
 
