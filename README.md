@@ -1,6 +1,6 @@
 # 🎮 Microsoft Rewards Tool
 
-[![Versão](https://img.shields.io/badge/Versão-1.2.2-brightgreen)]()
+[![Versão](https://img.shields.io/badge/Versão-1.2.2a-brightgreen)]()
 [![Licença](https://img.shields.io/badge/Licença-GPL--3.0-blue)]()
 [![Status](https://img.shields.io/badge/Status-Ativo-success)]()
 
@@ -98,4 +98,4 @@ Feito com carinho para a comunidade brasileira do Microsoft Rewards. Inspirado o
 
 Se você usa e gosta do projeto, considere dar uma ⭐ no repositório!
 
-Última atualização: Junho de 2026.
+**Última atualização**: Junho de 2026.
