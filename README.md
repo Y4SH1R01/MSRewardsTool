@@ -76,7 +76,7 @@ Você não precisa instalar nada! Basta:
 ### 📌 To-Do
 
 - [ ] Pensar em novas melhorias e features para a comunidade.
-
+- [ ] Resolver bug da exportação csv não incluir meses anteriores.
 ---
 
 ## 💡 Observações Importantes
