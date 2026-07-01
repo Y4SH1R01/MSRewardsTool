@@ -15,14 +15,15 @@
             --gold:#fde047;
             --gold-light:#d97706;
         }
-        body.light {
+                body.light {
             --bg:#f8f9fa;
             --card:#ffffff;
             --text:#1f1f1f;
             --accent:#16a34a;
             --gold: var(--gold-light);
+            color-scheme: light;
         }
-        body {
+                body {
             margin: 0;
             background: var(--bg);
             color: var(--text);
@@ -33,6 +34,7 @@
             min-height: 100vh;
             padding: 12px;
             transition: all 0.4s ease;
+            color-scheme: dark;
         }
         .app {
             background: var(--card);
@@ -753,6 +755,53 @@
             background: #3b82f6;
             color: #fff;
         }
+        #archive-modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.85);
+            z-index: 3000;
+            align-items: center;
+            justify-content: center;
+        }
+        #archive-content {
+            background: var(--card);
+            border-radius: 20px;
+            padding: 24px;
+            max-width: 450px;
+            width: 90%;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.7);
+            position: relative;
+            color: var(--text);
+        }
+        .archive-item {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid #333;
+            border-radius: 12px;
+            padding: 14px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        body.light .archive-item {
+            background: rgba(0,0,0,0.03);
+            border-color: #ddd;
+        }
+        .archive-month-name {
+            font-weight: 600;
+            font-size: 16px;
+        }
+        .archive-points {
+            color: var(--gold);
+            font-weight: 700;
+            font-size: 15px;
+        }
+        .archive-empty {
+            text-align: center;
+            color: #888;
+            padding: 20px;
+        }
     </style>
 </head>
 <body>
@@ -905,12 +954,13 @@
         </div>
 
         <div class="footer">
-            <span class="footer-text">Microsoft Rewards Tool — Feito para caçadores brasileiros • <strong>v1.2.2</strong></span>
+            <span class="footer-text">Microsoft Rewards Tool — Feito para caçadores brasileiros • <strong>v1.3.0</strong></span>
             <div class="footer-buttons">
                 <a href="https://rewards.bing.com/about" target="_blank" rel="noopener noreferrer" class="footer-btn">🔗 Sobre Níveis</a>
                 <button onclick="abrirChangelog()" class="footer-btn">Ver Changelog</button>
                 <button onclick="toggleLayoutMode()" class="footer-btn" id="layout-btn">↔️ Modo Horizontal</button>
-                <button onclick="restoreBackup()" class="footer-btn">💾 Restaurar Backup</button>
+                <button onclick="abrirResumoArquivos()" class="footer-btn">📊 Resumo Mensal</button>
+				<button onclick="restoreBackup()" class="footer-btn">💾 Restaurar Backup</button>
             </div>
         </div>
     </div>
@@ -936,14 +986,23 @@
             <div id="tooltip-text"></div>
         </div>
     </div>
-
+	
+    <!-- Modal Resumo de Arquivos -->
+    <div id="archive-modal" onclick="if(event.target.id==='archive-modal')fecharResumoArquivos()">
+        <div id="archive-content">
+            <button onclick="fecharResumoArquivos()" class="modal-close">×</button>
+            <h3 id="archive-title" style="margin-top:0; display:flex; align-items:center; gap:8px;">📊 Histórico de Meses</h3>
+            <div id="archive-list" style="max-height: 400px; overflow-y: auto; padding-right: 8px;"></div>
+        </div>
+    </div>
+	
     <!-- Toast -->
     <div id="toast" class="toast"></div>
 
     <script>
         // ==================== CONFIGURAÇÕES INICIAIS ====================
-        const VERSION = "1.2.2";
-        const DATA_VERSION = "1.1.0";
+        const VERSION = "1.3.0";
+        const DATA_VERSION = "1.3.0";
         let isHorizontalMode = localStorage.getItem('horizontalMode') === 'true';
 
         // ==================== HELPER: LOCAL DATE FIX ====================
@@ -1066,6 +1125,7 @@
                 this.data.streak = 0;
                 this.data.lastStreakDate = null;
                 this.data.streakManualOverride = false;
+                this.data.monthlyArchives = {}; // Limpa os arquivos mensais também
                 this.save();
             },
 
@@ -1288,6 +1348,15 @@
             document.getElementById('pontos-meta').textContent = `${formatarNumero(AppState.data.totalMensal)} pts`;
             document.getElementById('percent').textContent = `${percent}%`;
             document.getElementById('progress').style.width = `${percent}%`;
+         // Cor dinâmica da barra de progresso
+            const progressBar = document.getElementById('progress');
+            if (percent < 30) {
+                progressBar.style.background = 'linear-gradient(90deg, #ef4444, #f87171)'; // Vermelho
+            } else if (percent < 70) {
+                progressBar.style.background = 'linear-gradient(90deg, #fde047, #fbbf24)'; // Amarelo
+            } else {
+                progressBar.style.background = 'linear-gradient(90deg, #22c55e, #4ade80)'; // Verde
+            }
             document.getElementById('meta-value').textContent = `${formatarNumero(AppState.data.metaMensal)} pts`;
             atualizarTempoMensal();
             calcularEstimativaMeta();
@@ -1371,7 +1440,15 @@
             }
 
             const hitMilestone = AppState.addToHistory(pts, selectedDate);
-            atualizarInterfaceCompleta();
+          // Se o usuário adicionar um ponto no mês atual, fecha o modal de novo mês e atualiza o lastMonth
+            const hoje = new Date();
+            const currentMonth = `${hoje.getFullYear()}-${String(hoje.getMonth() + 1).padStart(2, '0')}`;
+            if (selectedDate.startsWith(currentMonth) && AppState.data.lastMonth !== currentMonth) {
+                AppState.data.lastMonth = currentMonth;
+                AppState.save();
+                document.getElementById('month-change-modal').style.display = 'none';
+            }
+			atualizarInterfaceCompleta();
             input.value = '';
             
             if (hitMilestone) {
@@ -1485,29 +1562,53 @@
         }
 
         function exportarCSV() {
-            if (AppState.data.history.length === 0) {
-                showToast("Histórico vazio.", 2000);
+            if (AppState.data.history.length === 0 && Object.keys(AppState.data.monthlyArchives).length === 0) {
+                showToast("Nenhum dado para exportar.", 2000);
                 return;
             }
-            let csv = "Data,Pontos,Reais (R$)\n";
+            let csv = "";
             const taxa = AppState.getConversionRate();
-            AppState.data.history.forEach(item => {
-                const reais = (item.pontos / taxa).toFixed(2).replace('.', ',');
-                csv += `"${item.displayDate}","${item.pontos}","R$ ${reais}"\n`;
+            const archives = AppState.data.monthlyArchives;
+
+            // 1. Exportar meses arquivados anteriores
+            const sortedMonths = Object.keys(archives).sort();
+            sortedMonths.forEach(monthKey => {
+                const archive = archives[monthKey];
+                if (archive.history && archive.history.length > 0) {
+                    csv += `--- Mês: ${archive.monthName || monthKey} ---\n`;
+                    csv += "Data,Pontos,Reais (R$)\n";
+                    archive.history.forEach(item => {
+                        const reais = (item.pontos / taxa).toFixed(2).replace('.', ',');
+                        csv += `"${item.displayDate || item.fullDate}","${item.pontos}","R$ ${reais}"\n`;
+                    });
+                    csv += `,"Total:","R$ ${formatarReais(archive.totalPontos / taxa)}"\n\n`;
+                }
             });
-            csv += `,"Total:","R$ ${formatarReais(AppState.data.totalMensal / taxa)}"`;
+
+            // 2. Exportar mês atual
+            if (AppState.data.history.length > 0) {
+                const hoje = new Date();
+                const currentMonthName = hoje.toLocaleString('pt-BR', { month: 'long', year: 'numeric' });
+                csv += `--- Mês Atual: ${currentMonthName} ---\n`;
+                csv += "Data,Pontos,Reais (R$)\n";
+                AppState.data.history.forEach(item => {
+                    const reais = (item.pontos / taxa).toFixed(2).replace('.', ',');
+                    csv += `"${item.displayDate}","${item.pontos}","R$ ${reais}"\n`;
+                });
+                csv += `,"Total:","R$ ${formatarReais(AppState.data.totalMensal / taxa)}"`;
+            }
+
             const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
-            a.download = `MSRewards_Historico_${new Date().toISOString().slice(0,10)}.csv`;
+            a.download = `MSRewards_Historico_Completo_${new Date().toISOString().slice(0,10)}.csv`;
             a.click();
             URL.revokeObjectURL(url);
-            showToast('✅ CSV exportado com sucesso!');
+            showToast('✅ CSV completo exportado!');
         }
 
         function importarDados() {
-            if (!confirm("⚠️ Isso irá sobrescrever TODOS os dados atuais. Deseja continuar?")) return;
             const input = document.createElement('input');
             input.type = 'file';
             input.accept = '.json';
@@ -1519,6 +1620,40 @@
                     try {
                         const dados = JSON.parse(ev.target.result);
                         if (!dados || typeof dados !== 'object') throw new Error("Arquivo inválido.");
+
+                        // VERIFICAÇÃO: É um arquivo de Arquivos Mensais puro?
+                        const chaves = Object.keys(dados);
+                        const isArquivoMensal = chaves.length > 0 && chaves.some(key => /^\d{4}-\d{2}$/.test(key));
+
+                        if (isArquivoMensal) {
+                            if (confirm(`Arquivo de Meses Arquivados detectado!\nDeseja mesclar ${chaves.length} mês(es) no seu Resumo Mensal?\n\n(Sua sequência de dias será atualizada para a mais recente encontrada no arquivo)`)) {
+                                Object.assign(AppState.data.monthlyArchives, dados);
+                                
+                                // Procura a streak no arquivo: do mês mais recente pro mais antigo, 
+                                // e para assim que achar a primeira válida
+                                const mesesOrdenados = Object.keys(dados).sort().reverse();
+                                let streakEncontrada = 0;
+                                for (let i = 0; i < mesesOrdenados.length; i++) {
+                                    const mesAtual = dados[mesesOrdenados[i]];
+                                    if (mesAtual.streak !== undefined && mesAtual.streak > 0) {
+                                        streakEncontrada = mesAtual.streak;
+                                        break; 
+                                    }
+                                }
+
+                                if (streakEncontrada > 0) {
+                                    AppState.data.streak = streakEncontrada;
+                                    AppState.data.streakManualOverride = true; // Trava para não apagar
+                                }
+                                
+                                AppState.save();
+                                atualizarInterfaceCompleta();
+                                showToast(`✅ ${chaves.length} mês(es) importado(s) e streak atualizada!`);
+                            }
+                            return; 
+                        }
+
+                        // VALIDAÇÃO NORMAL DE BACKUP COMPLETO
                         if (!Array.isArray(dados.history)) throw new Error("Histórico inválido.");
                         if (typeof dados.metaMensal !== 'number' || dados.metaMensal < 0) throw new Error("Meta mensal inválida.");
                         if (typeof dados.totalMensal !== 'number' || dados.totalMensal < 0) throw new Error("Total mensal inválido.");
@@ -1528,6 +1663,7 @@
                                 throw new Error("Item do histórico inválido.");
                             }
                         }
+                        
                         if (confirm(`Importar dados:\n- Meta: ${formatarNumero(dados.metaMensal || 0)} pts\n- Total: ${formatarNumero(dados.totalMensal || 0)} pts\n- Streak: ${dados.streak || 0} dias\n- Histórico: ${dados.history?.length || 0} entradas`)) {
                             AppState.data.metaMensal = dados.metaMensal || 0;
                             AppState.data.totalMensal = dados.totalMensal || 0;
@@ -1538,7 +1674,12 @@
                             AppState.data.lastStreakDate = dados.lastStreakDate || null;
                             AppState.data.lastMonth = dados.lastMonth || null;
                             AppState.data.monthlyArchives = dados.monthlyArchives || {};
-                            AppState.data.streakManualOverride = dados.streakManualOverride || false;
+                            
+                            if (dados.streakManualOverride !== undefined) {
+                                AppState.data.streakManualOverride = dados.streakManualOverride;
+                            } else {
+                                AppState.data.streakManualOverride = (AppState.data.streak > 0);
+                            }
                             
                             normalizeHistory();
                             atualizarInterfaceCompleta();
@@ -1629,28 +1770,39 @@
         function checkNewMonth() {
             const hoje = new Date();
             const currentMonth = `${hoje.getFullYear()}-${String(hoje.getMonth() + 1).padStart(2, '0')}`;
-            if (!AppState.data.lastMonth || AppState.data.lastMonth !== currentMonth) {
-                const lastCheckDate = localStorage.getItem('lastMonthCheckDate');
-                const todayStr = getLocalDateString(hoje);
-                if (lastCheckDate !== todayStr) {
-                    localStorage.setItem('lastMonthCheckDate', todayStr);
-                    const monthName = hoje.toLocaleString('pt-BR', { month: 'long', year: 'numeric' });
-                    document.getElementById('month-change-message').textContent =
-                        `O mês de ${monthName} começou! Deseja resetar os dados mensais?`;
-                    document.getElementById('month-change-modal').style.display = 'flex';
-                }
+            
+            // Se o usuário já clicou em "Ignorar" para ESTE mês, não pergunta de novo
+            if (AppState.data.lastMonth === currentMonth) return;
+
+            // CHECAGEM REAL E ÚNICA: Varre o histórico procurando QUALQUER ponto do mês atual
+            const temDadosNoMesAtual = AppState.data.history.some(h => h.fullDate && h.fullDate.startsWith(currentMonth));
+
+            if (temDadosNoMesAtual) {
+                // Tem pontos reais no mês atual. Marca como tratado silenciosamente.
+                AppState.data.lastMonth = currentMonth;
+                AppState.save();
+                return;
             }
-            AppState.data.lastMonth = currentMonth;
-            AppState.save();
+
+            // NÃO tem pontos no mês atual e NÃO foi ignorado. Mostra o modal.
+            const monthName = hoje.toLocaleString('pt-BR', { month: 'long', year: 'numeric' });
+            document.getElementById('month-change-message').textContent = `O mês de ${monthName} começou e não há pontos registrados. Deseja resetar os dados?`;
+            document.getElementById('month-change-modal').style.display = 'flex';
         }
 
         function resetMonthlyData(archive = true) {
             if (archive) archiveMonthlyData();
+            
             AppState.data.totalMensal = 0;
             AppState.data.history = [];
             AppState.data.lastStreakDate = null;
             AppState.data.streak = 0;
             AppState.data.streakManualOverride = false;
+            
+            // Garante que o mês atual fique marcado para não voltar o popup
+            const hoje = new Date();
+            AppState.data.lastMonth = `${hoje.getFullYear()}-${String(hoje.getMonth() + 1).padStart(2, '0')}`;
+            
             AppState.save();
             document.getElementById('month-change-modal').style.display = 'none';
             atualizarInterfaceCompleta();
@@ -1658,39 +1810,103 @@
         }
 
         function archiveMonthlyData() {
-            const hoje = new Date();
-            const prevMonth = new Date(hoje.getFullYear(), hoje.getMonth() - 1, 1);
-            const monthKey = `${prevMonth.getFullYear()}-${String(prevMonth.getMonth() + 1).padStart(2, '0')}`;
-            const monthName = prevMonth.toLocaleString('pt-BR', { month: 'long', year: 'numeric' });
+            const groupedByMonth = {};
+            const currentStreak = AppState.data.streak; // Puxa a streak atual ANTES de qualquer reset
             
-            const archiveData = {
-                month: monthKey,
-                monthName: monthName,
-                totalPontos: AppState.data.totalMensal,
-                history: AppState.data.history,
-                streak: AppState.data.streak,
-                metaMensal: AppState.data.metaMensal,
-                examplePontos: AppState.data.exemploPontos,
-                exampleReais: AppState.data.exemploReais,
-                archivedAt: new Date().toISOString()
-            };
-            AppState.data.monthlyArchives[monthKey] = archiveData;
+            // Agrupa TODOS os pontos atuais do histórico pelos seus respectivos meses reais
+            AppState.data.history.forEach(item => {
+                if (item.fullDate) {
+                    const monthKey = item.fullDate.substring(0, 7); // Extrai "YYYY-MM"
+                    if (!groupedByMonth[monthKey]) {
+                        groupedByMonth[monthKey] = [];
+                    }
+                    groupedByMonth[monthKey].push(item);
+                }
+            });
+
+            if (Object.keys(groupedByMonth).length === 0) {
+                showToast("Nenhum dado para arquivar.", 2000);
+                document.getElementById('month-change-modal').style.display = 'none';
+                return;
+            }
+
+            // Salva cada grupo de mês nos arquivos mensais
+            Object.keys(groupedByMonth).sort().forEach(monthKey => {
+                const items = groupedByMonth[monthKey];
+                const totalPts = items.reduce((sum, i) => sum + i.pontos, 0);
+                
+                const [year, month] = monthKey.split('-');
+                const dateObj = new Date(parseInt(year), parseInt(month) - 1, 1);
+                const monthName = dateObj.toLocaleString('pt-BR', { month: 'long', year: 'numeric' });
+
+                AppState.data.monthlyArchives[monthKey] = {
+                    month: monthKey,
+                    monthName: monthName,
+                    totalPontos: totalPts,
+                    history: items,
+                    streak: currentStreak, // AGORA ELE SALVA A STREAK CORRETAMENTE AQUI
+                    metaMensal: AppState.data.metaMensal,
+                    archivedAt: new Date().toISOString()
+                };
+            });
+
+            // Marca o mês atual como "tratado"
+            const hoje = new Date();
+            AppState.data.lastMonth = `${hoje.getFullYear()}-${String(hoje.getMonth() + 1).padStart(2, '0')}`;
             AppState.save();
-            const blob = new Blob([JSON.stringify(archiveData, null, 2)], { type: 'application/json' });
+
+            // GERA O DOWNLOAD USANDO O ARQUIVO COMPLETO
+            const blob = new Blob([JSON.stringify(AppState.data.monthlyArchives, null, 2)], { type: 'application/json' });
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
-            a.download = `MSRewards_${monthKey}.json`;
+            a.download = `MSRewards_Arquivos_Completos_${new Date().toISOString().slice(0,10)}.json`;
             a.click();
             URL.revokeObjectURL(url);
-            showToast(`Arquivo do mês de ${monthName} exportado!`, 2500);
+            
+            showToast('Todos os meses arquivados exportados!', 2500);
+            document.getElementById('month-change-modal').style.display = 'none';
         }
 
         function skipMonthReset() {
+            // Marca o mês atual para que o popup não apareça mais até o próximo mês real
+            const hoje = new Date();
+            AppState.data.lastMonth = `${hoje.getFullYear()}-${String(hoje.getMonth() + 1).padStart(2, '0')}`;
+            AppState.save();
+            
             document.getElementById('month-change-modal').style.display = 'none';
             showToast("Reset mensal ignorado.", 1800);
         }
+        
+		// ==================== FUNÇÕES DE RESUMO DE ARQUIVOS ====================
+        function abrirResumoArquivos() {
+            const list = document.getElementById('archive-list');
+            const archives = AppState.data.monthlyArchives;
+            
+            // Retira qualquer chave duplicada que possa ter vindo de importações antigas
+            const keys = [...new Set(Object.keys(archives))].sort().reverse();
+            
+            if (keys.length === 0) {
+                list.innerHTML = '<div class="archive-empty">Nenhum mês arquivado ainda.</div>';
+            } else {
+                list.innerHTML = keys.map(key => {
+                    const data = archives[key];
+                    return `
+                        <div class="archive-item">
+                            <span class="archive-month-name">📅 ${data.monthName || key}</span>
+                            <span class="archive-points">${formatarNumero(data.totalPontos)} pts</span>
+                        </div>
+                    `;
+                }).join('');
+            }
+            
+            document.getElementById('archive-modal').style.display = 'flex';
+        }
 
+        function fecharResumoArquivos() {
+            document.getElementById('archive-modal').style.display = 'none';
+        }
+		
         // ==================== FUNÇÕES DE TEMA E LAYOUT ====================
         function toggleTheme() {
             const isLight = document.body.classList.toggle('light');
@@ -1745,8 +1961,24 @@
                 if (parseInt(val) > 5000) val = '5000';
                 input.value = val;
             });
+            
+            // Atalho: Apertar Enter adiciona os pontos direto
+            input.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    addToHistory();
+                }
+            });
+            
+            // Também permite apertar Enter no campo de data
+            document.getElementById('hist-date').addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    document.getElementById('hist-pontos').focus();
+                }
+            });
         }
-
+		
         // ==================== INICIALIZAÇÃO ====================
         window.onload = () => {
             loadTheme();
