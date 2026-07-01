@@ -98,7 +98,7 @@ Feito com carinho para a comunidade brasileira do Microsoft Rewards. Inspirado o
 * Assistência inicial: Grok 4.2.0-Quick Thinking e Specialist.
 * Atualização v1.2.0: Kimi-k2.6 e Mistral 3.5b.
 * Correções e features v1.2.1/v1.2.2: GLM-5.1.
-* Correções e features v1.3.0: GLM-Turbo-5.
+* Correções e features v1.3.0: GLM-5-Turbo.
 
 Se você usa e gosta do projeto, considere dar uma ⭐ no repositório!
 
