@@ -69,14 +69,17 @@ Você não precisa instalar nada! Basta:
 
 ## 📋 Versão Atual e Change-Log
 
-**Versão Atual:** 1.2.2a
+**Versão Atual:** 1.3.0
 
 [Ver change-log completo nas Releases](https://github.com/Y4SH1R01/MSRewardsTool/releases)
 
 ### 📌 To-Do
 
 - [ ] Pensar em novas melhorias e features para a comunidade.
-- [ ] Resolver bug da exportação csv não incluir meses anteriores.
+- [ ] Resolver problemas de Layout na versão Mobile vertical.
+- [ ] Resolver bug ao usar a função "Arquivar e resetar" que reseta a sequência de dias sem ter motivos. *Checar a outra função de arquivamento pra caso tenha o mesmo erro xd*
+- [ ] ???
+- [x] Resolver bug da Exportação CSV não incluir meses anteriores. [(Corrigido na v1.3.0!)](https://github.com/Y4SH1R01/MSRewardsTool/releases/tag/1.3.0)
 ---
 
 ## 💡 Observações Importantes
@@ -95,7 +98,8 @@ Feito com carinho para a comunidade brasileira do Microsoft Rewards. Inspirado o
 * Assistência inicial: Grok 4.2.0-Quick Thinking e Specialist.
 * Atualização v1.2.0: Kimi-k2.6 e Mistral 3.5b.
 * Correções e features v1.2.1/v1.2.2: GLM-5.1.
+* Correções e features v1.3.0: GLM-Turbo-5.
 
 Se você usa e gosta do projeto, considere dar uma ⭐ no repositório!
 
-**Última atualização**: Junho de 2026.
+**Última atualização**: Julho de 2026.
