@@ -1,6 +1,6 @@
 # 🎮 Microsoft Rewards Tool
 
-[![Versão](https://img.shields.io/badge/Versão-1.3.0-brightgreen)]()
+[![Versão](https://img.shields.io/badge/Versão-1.3.1-brightgreen)]()
 [![Licença](https://img.shields.io/badge/Licença-GPL--3.0-blue)]()
 [![Status](https://img.shields.io/badge/Status-Ativo-success)]()
 [![Changelog](https://shields.io/badge/Changelog-blue)](https://github.com/Y4SH1R01/MSRewardsTool/releases)
@@ -68,13 +68,14 @@ Você não precisa instalar nada! Basta:
 
 ---
 
-## 📌 To-Do
+## 📌 To-Do, Bugs, etc.
 
 - [ ] Pensar em novas melhorias e features para a comunidade.
-- [ ] Resolver problemas de Layout na versão Mobile vertical.
-- [ ] Resolver bug ao usar a função "Arquivar e resetar" que reseta a sequência de dias sem ter motivos. *Checar a outra função de arquivamento pra caso tenha o mesmo erro xd*
 - [ ] ???
-- [x] Resolver bug da Exportação CSV não incluir meses anteriores. [(Corrigido na v1.3.0!)](https://github.com/Y4SH1R01/MSRewardsTool/releases/tag/1.3.0)
+### [(Bugs Corrigidos/Features da última versão:)](https://github.com/Y4SH1R01/MSRewardsTool/releases/tag/1.3.1)
+- [x] Resolver problemas de Layout na versão Mobile vertical.
+- [x] Resolver bug ao usar a função "Arquivar e resetar" que reseta a sequência de dias sem ter motivos. *Checar a outra função de arquivamento pra caso tenha o mesmo erro xd*
+
 
 ---
 
