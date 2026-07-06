@@ -3,6 +3,7 @@
 [![Versão](https://img.shields.io/badge/Versão-1.3.0-brightgreen)]()
 [![Licença](https://img.shields.io/badge/Licença-GPL--3.0-blue)]()
 [![Status](https://img.shields.io/badge/Status-Ativo-success)]()
+[![Changelog](https://shields.io/badge/Changelog-blue)](https://github.com/Y4SH1R01/MSRewardsTool/releases)
 
 **Ferramenta completa, moderna e leve para Microsoft Rewards — Feita especialmente para caçadores brasileiros.**
 
@@ -67,19 +68,14 @@ Você não precisa instalar nada! Basta:
 
 ---
 
-## 📋 Versão Atual e Change-Log
-
-**Versão Atual:** 1.3.0
-
-[Ver change-log completo nas Releases](https://github.com/Y4SH1R01/MSRewardsTool/releases)
-
-### 📌 To-Do
+## 📌 To-Do
 
 - [ ] Pensar em novas melhorias e features para a comunidade.
 - [ ] Resolver problemas de Layout na versão Mobile vertical.
 - [ ] Resolver bug ao usar a função "Arquivar e resetar" que reseta a sequência de dias sem ter motivos. *Checar a outra função de arquivamento pra caso tenha o mesmo erro xd*
 - [ ] ???
 - [x] Resolver bug da Exportação CSV não incluir meses anteriores. [(Corrigido na v1.3.0!)](https://github.com/Y4SH1R01/MSRewardsTool/releases/tag/1.3.0)
+
 ---
 
 ## 💡 Observações Importantes
