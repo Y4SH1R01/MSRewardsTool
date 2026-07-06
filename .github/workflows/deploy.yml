@@ -32,10 +32,10 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: '.'   # raiz do repositório (onde está o index.html)
+          path: |
+            ./index.html
+            ./rewards.png
 
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
-
-# just a test
