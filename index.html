@@ -802,7 +802,31 @@
             color: #888;
             padding: 20px;
         }
+		        /* CORREÇÕES EXCLUSIVAS PARA MOBILE VERTICAL */
+        @media (max-width: 480px) {
+            /* Faz o botão Adicionar ficar do mesmo tamanho do Limpar Histórico */
+            .add-history button {
+                width: 100%;
+                box-sizing: border-box;
+            }
+
+            /* Transforma os 4 botões de backup em grade 2x2 para evitar vazamento de texto */
+            .backup-buttons {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 8px;
+            }
+            .backup-buttons button {
+                width: 100% !important;
+                padding: 12px 8px !important;
+                font-size: 12.5px !important;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+        }
     </style>
+	
 </head>
 <body>
     <div class="app">
@@ -1152,7 +1176,9 @@
 
             getMetaProgress() {
                 if (this.data.metaMensal <= 0) return 0;
-                return Math.min(Math.round((this.data.totalMensal / this.data.metaMensal) * 100), 100);
+                const rawPercent = (this.data.totalMensal / this.data.metaMensal) * 100;
+                // Limita a 3 casas decimais, remove zeros finais (ex: 33.5 em vez de 33.500) e capsa em 100%
+                return parseFloat(Math.min(rawPercent, 100).toFixed(3));
             },
 
             getStats() {
@@ -1173,29 +1199,90 @@
 
         // ==================== DYNAMIC STREAK CALCULATOR ====================
         function calculateStreak() {
-            if (AppState.data.history.length === 0) return 0;
-            
-            const uniqueDates = [...new Set(AppState.data.history.map(h => h.fullDate))].sort().reverse();
-            
             const today = getLocalDateString();
             const yesterday = getPreviousDay(today);
             
-            if (uniqueDates[0] !== today && uniqueDates[0] !== yesterday) {
+            // 1. Pega as datas únicas do histórico ativo (mês atual)
+            let activeDates = [];
+            if (AppState.data.history.length > 0) {
+                activeDates = [...new Set(AppState.data.history.map(h => h.fullDate))];
+            }
+            activeDates.sort().reverse();
+
+            // Se tem histórico ativo, mas o mais recente não é hoje nem ontem, a sequência quebrou.
+            if (activeDates.length > 0 && activeDates[0] !== today && activeDates[0] !== yesterday) {
                 return 0;
             }
-            
+
+            // Define de onde começar a contagem
+            let checkDate = activeDates.length > 0 ? activeDates[0] : yesterday;
             let streak = 0;
-            let checkDate = uniqueDates[0];
-            
-            for (let i = 0; i < uniqueDates.length; i++) {
-                if (uniqueDates[i] === checkDate) {
+            let activeIndex = 0;
+
+            // FASE 1: Contar os dias consecutivos no histórico ATIVO
+            while (activeIndex < activeDates.length) {
+                if (activeDates[activeIndex] === checkDate) {
                     streak++;
                     checkDate = getPreviousDay(checkDate);
-                } else if (uniqueDates[i] < checkDate) {
-                    break;
+                    activeIndex++;
+                } else if (activeDates[activeIndex] < checkDate) {
+                    break; // Faltou um dia no meio do mês atual
+                } else {
+                    activeIndex++; // Ignora datas fora de ordem
                 }
             }
-            
+
+            // FASE 2: Se terminou o histórico ativo e ainda faltam dias, procurar nos ARQUIVOS
+            if (activeIndex >= activeDates.length && streak > 0) {
+                let missingMonthKey = checkDate.substring(0, 7); // Pega o "YYYY-MM" do dia que falta
+                let archiveToCheck = AppState.data.monthlyArchives[missingMonthKey];
+                
+                // Se não tiver arquivo do mês que estamos checando, tenta pular direto pro mês anterior
+                if (!archiveToCheck || !archiveToCheck.history) {
+                    missingMonthKey = getPreviousDay(checkDate + '-01').substring(0, 7);
+                    archiveToCheck = AppState.data.monthlyArchives[missingMonthKey];
+                }
+
+                while (archiveToCheck && archiveToCheck.history) {
+                    let archiveDates = [...new Set(archiveToCheck.history.map(h => h.fullDate))].sort().reverse();
+                    let archiveIndex = 0;
+                    let foundInThisArchive = false;
+                    
+                    while (archiveIndex < archiveDates.length) {
+                        if (archiveDates[archiveIndex] === checkDate) {
+                            streak++;
+                            checkDate = getPreviousDay(checkDate);
+                            archiveIndex++;
+                            foundInThisArchive = true;
+                        } else if (archiveDates[archiveIndex] < checkDate) {
+                            break; // Faltou um dia neste arquivo, vamos pular pro mês anterior
+                        } else {
+                            archiveIndex++;
+                        }
+                    }
+
+                    // CORREÇÃO DO BUG: Se chegou no fim das datas deste arquivo E ainda faltam dias,
+                    // significa que o mês simplesmente acabou. Força a troca para o mês anterior.
+                    if (!foundInThisArchive || archiveIndex >= archiveDates.length) {
+                        const prevMonthKey = getPreviousDay(checkDate + '-01').substring(0, 7);
+                        if (prevMonthKey === missingMonthKey) break; // Segurança contra loop infinito
+                        
+                        archiveToCheck = AppState.data.monthlyArchives[prevMonthKey];
+                        missingMonthKey = prevMonthKey;
+                    }
+                }
+            } 
+            // FASE 3 (Ocorre se der um Reset total): Histório vazio, mas tem arquivos salvos.
+            else if (activeDates.length === 0 && streak === 0) {
+                const archiveKeys = Object.keys(AppState.data.monthlyArchives).sort().reverse();
+                if (archiveKeys.length > 0) {
+                    const lastArchive = AppState.data.monthlyArchives[archiveKeys[0]];
+                    // Puxa a streak exata que foi salva no último arquivo gerado
+                    if (lastArchive.streak !== undefined) return lastArchive.streak;
+                }
+                return 0;
+            }
+
             return streak;
         }
 
@@ -1629,8 +1716,7 @@
                             if (confirm(`Arquivo de Meses Arquivados detectado!\nDeseja mesclar ${chaves.length} mês(es) no seu Resumo Mensal?\n\n(Sua sequência de dias será atualizada para a mais recente encontrada no arquivo)`)) {
                                 Object.assign(AppState.data.monthlyArchives, dados);
                                 
-                                // Procura a streak no arquivo: do mês mais recente pro mais antigo, 
-                                // e para assim que achar a primeira válida
+                                // Procura a streak no arquivo
                                 const mesesOrdenados = Object.keys(dados).sort().reverse();
                                 let streakEncontrada = 0;
                                 for (let i = 0; i < mesesOrdenados.length; i++) {
@@ -1643,11 +1729,20 @@
 
                                 if (streakEncontrada > 0) {
                                     AppState.data.streak = streakEncontrada;
-                                    AppState.data.streakManualOverride = true; // Trava para não apagar
+                                    AppState.data.streakManualOverride = true; 
+                                }
+
+                                // CORREÇÃO DO BUG: Define o lastMonth como o mês mais recente DO ARQUIVO.
+                                // Se você importar um arquivo do mês 06, e estamos no mês 07, 
+                                // ele seta o lastMonth pra 06. Na linha abaixo, o checkNewMonth() 
+                                // vê que 06 != 07 e dispara o popup perfeitamente!
+                                if (mesesOrdenados.length > 0) {
+                                    AppState.data.lastMonth = mesesOrdenados[0];
                                 }
                                 
                                 AppState.save();
                                 atualizarInterfaceCompleta();
+                                checkNewMonth(); // Força a verificação imediata após importar
                                 showToast(`✅ ${chaves.length} mês(es) importado(s) e streak atualizada!`);
                             }
                             return; 
@@ -1682,7 +1777,9 @@
                             }
                             
                             normalizeHistory();
+                            AppState.save();
                             atualizarInterfaceCompleta();
+                            checkNewMonth(); // Também força a verificação ao importar backup completo
                             showToast('✅ Dados importados com sucesso!');
                         }
                     } catch (err) {
@@ -1792,14 +1889,15 @@
 
         function resetMonthlyData(archive = true) {
             if (archive) archiveMonthlyData();
-            
             AppState.data.totalMensal = 0;
             AppState.data.history = [];
             AppState.data.lastStreakDate = null;
-            AppState.data.streak = 0;
-            AppState.data.streakManualOverride = false;
             
-            // Garante que o mês atual fique marcado para não voltar o popup
+            // Não precisamos mais de regras buras aqui!
+            // Se for Manual: ele ignora o cálculo e mantém o que o usuário quis.
+            // Se for Automático: a função calculateStreak() agora é inteligente o suficiente 
+            // para olhar o arquivo que acabou de ser gerado e manter o número correto.
+            
             const hoje = new Date();
             AppState.data.lastMonth = `${hoje.getFullYear()}-${String(hoje.getMonth() + 1).padStart(2, '0')}`;
             
