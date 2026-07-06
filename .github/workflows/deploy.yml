@@ -29,12 +29,17 @@ jobs:
       - name: Setup GitHub Pages
         uses: actions/configure-pages@v5
 
+      - name: filter to deploy
+        run: |
+          mkdir temp_deploy
+          cp ./index.html temp_deploy/
+          cp ./rewards.png temp_deploy/
+      # ------------------------------------
+
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: |
-            ./index.html
-            ./rewards.png
+          path: './temp_deploy'
 
       - name: Deploy to GitHub Pages
         id: deployment
