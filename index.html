@@ -6,7 +6,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Rewards Tool</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Segoe+UI:wght@400;500;600;700&display=swap');
         :root {
             --bg:#0a0a0a;
             --card:#1c1c1c;
@@ -23,11 +22,11 @@
             --gold: var(--gold-light);
             color-scheme: light;
         }
-                body {
+        body {
             margin: 0;
             background: var(--bg);
             color: var(--text);
-            font-family: 'Segoe UI', sans-serif;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -154,6 +153,12 @@
             opacity: 0.8;
             transition: opacity 0.2s;
             z-index: 5;
+            background: none;
+            border: none;
+            color: inherit;
+            font-family: inherit;
+            padding: 0;
+            line-height: 1;
         }
         .tooltip-icon:hover {
             opacity: 1;
@@ -829,6 +834,12 @@
 	
 </head>
 <body>
+    <!-- Script anti-flash: Aplica o tema antes da página desenhar -->
+    <script>
+        if (localStorage.getItem('rewardsTheme') === 'light') {
+            document.body.classList.add('light');
+        }
+    </script>
     <div class="app">
         <div class="header">
             <div class="header-logo">
@@ -1025,8 +1036,8 @@
 
     <script>
         // ==================== CONFIGURAÇÕES INICIAIS ====================
-        const VERSION = "1.3.1";
-        const DATA_VERSION = "1.3.1";
+        const VERSION = "1.3.2";
+        const DATA_VERSION = "1.3.2";
         let isHorizontalMode = localStorage.getItem('horizontalMode') === 'true';
 
         // ==================== HELPER: LOCAL DATE FIX ====================
@@ -1053,29 +1064,42 @@
         // ==================== GERENCIAMENTO DE ESTADO ====================
         const AppState = {
             data: {
-                metaMensal: parseFloat(localStorage.getItem('metaMensal')) || 0,
-                totalMensal: parseFloat(localStorage.getItem('totalMensal')) || 0,
-                streak: parseInt(localStorage.getItem('rewardsStreak')) || 0,
-                history: JSON.parse(localStorage.getItem('rewardsHistory')) || [],
-                exemploPontos: parseFloat(localStorage.getItem('exemploPontos')) || 5165,
-                exemploReais: parseFloat(localStorage.getItem('exemploReais')) || 30,
-                lastStreakDate: localStorage.getItem('lastStreakDate') || null,
-                lastMonth: localStorage.getItem('lastMonth') || null,
-                monthlyArchives: JSON.parse(localStorage.getItem('monthlyArchives')) || {},
-                streakManualOverride: localStorage.getItem('streakManualOverride') === 'true'
+                metaMensal: 0,
+                totalMensal: 0,
+                streak: 0,
+                history: [],
+                exemploPontos: 5165,
+                exemploReais: 30,
+                lastStreakDate: null,
+                lastMonth: null,
+                monthlyArchives: {},
+                streakManualOverride: false
+            },
+
+            init() {
+                // 1. Tenta carregar do novo formato consolidado
+                const savedData = JSON.parse(localStorage.getItem('rewardsData'));
+                if (savedData) {
+                    this.data = { ...this.data, ...savedData };
+                    return;
+                }
+                // 2. Migração: Se não existir o novo formato, lê o antigo e salva no novo
+                this.data.metaMensal = parseFloat(localStorage.getItem('metaMensal')) || 0;
+                this.data.totalMensal = parseFloat(localStorage.getItem('totalMensal')) || 0;
+                this.data.streak = parseInt(localStorage.getItem('rewardsStreak')) || 0;
+                this.data.history = JSON.parse(localStorage.getItem('rewardsHistory')) || [];
+                this.data.exemploPontos = parseFloat(localStorage.getItem('exemploPontos')) || 5165;
+                this.data.exemploReais = parseFloat(localStorage.getItem('exemploReais')) || 30;
+                this.data.lastStreakDate = localStorage.getItem('lastStreakDate') || null;
+                this.data.lastMonth = localStorage.getItem('lastMonth') || null;
+                this.data.monthlyArchives = JSON.parse(localStorage.getItem('monthlyArchives')) || {};
+                this.data.streakManualOverride = localStorage.getItem('streakManualOverride') === 'true';
+                this.save(); // Salva no novo formato para não precisar migrar de novo
             },
 
             save() {
-                localStorage.setItem('metaMensal', this.data.metaMensal);
-                localStorage.setItem('totalMensal', this.data.totalMensal);
-                localStorage.setItem('rewardsStreak', this.data.streak);
-                localStorage.setItem('rewardsHistory', JSON.stringify(this.data.history));
-                localStorage.setItem('exemploPontos', this.data.exemploPontos);
-                localStorage.setItem('exemploReais', this.data.exemploReais);
-                localStorage.setItem('lastStreakDate', this.data.lastStreakDate);
-                localStorage.setItem('lastMonth', this.data.lastMonth);
-                localStorage.setItem('monthlyArchives', JSON.stringify(this.data.monthlyArchives));
-                localStorage.setItem('streakManualOverride', this.data.streakManualOverride);
+                // Salva tudo de uma vez só
+                localStorage.setItem('rewardsData', JSON.stringify(this.data));
                 if (Math.random() < 0.2) this.createBackup();
             },
 
@@ -1149,7 +1173,7 @@
                 this.data.streak = 0;
                 this.data.lastStreakDate = null;
                 this.data.streakManualOverride = false;
-                this.data.monthlyArchives = {}; // Limpa os arquivos mensais também
+                this.data.monthlyArchives = {}; 
                 this.save();
             },
 
@@ -1177,7 +1201,6 @@
             getMetaProgress() {
                 if (this.data.metaMensal <= 0) return 0;
                 const rawPercent = (this.data.totalMensal / this.data.metaMensal) * 100;
-                // Limita a 3 casas decimais, remove zeros finais (ex: 33.5 em vez de 33.500) e capsa em 100%
                 return parseFloat(Math.min(rawPercent, 100).toFixed(3));
             },
 
@@ -1492,7 +1515,7 @@
                         <span class="pts-value">+${formatarNumero(item.pontos)} pts</span>
                         <div class="history-reais">${formatarReais(parseFloat(reais))}</div>
                     </span>
-                    <button onclick="editarItemHistorico(${index})" class="edit-history-btn" title="Editar ou excluir">✏️</button>
+                    <button data-index="${index}" class="edit-history-btn" title="Editar ou excluir">✏️</button>
                 `;
                 list.appendChild(div);
             });
@@ -2080,11 +2103,18 @@
         // ==================== INICIALIZAÇÃO ====================
         window.onload = () => {
             loadTheme();
+            AppState.init(); // <- Carrega os dados consolidados
             document.getElementById('header-title').innerHTML = '<h1>Rewards Tool</h1>';
             normalizeHistory();
             checkNewMonth();
             applyLayoutMode();
             setupInputValidation();
+            document.getElementById('history-list').addEventListener('click', function(e) {
+                if (e.target && e.target.classList.contains('edit-history-btn')) {
+                    const index = parseInt(e.target.getAttribute('data-index'));
+                    editarItemHistorico(index);
+	                }
+            });
             
             const todayStr = getLocalDateString();
             const dateInput = document.getElementById('hist-date');
