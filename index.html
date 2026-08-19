@@ -50,6 +50,8 @@
             display: flex;
             align-items: center;
             position: relative;
+			border-radius: 16px; 
+            margin: 12px 12px 6px 12px; 
         }
         body.light .header {
             background: #f1f3f5;
@@ -92,28 +94,158 @@
             align-items:center;
             gap:12px;
             font-size:18px;
-            border-bottom:1px solid #333;
+            border-radius: 16px; /* Arredonda os cantos */
+            margin: 6px 12px 12px 12px; /* Alinha com a header */
+            border-bottom: none; /* Remove a linha reta antiga */
         }
         body.light .example {
             background:#f1f3f5;
-            border-bottom:1px solid #ddd;
+            border-bottom:none;
         }
         .example .pts {
             color:#ffd700;
             font-weight:600;
+        }
+        
+        /* CONTAINER VERTICAL PARA TAXA E ATIVIDADES */
+        .stats-row {
+            display: flex;
+            flex-direction: column; /* Aqui força a ir para baixo */
+            gap: 12px;
+            margin: 12px 0;
+            padding: 0 12px;
         }
         .taxa {
             text-align:center;
             background:#252525;
             padding:14px;
             border-radius:12px;
-            margin: 12px 0 12px;
             font-size:14px;
             color:#aaa;
         }
         body.light .taxa {
             background:#f1f3f5;
             color:#555;
+        }
+        
+        /* BOX DE ATIVIDADES */
+        .activities-box {
+            background:#252525;
+            padding:14px;
+            border-radius:12px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            gap: 6px;
+        }
+        body.light .activities-box {
+            background:#f1f3f5;
+        }
+        .act-title {
+            font-size: 12px;
+            text-align: center;
+            font-weight: 600;
+            color: #888;
+            margin-bottom: 4px;
+        }
+        body.light .act-title { color: #666; }
+        .act-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 4px 0;
+            border-bottom: 1px solid #333;
+        }
+        body.light .act-item { border-bottom: 1px solid #ddd; }
+        .act-item:last-child { border-bottom: none; }
+        .act-info {
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            line-height: 1.2;
+        }
+        .act-name {
+            font-size: 12.5px;
+            font-weight: 500;
+        }
+        .act-day-info {
+            font-size: 10px;
+            color: #888;
+        }
+/* ESTRELAS DE ATIVIDADES (QUIRK VISUAL REFORÇADO) */
+        .act-star {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 22px;
+            color: #555;
+            transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), color 0.3s ease;
+            padding: 0;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .act-star:hover {
+            transform: scale(1.3) !important;
+        }
+
+        /* Estrela Concluída: Brilho forte + Animação de entrada Pop */
+        .act-star.completed {
+            color: var(--gold);
+            text-shadow: 0 0 10px rgba(253, 224, 71, 0.9), 0 0 22px rgba(253, 224, 71, 0.5);
+            transform: scale(1.2);
+            animation: starPop 0.45s cubic-bezier(0.175, 0.885, 0.32, 1.4) forwards;
+        }
+        
+        body.light .act-star.completed {
+            color: var(--gold-light);
+            text-shadow: 0 0 8px rgba(217, 119, 6, 0.7), 0 0 16px rgba(217, 119, 6, 0.3);
+        }
+
+        /* Estrela Não Concluída: Pulso dinâmico bem visível */
+        .act-star.not-completed {
+            color: #777;
+            animation: pulseStar 1.8s infinite ease-in-out;
+        }
+        
+        body.light .act-star.not-completed {
+            color: #aaa;
+        }
+
+        /* Animação de pulso pronunciada */
+        @keyframes pulseStar {
+            0% { 
+                opacity: 0.35; 
+                transform: scale(0.88); 
+                filter: drop-shadow(0 0 0px transparent);
+            }
+            50% { 
+                opacity: 1; 
+                transform: scale(1.28); 
+                color: #ddd;
+                filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.6));
+            }
+            100% { 
+                opacity: 0.35; 
+                transform: scale(0.88); 
+                filter: drop-shadow(0 0 0px transparent);
+            }
+        }
+
+        /* Efeito de impacto quando uma estrela é marcada */
+        @keyframes starPop {
+            0% { 
+                transform: scale(0.4) rotate(-35deg); 
+                opacity: 0.5;
+            }
+            60% { 
+                transform: scale(1.45) rotate(15deg); 
+            }
+            100% { 
+                transform: scale(1.2) rotate(0deg); 
+                opacity: 1;
+            }
         }
         .main {
             display: flex;
@@ -165,15 +297,15 @@
         }
         @media (min-width: 481px) and (orientation: landscape) {
             .app {
-                max-width: 860px;
+                max-width: 960px;
                 border-radius: 20px;
-                padding: 10px;
+                padding: 10px 0;
             }
             .main {
                 flex-direction: row;
                 flex-wrap: wrap;
                 gap: 18px;
-                padding: 0 10px;
+                padding: 0 12px;
             }
             .section, .estimate, .streak, .stats {
                 flex: 1;
@@ -190,6 +322,10 @@
             }
             .section, .estimate, .streak, .stats {
                 padding: 18px 16px;
+            }
+            .stats-row {
+                flex-direction: column;
+                padding: 0 12px;
             }
         }
         .add-history {
@@ -677,6 +813,18 @@
             cursor:pointer;
             color:#aaa;
         }
+        #tooltip-content,
+        #month-change-content,
+        #archive-content {
+            outline: none !important;
+        }
+        
+        #tooltip-modal button:focus,
+        #month-change-modal button:focus,
+        #archive-modal button:focus {
+            outline: none !important;
+            box-shadow: none !important;
+        }
         .stats-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -807,7 +955,7 @@
             color: #888;
             padding: 20px;
         }
-		        /* CORREÇÕES EXCLUSIVAS PARA MOBILE VERTICAL */
+                /* CORREÇÕES EXCLUSIVAS PARA MOBILE VERTICAL */
         @media (max-width: 480px) {
             /* Faz o botão Adicionar ficar do mesmo tamanho do Limpar Histórico */
             .add-history button {
@@ -831,7 +979,7 @@
             }
         }
     </style>
-	
+    
 </head>
 <body>
     <!-- Script anti-flash: Aplica o tema antes da página desenhar -->
@@ -857,10 +1005,18 @@
             <button onclick="editarExemplo()" class="edit-example-btn" style="margin-left:auto;background:#22c55e;color:#000;border:none;padding:8px 16px;border-radius:999px;font-size:14px;font-weight:600;cursor:pointer;">Editar</button>
         </div>
 
-        <div class="taxa">
-            <strong>Taxa atual de conversão:</strong><br>
-            <span id="taxa-atual">172,17 pontos ≈ R$ 1,00</span><br>
-            <small>Baseado no exemplo acima • Atualiza automaticamente</small>
+        <div class="stats-row">
+            <div class="taxa">
+                <strong>Taxa atual de conversão:</strong><br>
+                <span id="taxa-atual">172,17 pontos ≈ R$ 1,00</span><br>
+                <small>Baseado no exemplo acima • Atualiza automaticamente</small>
+            </div>
+            
+            <!-- BOX DE ATIVIDADES NOVO -->
+            <div class="activities-box">
+                <div class="act-title">Atividades (Ciclo 7d)</div>
+                <div id="activities-list"></div>
+            </div>
         </div>
 
         <div class="main">
@@ -873,7 +1029,7 @@
                         <span id="meta-value" class="meta-value">0 pts</span>
                         <span onclick="mostrarTooltip('Meta Mensal & Níveis', 'Defina sua meta pessoal mensal de pontos.<br>A barra verde mostra seu progresso em tempo real.<br><br>' +
                             '<strong>O badge de nível ao lado atualiza automaticamente com base nos seus pontos mensais!</strong><br><br>' +
-							'📌 <strong>Níveis do MS Rewards Brasil:</strong><br>' +
+                            '📌 <strong>Níveis do MS Rewards Brasil:</strong><br>' +
                             '🥉 <strong>Membro:</strong> Até 499 pts/mês (Buscas: 15, ganhos por dólar gasto na MS Store: 1x)<br>' +
                             '🥈 <strong>Prata:</strong> 500 a 749 pts/mês (Buscas: 30, ganhos por dólar gasto na MS Store: 10x)<br>' +
                             '🥇 <strong>Gold:</strong> 750+ pts/mês (Buscas: 60, ganhos por dólar gasto na MS Store: 10x)<br><br>' +
@@ -989,13 +1145,13 @@
         </div>
 
         <div class="footer">
-            <span class="footer-text">Microsoft Rewards Tool — Feito para caçadores brasileiros • <strong>v1.3.2</strong></span>
+            <span class="footer-text">Microsoft Rewards Tool — Feito para caçadores brasileiros • <strong>v1.4.0</strong></span>
             <div class="footer-buttons">
                 <a href="https://rewards.bing.com/about" target="_blank" rel="noopener noreferrer" class="footer-btn">🔗 Sobre Níveis</a>
                 <button onclick="abrirChangelog()" class="footer-btn">Ver Changelog</button>
                 <button onclick="toggleLayoutMode()" class="footer-btn" id="layout-btn">↔️ Modo Horizontal</button>
                 <button onclick="abrirResumoArquivos()" class="footer-btn">📊 Resumo Mensal</button>
-				<button onclick="restoreBackup()" class="footer-btn">💾 Restaurar Backup</button>
+                <button onclick="restoreBackup()" class="footer-btn">💾 Restaurar Backup</button>
             </div>
         </div>
     </div>
@@ -1021,7 +1177,7 @@
             <div id="tooltip-text"></div>
         </div>
     </div>
-	
+    
     <!-- Modal Resumo de Arquivos -->
     <div id="archive-modal" onclick="if(event.target.id==='archive-modal')fecharResumoArquivos()">
         <div id="archive-content">
@@ -1030,14 +1186,14 @@
             <div id="archive-list" style="max-height: 400px; overflow-y: auto; padding-right: 8px;"></div>
         </div>
     </div>
-	
+    
     <!-- Toast -->
     <div id="toast" class="toast"></div>
 
     <script>
         // ==================== CONFIGURAÇÕES INICIAIS ====================
-        const VERSION = "1.3.2";
-        const DATA_VERSION = "1.3.2";
+        const VERSION = "1.4.0";
+        const DATA_VERSION = "1.4.0";
         let isHorizontalMode = localStorage.getItem('horizontalMode') === 'true';
 
         // ==================== HELPER: LOCAL DATE FIX ====================
@@ -1061,6 +1217,22 @@
             return false;
         }
 
+        const ACTIVITY_NAMES = {
+            bing: "Bing",
+            conjunto: "Conjunto Diário",
+            edge: "Edge",
+            app: "App Móvel",
+            visual: "Pesquisa Visual"
+        };
+
+        function getDefaultActivities() {
+            const acts = {};
+            for (let key in ACTIVITY_NAMES) {
+                acts[key] = { day: 1, completedToday: false, lastDate: null };
+            }
+            return acts;
+        }
+
         // ==================== GERENCIAMENTO DE ESTADO ====================
         const AppState = {
             data: {
@@ -1073,7 +1245,8 @@
                 lastStreakDate: null,
                 lastMonth: null,
                 monthlyArchives: {},
-                streakManualOverride: false
+                streakManualOverride: false,
+                activitiesData: null // Inicializado lazy no init()
             },
 
             init() {
@@ -1081,6 +1254,12 @@
                 const savedData = JSON.parse(localStorage.getItem('rewardsData'));
                 if (savedData) {
                     this.data = { ...this.data, ...savedData };
+                    
+                    // Migração/Inicialização das Atividades
+                    if (!this.data.activitiesData || Object.keys(this.data.activitiesData).length === 0) {
+                        this.data.activitiesData = getDefaultActivities();
+                        this.save();
+                    }
                     return;
                 }
                 // 2. Migração: Se não existir o novo formato, lê o antigo e salva no novo
@@ -1094,6 +1273,7 @@
                 this.data.lastMonth = localStorage.getItem('lastMonth') || null;
                 this.data.monthlyArchives = JSON.parse(localStorage.getItem('monthlyArchives')) || {};
                 this.data.streakManualOverride = localStorage.getItem('streakManualOverride') === 'true';
+                this.data.activitiesData = getDefaultActivities();
                 this.save(); // Salva no novo formato para não precisar migrar de novo
             },
 
@@ -1174,6 +1354,7 @@
                 this.data.lastStreakDate = null;
                 this.data.streakManualOverride = false;
                 this.data.monthlyArchives = {}; 
+                // ATENÇÃO: Não resetamos as activitiesData aqui conforme pedido.
                 this.save();
             },
 
@@ -1307,6 +1488,89 @@
             }
 
             return streak;
+        }
+
+        // ==================== ATIVITIES LOGIC ====================
+        function checkActivityCycles() {
+            const today = getLocalDateString();
+            const acts = AppState.data.activitiesData;
+            let changed = false;
+
+            for (let key in acts) {
+                const act = acts[key];
+                // Se foi completado em um dia anterior ao de hoje
+                if (act.completedToday && act.lastDate !== today) {
+                    if (act.day >= 7) {
+                        act.day = 1; // Reseta o ciclo
+                    } else {
+                        act.day++; // Avança o dia
+                    }
+                    act.completedToday = false; // Reseta a conclusão para o novo dia
+                    changed = true;
+                }
+            }
+            if (changed) AppState.save();
+        }
+
+        function toggleActivity(key) {
+            const act = AppState.data.activitiesData[key];
+            const today = getLocalDateString();
+
+            if (act.completedToday && act.lastDate === today) {
+                // Desmarca se já estava preenchido hoje
+                act.completedToday = false;
+                act.lastDate = null;
+            } else {
+                // Marca como concluído hoje
+                act.completedToday = true;
+                act.lastDate = today;
+            }
+            AppState.save();
+            renderActivities();
+        }
+
+        function editActivityDay(key) {
+            const act = AppState.data.activitiesData[key];
+            const input = prompt(`Definir dia atual para ${ACTIVITY_NAMES[key]} (1 a 7):`, act.day);
+            if (input === null) return;
+            
+            let newDay = parseInt(input);
+            if (isNaN(newDay) || newDay < 1 || newDay > 7) {
+                showToast("Dia inválido. Escolha entre 1 e 7.", 2000);
+                return;
+            }
+            
+            act.day = newDay;
+            act.completedToday = false; // Ao mudar manualmente, reseta o estado de hoje
+            act.lastDate = null;
+            AppState.save();
+            renderActivities();
+            showToast(`${ACTIVITY_NAMES[key]} ajustado para o Dia ${newDay}.`, 1500);
+        }
+
+        function renderActivities() {
+            const container = document.getElementById('activities-list');
+            if (!container) return;
+            container.innerHTML = '';
+            const acts = AppState.data.activitiesData;
+
+            for (let key in acts) {
+                const act = acts[key];
+                const isCompleted = act.completedToday;
+                const item = document.createElement('div');
+                item.className = 'act-item';
+                
+                item.innerHTML = `
+                    <div class="act-info" onclick="editActivityDay('${key}')">
+                        <span class="act-name">${ACTIVITY_NAMES[key]}</span>
+                        <span class="act-day-info">Dia ${act.day}/7 ${isCompleted ? '✓' : '(Pendente)'}</span>
+                    </div>
+                    <button class="act-star ${isCompleted ? 'completed' : 'not-completed'}" onclick="toggleActivity('${key}')" title="Marcar como concluído">
+                        ${isCompleted ? '★' : '☆'}
+                    </button>
+                `;
+                container.appendChild(item);
+            }
         }
 
         // ==================== FUNÇÕES DE VALIDAÇÃO ====================
@@ -1487,6 +1751,7 @@
             document.getElementById('exemplo-pontos').textContent = formatarNumero(AppState.data.exemploPontos);
             document.getElementById('exemplo-reais').textContent = formatarReais(AppState.data.exemploReais);
             renderHistory();
+            renderActivities(); // Atualiza as atividades junto com a interface
         }
 
         function updateStats() {
@@ -1558,7 +1823,7 @@
                 AppState.save();
                 document.getElementById('month-change-modal').style.display = 'none';
             }
-			atualizarInterfaceCompleta();
+            atualizarInterfaceCompleta();
             input.value = '';
             
             if (hitMilestone) {
@@ -1658,6 +1923,7 @@
                 lastMonth: AppState.data.lastMonth,
                 monthlyArchives: AppState.data.monthlyArchives,
                 streakManualOverride: AppState.data.streakManualOverride,
+                activitiesData: AppState.data.activitiesData,
                 version: VERSION,
                 exportedAt: new Date().toISOString()
             };
@@ -1756,9 +2022,6 @@
                                 }
 
                                 // CORREÇÃO DO BUG: Define o lastMonth como o mês mais recente DO ARQUIVO.
-                                // Se você importar um arquivo do mês 06, e estamos no mês 07, 
-                                // ele seta o lastMonth pra 06. Na linha abaixo, o checkNewMonth() 
-                                // vê que 06 != 07 e dispara o popup perfeitamente!
                                 if (mesesOrdenados.length > 0) {
                                     AppState.data.lastMonth = mesesOrdenados[0];
                                 }
@@ -1792,6 +2055,7 @@
                             AppState.data.lastStreakDate = dados.lastStreakDate || null;
                             AppState.data.lastMonth = dados.lastMonth || null;
                             AppState.data.monthlyArchives = dados.monthlyArchives || {};
+                            AppState.data.activitiesData = dados.activitiesData || getDefaultActivities();
                             
                             if (dados.streakManualOverride !== undefined) {
                                 AppState.data.streakManualOverride = dados.streakManualOverride;
@@ -1877,6 +2141,9 @@
                 const backupData = JSON.parse(backup);
                 if (confirm(`Restaurar backup de ${new Date(backupData.timestamp).toLocaleString('pt-BR')}?`)) {
                     AppState.data = backupData.data;
+                    if (!AppState.data.activitiesData) {
+                        AppState.data.activitiesData = getDefaultActivities();
+                    }
                     normalizeHistory(); 
                     atualizarInterfaceCompleta();
                     showToast("Backup restaurado!");
@@ -1916,11 +2183,6 @@
             AppState.data.history = [];
             AppState.data.lastStreakDate = null;
             
-            // Não precisamos mais de regras buras aqui!
-            // Se for Manual: ele ignora o cálculo e mantém o que o usuário quis.
-            // Se for Automático: a função calculateStreak() agora é inteligente o suficiente 
-            // para olhar o arquivo que acabou de ser gerado e manter o número correto.
-            
             const hoje = new Date();
             AppState.data.lastMonth = `${hoje.getFullYear()}-${String(hoje.getMonth() + 1).padStart(2, '0')}`;
             
@@ -1932,12 +2194,11 @@
 
         function archiveMonthlyData() {
             const groupedByMonth = {};
-            const currentStreak = AppState.data.streak; // Puxa a streak atual ANTES de qualquer reset
+            const currentStreak = AppState.data.streak; 
             
-            // Agrupa TODOS os pontos atuais do histórico pelos seus respectivos meses reais
             AppState.data.history.forEach(item => {
                 if (item.fullDate) {
-                    const monthKey = item.fullDate.substring(0, 7); // Extrai "YYYY-MM"
+                    const monthKey = item.fullDate.substring(0, 7); 
                     if (!groupedByMonth[monthKey]) {
                         groupedByMonth[monthKey] = [];
                     }
@@ -1951,7 +2212,6 @@
                 return;
             }
 
-            // Salva cada grupo de mês nos arquivos mensais
             Object.keys(groupedByMonth).sort().forEach(monthKey => {
                 const items = groupedByMonth[monthKey];
                 const totalPts = items.reduce((sum, i) => sum + i.pontos, 0);
@@ -1965,18 +2225,16 @@
                     monthName: monthName,
                     totalPontos: totalPts,
                     history: items,
-                    streak: currentStreak, // AGORA ELE SALVA A STREAK CORRETAMENTE AQUI
+                    streak: currentStreak,
                     metaMensal: AppState.data.metaMensal,
                     archivedAt: new Date().toISOString()
                 };
             });
 
-            // Marca o mês atual como "tratado"
             const hoje = new Date();
             AppState.data.lastMonth = `${hoje.getFullYear()}-${String(hoje.getMonth() + 1).padStart(2, '0')}`;
             AppState.save();
 
-            // GERA O DOWNLOAD USANDO O ARQUIVO COMPLETO
             const blob = new Blob([JSON.stringify(AppState.data.monthlyArchives, null, 2)], { type: 'application/json' });
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
@@ -1990,7 +2248,6 @@
         }
 
         function skipMonthReset() {
-            // Marca o mês atual para que o popup não apareça mais até o próximo mês real
             const hoje = new Date();
             AppState.data.lastMonth = `${hoje.getFullYear()}-${String(hoje.getMonth() + 1).padStart(2, '0')}`;
             AppState.save();
@@ -1999,12 +2256,11 @@
             showToast("Reset mensal ignorado.", 1800);
         }
         
-		// ==================== FUNÇÕES DE RESUMO DE ARQUIVOS ====================
+        // ==================== FUNÇÕES DE RESUMO DE ARQUIVOS ====================
         function abrirResumoArquivos() {
             const list = document.getElementById('archive-list');
             const archives = AppState.data.monthlyArchives;
             
-            // Retira qualquer chave duplicada que possa ter vindo de importações antigas
             const keys = [...new Set(Object.keys(archives))].sort().reverse();
             
             if (keys.length === 0) {
@@ -2027,7 +2283,7 @@
         function fecharResumoArquivos() {
             document.getElementById('archive-modal').style.display = 'none';
         }
-		
+        
         // ==================== FUNÇÕES DE TEMA E LAYOUT ====================
         function toggleTheme() {
             const isLight = document.body.classList.toggle('light');
@@ -2083,7 +2339,6 @@
                 input.value = val;
             });
             
-            // Atalho: Apertar Enter adiciona os pontos direto
             input.addEventListener('keydown', (e) => {
                 if (e.key === 'Enter') {
                     e.preventDefault();
@@ -2091,7 +2346,6 @@
                 }
             });
             
-            // Também permite apertar Enter no campo de data
             document.getElementById('hist-date').addEventListener('keydown', (e) => {
                 if (e.key === 'Enter') {
                     e.preventDefault();
@@ -2099,11 +2353,12 @@
                 }
             });
         }
-		
+        
         // ==================== INICIALIZAÇÃO ====================
         window.onload = () => {
             loadTheme();
             AppState.init(); // <- Carrega os dados consolidados
+            checkActivityCycles(); // <- Verifica e avança/resetou o ciclo de atividades
             document.getElementById('header-title').innerHTML = '<h1>Rewards Tool</h1>';
             normalizeHistory();
             checkNewMonth();
@@ -2113,7 +2368,7 @@
                 if (e.target && e.target.classList.contains('edit-history-btn')) {
                     const index = parseInt(e.target.getAttribute('data-index'));
                     editarItemHistorico(index);
-	                }
+                    }
             });
             
             const todayStr = getLocalDateString();
