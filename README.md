@@ -1,6 +1,6 @@
 # 🎮 Microsoft Rewards Tool
 
-[![Versão](https://img.shields.io/badge/Versão-1.3.1-brightgreen)]()
+[![Versão](https://img.shields.io/badge/Versão-1.4.0-brightgreen)]()
 [![Licença](https://img.shields.io/badge/Licença-GPL--3.0-blue)]()
 [![Status](https://img.shields.io/badge/Status-Ativo-success)]()
 [![Changelog](https://shields.io/badge/Changelog-blue)](https://github.com/Y4SH1R01/MSRewardsTool/releases)
@@ -20,6 +20,10 @@ Uma Single-File Application (SFA) que roda direto no navegador, sem dependência
 - **Barra de Progresso Dinâmica:** A barra muda de cor automaticamente com base no seu avanço (🔴 Vermelha < 30%, 🟡 Amarela 30-70%, 🟢 Verde > 70%) e exibe a porcentagem **exata** (ex: `33.505%`), sem arredondamentos.
 - **Sistema de Níveis (Tiers):** Badge dinâmico (Membro 🥉, Prata 🥈, Gold 🥇) que atualiza com base nos seus pontos mensais, seguindo as regras do MS Rewards Brasil.
 - **Estimativa Avançada:** Projeção de dias para bater a meta (ativa a partir do 7º dia) e **Projeção Final** estimando seu saldo no fim do mês.
+
+### ⭐ Sistema de Tracking de Atividades
+- **Ciclo de 7 dias:** Um sistema de marcar pra facilitar sua lembrança de qual foi a última atividade que deu o famoso "quebra-cabeça" das Séries de 1000 pontos (Já que está mais díficil do que nunca identificar isso no MSRewards atual xd). Assim como na sequência de dias (streak), o usuário pode clicar no texto da atividade para alterar manualmente o dia atual (1 a 7) a qualquer momento.
+  - O sistema utiliza um botão de estrela de clique único. Se não for preenchido, a estrela fica apagada com uma animação de "pulsar" para lembrar o usuário de forma não (muito) invasiva que ainda falta concluir. Ao marcar, ela se transforma em dourada.
 
 ### 🔥 Streak Inteligente
 - **Sistema Híbrido e Contínuo:** No modo **Automático** (padrão), o streak calcula dinamicamente pelo histórico e reseta se pular um dia. No modo **Manual**, você ajusta o valor livremente via botão ✏️.
@@ -102,7 +106,9 @@ Feito com carinho para a comunidade brasileira do Microsoft Rewards. Inspirado o
 * Atualização v1.2.0: Kimi-k2.6 e Mistral 3.5b.
 * Correções e features v1.2.1-1.2.2: GLM-5.1.
 * Correções e features v1.3.0-1.3.1: GLM-5-Turbo.
+* Correções e features v1.3.2: GLM-5.2-Deep Think Max.
+* Correções e features v1.4.0: GLM-5.2-Deep Think Max & Gemini-3.7-flash.
 
 Se você usa e gosta do projeto, considere dar uma ⭐ no repositório!
 
-**Última atualização**: Julho de 2026.
+**Última atualização**: Agosto de 2026.
