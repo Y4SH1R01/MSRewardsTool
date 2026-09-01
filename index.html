@@ -7,18 +7,31 @@
     <title>Rewards Tool</title>
     <style>
         :root {
-            --bg:#0a0a0a;
-            --card:#1c1c1c;
-            --text:#fff;
-            --accent:#22c55e;
-            --gold:#fde047;
-            --gold-light:#d97706;
+            --bg: #0a0a0a;
+            --card: #1c1c1c;
+            --card-subtle: #252525;
+            --header-bg: #111111;
+            --border: #333333;
+            --input-bg: #000000;
+            --text: #ffffff;
+            --text-subtle: #aaaaaa;
+            --text-muted: #888888;
+            --accent: #22c55e;
+            --gold: #fde047;
+            --gold-light: #d97706;
+            color-scheme: dark;
         }
-                body.light {
-            --bg:#f8f9fa;
-            --card:#ffffff;
-            --text:#1f1f1f;
-            --accent:#16a34a;
+        body.light {
+            --bg: #f8f9fa;
+            --card: #ffffff;
+            --card-subtle: #f1f3f5;
+            --header-bg: #f1f3f5;
+            --border: #dddddd;
+            --input-bg: #f1f3f5;
+            --text: #1f1f1f;
+            --text-subtle: #555555;
+            --text-muted: #666666;
+            --accent: #16a34a;
             --gold: var(--gold-light);
             color-scheme: light;
         }
@@ -170,7 +183,28 @@
         }
         .act-day-info {
             font-size: 10px;
-            color: #888;
+            color: var(--text-muted);
+        }
+		.act-track {
+            display: inline-flex;
+            gap: 3px;
+            align-items: center;
+            margin-top: 3px;
+        }
+        .act-pill {
+            width: 7px;
+            height: 3.5px;
+            border-radius: 999px;
+            background: var(--border);
+            transition: all 0.2s ease;
+        }
+        .act-pill.active {
+            background: var(--gold);
+            box-shadow: 0 0 5px rgba(253, 224, 71, 0.5);
+        }
+        .act-pill.done {
+            background: var(--accent);
+            box-shadow: 0 0 5px rgba(34, 197, 94, 0.5);
         }
 /* ESTRELAS DE ATIVIDADES (QUIRK VISUAL REFORÇADO) */
         .act-star {
@@ -267,14 +301,17 @@
         }
         .streak {
             margin: 0;
-            background: #111;
             text-align: center;
             padding: 24px 20px;
-            border-radius: 16px;
-            position: relative;
+            background: linear-gradient(180deg, rgba(249, 115, 22, 0.08) 0%, var(--header-bg) 100%);
+            border: 1px solid rgba(249, 115, 22, 0.25);
+            box-shadow: 0 4px 20px rgba(249, 115, 22, 0.06);
+            transition: all 0.3s ease;
         }
         body.light .streak {
-            background: #f8f9fa;
+            background: linear-gradient(180deg, #fff7ed 0%, var(--card) 100%);
+            border: 1px solid #fdba74;
+            box-shadow: 0 4px 15px rgba(234, 88, 12, 0.07);
         }
         .tooltip-icon {
             position: absolute;
@@ -767,41 +804,64 @@
             transition:all 0.4s ease;
             pointer-events:none;
         }
-        #tooltip-modal {
-            display:none;
-            position:fixed;
-            top:0;
-            left:0;
-            width:100%;
-            height:100%;
-            background:rgba(0,0,0,0.85);
-            z-index:2000;
-            align-items:center;
-            justify-content:center;
+        #tooltip-modal, #month-change-modal, #archive-modal, #dialog-modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.85);
+            z-index: 4000;
+            align-items: center;
+            justify-content: center;
         }
-        #tooltip-content {
-            background:var(--card);
-            max-width:420px;
-            width:90%;
-            border-radius:20px;
-            padding:24px;
-            color:var(--text);
-            box-shadow:0 20px 60px rgba(0,0,0,0.7);
+        #tooltip-content, #month-change-content, #archive-content, #dialog-content {
+            background: var(--card);
+            border-radius: 20px;
+            padding: 24px;
+            max-width: 420px;
+            width: 90%;
+            color: var(--text);
+            box-shadow: 0 20px 60px rgba(0,0,0,0.7);
+            position: relative;
         }
-        #tooltip-title {
-            font-size:20px;
-            font-weight:700;
-            margin-bottom:12px;
-            display:flex;
-            align-items:center;
-            gap:10px;
+        /* Mantém o título dos tooltips e modais grandes e destacados */
+        #tooltip-title, #dialog-title, #archive-title {
+            font-size: 20px !important;
+            font-weight: 700 !important;
+            margin-top: 0;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--text);
         }
         #tooltip-text {
-            line-height:1.6;
-            font-size:15.5px;
+            line-height: 1.6;
+            font-size: 15.5px;
         }
-        body.light #tooltip-text {
-            color:#555;
+        /* Estilos dos botões do novo modal */
+        .dialog-buttons { display: flex; gap: 10px; margin-top: 20px; }
+        .dialog-btn {
+            flex: 1;
+            padding: 12px;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            border: none;
+            font-size: 15px;
+        }
+        .dialog-btn.cancel { background: var(--card-subtle); color: var(--text); border: 1px solid var(--border); }
+        .dialog-btn.confirm { background: var(--accent); color: #000; }
+        .dialog-input {
+            width: 100%;
+            box-sizing: border-box;
+            padding: 12px 14px;
+            border-radius: 10px;
+            border: 1px solid var(--border);
+            background: var(--card-subtle);
+            color: var(--text);
+            font-size: 16px;
+            margin-top: 12px;
+            outline: none;
         }
         .modal-close {
             background:none;
@@ -826,10 +886,51 @@
             box-shadow: none !important;
         }
         .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
+            display: grid !important;
+            grid-template-columns: repeat(3, 1fr) !important;
             gap: 10px;
-            margin-top: 12px;
+        }
+		.mini-chart {
+            width: 100%;
+            height: 52px;
+            margin: 8px 0 14px 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .mini-chart svg {
+            width: 100%;
+            height: 100%;
+            overflow: visible;
+        }
+        .chart-guide {
+            stroke: var(--border);
+            stroke-width: 1;
+            stroke-dasharray: 4, 4;
+            opacity: 0.5;
+        }
+        .chart-area {
+            fill: url(#chartGradient);
+            opacity: 0.25;
+        }
+        .chart-line {
+            fill: none;
+            stroke: var(--accent);
+            stroke-width: 2.5;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+            filter: drop-shadow(0 2px 5px rgba(34, 197, 94, 0.4));
+        }
+        .chart-dot {
+            fill: var(--card);
+            stroke: var(--accent);
+            stroke-width: 2.2;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .chart-dot:hover {
+            r: 5.5;
+            fill: var(--accent);
         }
         .stat-box {
             background: rgba(255, 255, 255, 0.08);
@@ -1088,7 +1189,7 @@
                     <span>Pontos → Reais</span>
                 </div>
                 <div class="input-container">
-                    <input type="text" id="pontos" value="0" placeholder="0">
+                    <input type="text" id="pontos" placeholder="0">
                     <span class="label">pontos</span>
                 </div>
                 <div class="result">
@@ -1127,6 +1228,7 @@
             <!-- ESTATÍSTICAS -->
             <div class="section stats">
                 <h3>📊 Estatísticas</h3>
+                <div id="mini-chart" class="mini-chart"></div>
                 <div class="stats-grid">
                     <div class="stat-box">
                         <small>Melhor dia</small>
@@ -1142,7 +1244,6 @@
                     </div>
                 </div>
             </div>
-        </div>
 
         <div class="footer">
             <span class="footer-text">Microsoft Rewards Tool — Feito para caçadores brasileiros • <strong>v1.4.0</strong></span>
@@ -1172,7 +1273,6 @@
     <!-- Modal de Tooltip -->
     <div id="tooltip-modal" onclick="if(event.target.id==='tooltip-modal')fecharTooltip()">
         <div id="tooltip-content" onclick="event.stopImmediatePropagation()" tabindex="-1">
-            <button onclick="fecharTooltip()" class="modal-close">×</button>
             <div id="tooltip-title"></div>
             <div id="tooltip-text"></div>
         </div>
@@ -1181,12 +1281,25 @@
     <!-- Modal Resumo de Arquivos -->
     <div id="archive-modal" onclick="if(event.target.id==='archive-modal')fecharResumoArquivos()">
         <div id="archive-content">
-            <button onclick="fecharResumoArquivos()" class="modal-close">×</button>
             <h3 id="archive-title" style="margin-top:0; display:flex; align-items:center; gap:8px;">📊 Histórico de Meses</h3>
             <div id="archive-list" style="max-height: 400px; overflow-y: auto; padding-right: 8px;"></div>
         </div>
     </div>
     
+	<!-- Modal Customizado para Prompt e Confirm -->
+    <div id="dialog-modal" onclick="if(event.target.id==='dialog-modal') Dialog.dismiss()">
+        <div id="dialog-content">
+            <h3 id="dialog-title"></h3>
+            <p id="dialog-message" style="margin:0; line-height:1.5; color:var(--text-subtle); font-size:15px;"></p>
+            <div id="dialog-input-wrap" style="display:none;">
+                <input type="text" id="dialog-input" class="dialog-input">
+            </div>
+            <div class="dialog-buttons" style="margin-top: 20px;">
+                <button id="dialog-confirm-btn" class="dialog-btn confirm" style="width:100%;">Confirmar</button>
+            </div>
+        </div>
+    </div>
+	
     <!-- Toast -->
     <div id="toast" class="toast"></div>
 
@@ -1292,13 +1405,19 @@
                 localStorage.setItem('rewardsBackup', JSON.stringify(backup));
             },
 
+            recalculateMonthlyTotal() {
+                const currentMonth = getLocalDateString().substring(0, 7);
+                this.data.totalMensal = this.data.history
+                    .filter(item => item.fullDate && item.fullDate.startsWith(currentMonth))
+                    .reduce((sum, item) => sum + item.pontos, 0);
+            },
+
             addToHistory(pontos, fullDate) {
                 const dateObj = new Date(fullDate + 'T00:00:00'); 
                 const displayDate = dateObj.toLocaleDateString('pt-BR', { day: 'numeric', month: 'short' }).replace('.', '');
 
                 const existingIndex = this.data.history.findIndex(h => h.fullDate === fullDate);
                 if (existingIndex !== -1) {
-                    this.data.totalMensal -= this.data.history[existingIndex].pontos;
                     this.data.history.splice(existingIndex, 1);
                 }
 
@@ -1310,7 +1429,7 @@
                 });
 
                 this.data.history.sort((a, b) => b.fullDate.localeCompare(a.fullDate));
-                this.data.totalMensal += pontos;
+                this.recalculateMonthlyTotal();
 
                 const todayStr = getLocalDateString();
                 const oldStreak = this.data.streak;
@@ -1330,8 +1449,8 @@
             },
 
             removeFromHistory(index) {
-                this.data.totalMensal -= this.data.history[index].pontos;
                 this.data.history.splice(index, 1);
+                this.recalculateMonthlyTotal();
                 
                 if (!this.data.streakManualOverride) {
                     this.data.streak = calculateStreak();
@@ -1341,9 +1460,8 @@
             },
 
             editHistoryItem(index, newPontos) {
-                const oldPontos = this.data.history[index].pontos;
-                this.data.totalMensal += (newPontos - oldPontos);
                 this.data.history[index].pontos = newPontos;
+                this.recalculateMonthlyTotal();
                 this.save();
             },
 
@@ -1529,9 +1647,9 @@
             renderActivities();
         }
 
-        function editActivityDay(key) {
+        async function editActivityDay(key) {
             const act = AppState.data.activitiesData[key];
-            const input = prompt(`Definir dia atual para ${ACTIVITY_NAMES[key]} (1 a 7):`, act.day);
+            const input = await Dialog.prompt(`Definir dia atual para ${ACTIVITY_NAMES[key]} (1 a 7):`, act.day, "Ajustar Dia");
             if (input === null) return;
             
             let newDay = parseInt(input);
@@ -1541,7 +1659,7 @@
             }
             
             act.day = newDay;
-            act.completedToday = false; // Ao mudar manualmente, reseta o estado de hoje
+            act.completedToday = false;
             act.lastDate = null;
             AppState.save();
             renderActivities();
@@ -1560,10 +1678,17 @@
                 const item = document.createElement('div');
                 item.className = 'act-item';
                 
+                let pillsHtml = '<div class="act-track">';
+                for (let i = 1; i <= 7; i++) {
+                    const statusClass = i <= act.day ? (isCompleted ? 'done' : 'active') : '';
+                    pillsHtml += `<span class="act-pill ${statusClass}"></span>`;
+                }
+                pillsHtml += `</div>`;
+
                 item.innerHTML = `
                     <div class="act-info" onclick="editActivityDay('${key}')">
-                        <span class="act-name">${ACTIVITY_NAMES[key]}</span>
-                        <span class="act-day-info">Dia ${act.day}/7 ${isCompleted ? '✓' : '(Pendente)'}</span>
+                        <span class="act-name">${ACTIVITY_NAMES[key]} <small style="color:var(--text-muted); font-size:11px; font-weight:normal;">(${act.day}/7)</small></span>
+                        ${pillsHtml}
                     </div>
                     <button class="act-star ${isCompleted ? 'completed' : 'not-completed'}" onclick="toggleActivity('${key}')" title="Marcar como concluído">
                         ${isCompleted ? '★' : '☆'}
@@ -1573,6 +1698,78 @@
             }
         }
 
+        // ==================== DIALOG ENGINE (MODAIS MODERNOS) ====================
+        let dialogCloseHandler = null;
+
+        const Dialog = {
+            dismiss() {
+                if (dialogCloseHandler) dialogCloseHandler(null);
+            },
+
+            confirm(message, title = "Confirmação") {
+                return new Promise(resolve => {
+                    const modal = document.getElementById('dialog-modal');
+                    document.getElementById('dialog-title').innerHTML = `<span style="font-size:22px;">❓</span> ${title}`;
+                    document.getElementById('dialog-message').innerHTML = message.replace(/\n/g, '<br>');
+                    document.getElementById('dialog-input-wrap').style.display = 'none';
+                    
+                    const btnConfirm = document.getElementById('dialog-confirm-btn');
+                    btnConfirm.textContent = "Confirmar";
+
+                    modal.style.display = 'flex';
+
+                    const close = (val) => {
+                        modal.style.display = 'none';
+                        btnConfirm.onclick = null;
+                        document.removeEventListener('keydown', keyHandler);
+                        dialogCloseHandler = null;
+                        resolve(Boolean(val));
+                    };
+
+                    const keyHandler = (e) => {
+                        if (e.key === 'Escape') close(false);
+                        if (e.key === 'Enter') close(true);
+                    };
+
+                    dialogCloseHandler = () => close(false);
+                    btnConfirm.onclick = () => close(true);
+                    document.addEventListener('keydown', keyHandler);
+                });
+            },
+
+            prompt(message, defaultValue = "", title = "Editar") {
+                return new Promise(resolve => {
+                    const modal = document.getElementById('dialog-modal');
+                    const input = document.getElementById('dialog-input');
+                    document.getElementById('dialog-title').innerHTML = `<span style="font-size:22px;">✏️</span> ${title}`;
+                    document.getElementById('dialog-message').innerHTML = message.replace(/\n/g, '<br>');
+                    document.getElementById('dialog-input-wrap').style.display = 'block';
+                    input.value = defaultValue;
+
+                    const btnConfirm = document.getElementById('dialog-confirm-btn');
+                    btnConfirm.textContent = "Confirmar";
+
+                    modal.style.display = 'flex';
+                    input.focus();
+                    input.select();
+
+                    const close = (val) => {
+                        modal.style.display = 'none';
+                        btnConfirm.onclick = null;
+                        input.onkeydown = null;
+                        dialogCloseHandler = null;
+                        resolve(val);
+                    };
+
+                    dialogCloseHandler = () => close(null);
+                    btnConfirm.onclick = () => close(input.value);
+                    input.onkeydown = (e) => {
+                        if (e.key === 'Enter') { e.preventDefault(); close(input.value); }
+                        if (e.key === 'Escape') { e.preventDefault(); close(null); }
+                    };
+                });
+            }
+        };
         // ==================== FUNÇÕES DE VALIDAÇÃO ====================
         function validatePositiveNumber(input, max = Infinity) {
             const num = parseFloat(String(input).replace(/\D/g, '')) || 0;
@@ -1763,6 +1960,88 @@
             setText('stat-best', `${formatarNumero(stats.best)} pts`);
             setText('stat-worst', `${formatarNumero(stats.worst)} pts`);
             setText('stat-total', `${formatarNumero(stats.total)} pts`);
+
+            const chartContainer = document.getElementById('mini-chart');
+            if (!chartContainer) return;
+            chartContainer.innerHTML = '';
+            
+            // Pega até os últimos 10 registros para traçar a linha do tempo
+            const ultimosDias = AppState.data.history.slice(0, 10).reverse();
+            if (ultimosDias.length === 0) {
+                chartContainer.style.display = 'none';
+                return;
+            }
+            chartContainer.style.display = 'flex';
+
+            const w = 320;
+            const h = 48;
+            const padX = 14;
+            const padY = 8;
+
+            const pontosArr = ultimosDias.map(d => d.pontos);
+            const minPts = Math.min(...pontosArr);
+            const maxPts = Math.max(...pontosArr);
+            const range = (maxPts - minPts) || 1;
+
+            // Calcula as coordenadas (x, y) de cada ponto
+            const coords = ultimosDias.map((d, index) => {
+                const x = ultimosDias.length === 1 
+                    ? w / 2 
+                    : padX + (index / (ultimosDias.length - 1)) * (w - padX * 2);
+                const y = ultimosDias.length === 1 
+                    ? h / 2 
+                    : (h - padY) - ((d.pontos - minPts) / range) * (h - padY * 2);
+                return { x, y, data: d };
+            });
+
+            // Cria o elemento SVG
+            const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+            svg.setAttribute("viewBox", `0 0 ${w} ${h}`);
+
+            // Gradiente suave abaixo da linha
+            svg.innerHTML = `
+                <defs>
+                    <linearGradient id="chartGradient" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0%" stop-color="var(--accent)" stop-opacity="0.6"/>
+                        <stop offset="100%" stop-color="var(--accent)" stop-opacity="0.0"/>
+                    </linearGradient>
+                </defs>
+                <line x1="0" y1="${h / 2}" x2="${w}" y2="${h / 2}" class="chart-guide" />
+            `;
+
+            if (coords.length > 1) {
+                const linePath = coords.map((c, i) => `${i === 0 ? 'M' : 'L'} ${c.x} ${c.y}`).join(' ');
+                const areaPath = `${linePath} L ${coords[coords.length - 1].x} ${h} L ${coords[0].x} ${h} Z`;
+
+                // Área sombreada
+                const areaEl = document.createElementNS("http://www.w3.org/2000/svg", "path");
+                areaEl.setAttribute("d", areaPath);
+                areaEl.setAttribute("class", "chart-area");
+                svg.appendChild(areaEl);
+
+                // Linha conectando os pontos
+                const pathEl = document.createElementNS("http://www.w3.org/2000/svg", "path");
+                pathEl.setAttribute("d", linePath);
+                pathEl.setAttribute("class", "chart-line");
+                svg.appendChild(pathEl);
+            }
+
+            // Desenha os pontos circulares
+            coords.forEach(c => {
+                const circle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+                circle.setAttribute("cx", c.x);
+                circle.setAttribute("cy", c.y);
+                circle.setAttribute("r", "3.8");
+                circle.setAttribute("class", "chart-dot");
+
+                const title = document.createElementNS("http://www.w3.org/2000/svg", "title");
+                title.textContent = `${c.data.displayDate}: +${formatarNumero(c.data.pontos)} pts`;
+                circle.appendChild(title);
+
+                svg.appendChild(circle);
+            });
+
+            chartContainer.appendChild(svg);
         }
 
         function renderHistory() {
@@ -1774,7 +2053,7 @@
                 div.className = 'history-item';
                 div.style.animationDelay = `${index * 40}ms`;
                 div.innerHTML = `
-                    <span class="history-date">${item.displayDate || 'Data desconhecida'}</span>
+                    <span class="history-date">${escapeHtml(item.displayDate || 'Data desconhecida')}</span>
                     <span class="history-points">
                         <span class="arrow">➜</span>
                         <span class="pts-value">+${formatarNumero(item.pontos)} pts</span>
@@ -1833,19 +2112,21 @@
             }
         }
 
-        function editarItemHistorico(index) {
+        async function editarItemHistorico(index) {
             const item = AppState.data.history[index];
-            const opcao = prompt(`Item: ${item.displayDate} (+${formatarNumero(item.pontos)} pts)\n\n1 = Editar pontos\n2 = Excluir item\n\nDigite 1 ou 2:`, "1");
+            const opcao = await Dialog.prompt(`Item: ${item.displayDate} (+${formatarNumero(item.pontos)} pts)\n\n1 = Editar pontos\n2 = Excluir item\n\nDigite 1 ou 2:`, "1", "Gerenciar Item");
             if (opcao === null) return;
+            
             if (opcao === "1") {
-                let novo = prompt("Novo valor de pontos:", item.pontos);
+                let novo = await Dialog.prompt("Novo valor de pontos:", item.pontos, "Editar Pontos");
                 if (novo === null) return;
                 const validado = validatePositiveNumber(novo, 5000);
                 if (validado <= 0) return;
                 AppState.editHistoryItem(index, validado);
                 showToast(`Item atualizado para ${formatarNumero(validado)} pts`, 1800);
             } else if (opcao === "2") {
-                if (confirm(`Excluir este item do histórico?\n\nData: ${item.displayDate}\nPontos: +${formatarNumero(item.pontos)}`)) {
+                const confirmado = await Dialog.confirm(`Excluir este item do histórico?\n\nData: ${item.displayDate}\nPontos: +${formatarNumero(item.pontos)}`, "Excluir Registro");
+                if (confirmado) {
                     AppState.removeFromHistory(index);
                     showToast("Item removido do histórico.", 1800);
                 }
@@ -1853,27 +2134,26 @@
             atualizarInterfaceCompleta();
         }
 
-        function clearHistory() {
-            if (!confirm("⚠️ Tem certeza que deseja limpar TODO o histórico?\n\nIsso também:\n- Zerará o total mensal\n- Resetará o progresso da meta\n- Resetará a sequência de dias")) {
-                return;
-            }
+        async function clearHistory() {
+            const ok = await Dialog.confirm("⚠️ Tem certeza que deseja limpar TODO o histórico?\n\nIsso também:\n- Zerará o total mensal\n- Resetará o progresso da meta\n- Resetará a sequência de dias", "Limpar Histórico");
+            if (!ok) return;
             AppState.clearHistory();
             atualizarInterfaceCompleta();
             showToast("Histórico limpo.");
         }
 
         // ==================== FUNÇÕES DE META E STREAK ====================
-        function editMeta() {
-            let novo = prompt("Nova meta mensal (pontos):", AppState.data.metaMensal);
+        async function editMeta() {
+            let novo = await Dialog.prompt("Nova meta mensal (pontos):", AppState.data.metaMensal, "Editar Meta");
             if (novo === null || novo === "") return;
             AppState.setMeta(novo);
             atualizarInterfaceCompleta();
             showToast(`Meta atualizada para ${formatarNumero(AppState.data.metaMensal)} pts`, 1800);
         }
 
-        function editStreak() {
+        async function editStreak() {
             const currentMode = AppState.data.streakManualOverride ? "Manual" : "Automático";
-            let novo = prompt(`Sequência atual: ${AppState.data.streak} dias (Modo: ${currentMode})\n\nDigite o novo valor para definir manualmente, ou digite "auto" para restaurar o cálculo automático:`, AppState.data.streak);
+            let novo = await Dialog.prompt(`Sequência atual: ${AppState.data.streak} dias (Modo: ${currentMode})\n\nDigite o novo valor para definir manualmente, ou digite "auto" para restaurar o cálculo automático:`, AppState.data.streak, "Editar Sequência");
             if (novo === null) return;
             
             novo = novo.trim().toLowerCase();
@@ -1887,7 +2167,8 @@
             } else {
                 const newStreak = validatePositiveNumber(novo, 1000);
                 if (newStreak < AppState.data.streak) {
-                    if (!confirm(`Reduzir a sequência de ${AppState.data.streak} para ${newStreak} dias?`)) return;
+                    const confirmReduzir = await Dialog.confirm(`Reduzir a sequência de ${AppState.data.streak} para ${newStreak} dias?`, "Reduzir Sequência");
+                    if (!confirmReduzir) return;
                 }
                 AppState.setStreak(newStreak, true);
                 atualizarInterfaceCompleta();
@@ -1900,10 +2181,10 @@
             }
         }
 
-        function editarExemplo() {
-            let p = prompt("Quantidade de pontos no exemplo:", AppState.data.exemploPontos);
+        async function editarExemplo() {
+            let p = await Dialog.prompt("Quantidade de pontos no exemplo:", AppState.data.exemploPontos, "Pontos do Exemplo");
             if (p === null) return;
-            let r = prompt("Valor em reais:", AppState.data.exemploReais);
+            let r = await Dialog.prompt("Valor em reais (R$):", AppState.data.exemploReais, "Reais do Exemplo");
             if (r === null) return;
             AppState.setExample(p, r);
             atualizarInterfaceCompleta();
@@ -1992,20 +2273,18 @@
                 const file = e.target.files[0];
                 if (!file) return;
                 const reader = new FileReader();
-                reader.onload = ev => {
+                reader.onload = async ev => {
                     try {
                         const dados = JSON.parse(ev.target.result);
                         if (!dados || typeof dados !== 'object') throw new Error("Arquivo inválido.");
 
-                        // VERIFICAÇÃO: É um arquivo de Arquivos Mensais puro?
                         const chaves = Object.keys(dados);
                         const isArquivoMensal = chaves.length > 0 && chaves.some(key => /^\d{4}-\d{2}$/.test(key));
 
                         if (isArquivoMensal) {
-                            if (confirm(`Arquivo de Meses Arquivados detectado!\nDeseja mesclar ${chaves.length} mês(es) no seu Resumo Mensal?\n\n(Sua sequência de dias será atualizada para a mais recente encontrada no arquivo)`)) {
+                            const ok = await Dialog.confirm(`Arquivo de Meses Arquivados detectado!\nDeseja mesclar ${chaves.length} mês(es) no seu Resumo Mensal?\n\n(Sua sequência de dias será atualizada para a mais recente encontrada no arquivo)`, "Importar Meses");
+                            if (ok) {
                                 Object.assign(AppState.data.monthlyArchives, dados);
-                                
-                                // Procura a streak no arquivo
                                 const mesesOrdenados = Object.keys(dados).sort().reverse();
                                 let streakEncontrada = 0;
                                 for (let i = 0; i < mesesOrdenados.length; i++) {
@@ -2021,31 +2300,25 @@
                                     AppState.data.streakManualOverride = true; 
                                 }
 
-                                // CORREÇÃO DO BUG: Define o lastMonth como o mês mais recente DO ARQUIVO.
                                 if (mesesOrdenados.length > 0) {
                                     AppState.data.lastMonth = mesesOrdenados[0];
                                 }
                                 
                                 AppState.save();
                                 atualizarInterfaceCompleta();
-                                checkNewMonth(); // Força a verificação imediata após importar
+                                checkNewMonth();
                                 showToast(`✅ ${chaves.length} mês(es) importado(s) e streak atualizada!`);
                             }
                             return; 
                         }
 
-                        // VALIDAÇÃO NORMAL DE BACKUP COMPLETO
                         if (!Array.isArray(dados.history)) throw new Error("Histórico inválido.");
                         if (typeof dados.metaMensal !== 'number' || dados.metaMensal < 0) throw new Error("Meta mensal inválida.");
                         if (typeof dados.totalMensal !== 'number' || dados.totalMensal < 0) throw new Error("Total mensal inválido.");
                         if (typeof dados.streak !== 'number' || dados.streak < 0) throw new Error("Streak inválida.");
-                        for (const item of dados.history) {
-                            if (!item || typeof item.pontos !== 'number' || item.pontos <= 0) {
-                                throw new Error("Item do histórico inválido.");
-                            }
-                        }
                         
-                        if (confirm(`Importar dados:\n- Meta: ${formatarNumero(dados.metaMensal || 0)} pts\n- Total: ${formatarNumero(dados.totalMensal || 0)} pts\n- Streak: ${dados.streak || 0} dias\n- Histórico: ${dados.history?.length || 0} entradas`)) {
+                        const ok = await Dialog.confirm(`Importar dados:\n- Meta: ${formatarNumero(dados.metaMensal || 0)} pts\n- Total: ${formatarNumero(dados.totalMensal || 0)} pts\n- Streak: ${dados.streak || 0} dias\n- Histórico: ${dados.history?.length || 0} entradas`, "Confirmar Importação");
+                        if (ok) {
                             AppState.data.metaMensal = dados.metaMensal || 0;
                             AppState.data.totalMensal = dados.totalMensal || 0;
                             AppState.data.streak = dados.streak || 0;
@@ -2066,11 +2339,11 @@
                             normalizeHistory();
                             AppState.save();
                             atualizarInterfaceCompleta();
-                            checkNewMonth(); // Também força a verificação ao importar backup completo
+                            checkNewMonth();
                             showToast('✅ Dados importados com sucesso!');
                         }
                     } catch (err) {
-                        alert(`❌ Erro ao importar: ${err.message}`);
+                        showToast(`❌ Erro ao importar: ${err.message}`, 3000);
                     }
                 };
                 reader.readAsText(file);
@@ -2078,8 +2351,9 @@
             input.click();
         }
 
-        function importarCSV() {
-            if (!confirm("⚠️ Importar dados de CSV? Isso substituirá o histórico atual.")) return;
+        async function importarCSV() {
+            const ok = await Dialog.confirm("⚠️ Importar dados de CSV? Isso substituirá o histórico atual.", "Substituir Histórico");
+            if (!ok) return;
             const input = document.createElement('input');
             input.type = 'file';
             input.accept = '.csv';
@@ -2087,7 +2361,7 @@
                 const file = e.target.files[0];
                 if (!file) return;
                 const reader = new FileReader();
-                reader.onload = ev => {
+                reader.onload = async ev => {
                     try {
                         const csv = ev.target.result;
                         const lines = csv.split('\n');
@@ -2114,7 +2388,8 @@
                             }
                         }
                         if (newHistory.length === 0) throw new Error("Nenhum dado válido encontrado no CSV.");
-                        if (confirm(`Importar ${newHistory.length} entradas do CSV?`)) {
+                        const okCsv = await Dialog.confirm(`Importar ${newHistory.length} entradas do CSV?`, "Importar CSV");
+                        if (okCsv) {
                             AppState.data.history = newHistory;
                             AppState.data.totalMensal = newHistory.reduce((sum, item) => sum + item.pontos, 0);
                             normalizeHistory();
@@ -2122,7 +2397,7 @@
                             showToast(`✅ ${newHistory.length} entradas importadas!`);
                         }
                     } catch (err) {
-                        alert(`❌ Erro ao importar CSV: ${err.message}`);
+                        showToast(`❌ Erro ao importar CSV: ${err.message}`, 3000);
                     }
                 };
                 reader.readAsText(file);
@@ -2131,7 +2406,7 @@
         }
 
         // ==================== FUNÇÕES DE BACKUP ====================
-        function restoreBackup() {
+        async function restoreBackup() {
             const backup = localStorage.getItem('rewardsBackup');
             if (!backup) {
                 showToast("Nenhum backup encontrado.", 2000);
@@ -2139,7 +2414,8 @@
             }
             try {
                 const backupData = JSON.parse(backup);
-                if (confirm(`Restaurar backup de ${new Date(backupData.timestamp).toLocaleString('pt-BR')}?`)) {
+                const ok = await Dialog.confirm(`Restaurar backup de ${new Date(backupData.timestamp).toLocaleString('pt-BR')}?`, "Restaurar Backup");
+                if (ok) {
                     AppState.data = backupData.data;
                     if (!AppState.data.activitiesData) {
                         AppState.data.activitiesData = getDefaultActivities();
@@ -2227,6 +2503,7 @@
                     history: items,
                     streak: currentStreak,
                     metaMensal: AppState.data.metaMensal,
+                    activitiesData: AppState.data.activitiesData, // <- Adiciona os dias das atividades ao JSON
                     archivedAt: new Date().toISOString()
                 };
             });
@@ -2270,7 +2547,7 @@
                     const data = archives[key];
                     return `
                         <div class="archive-item">
-                            <span class="archive-month-name">📅 ${data.monthName || key}</span>
+                            <span class="archive-month-name">📅 ${escapeHtml(data.monthName || key)}</span>
                             <span class="archive-points">${formatarNumero(data.totalPontos)} pts</span>
                         </div>
                     `;
@@ -2378,11 +2655,18 @@
             
             atualizarInterfaceCompleta();
             const pontosInput = document.getElementById('pontos');
-            pontosInput.addEventListener('input', debounce(function() {
-                const pontos = parseFloat(this.value.replace(/\D/g, '')) || 0;
+            pontosInput.addEventListener('input', function() {
+                let val = this.value.replace(/\D/g, '');
+                // Se tiver mais de 1 dígito e começar com 0, remove o zero à esquerda
+                if (val.length > 1) {
+                    val = val.replace(/^0+/, '');
+                }
+                this.value = val;
+
+                const pontos = parseFloat(val) || 0;
                 const taxa = AppState.getConversionRate();
                 document.getElementById('resultado').textContent = formatarReais(pontos / taxa);
-            }, 300));
+            });
             if (isStreakMilestone(AppState.data.streak)) {
                 setTimeout(() => triggerStreakMilestone(), 600);
             }
