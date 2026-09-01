@@ -1,6 +1,6 @@
 # 🎮 Microsoft Rewards Tool
 
-[![Versão](https://img.shields.io/badge/Versão-1.4.0-brightgreen)]()
+[![Versão](https://img.shields.io/badge/Versão-1.5.0-brightgreen)]()
 [![Licença](https://img.shields.io/badge/Licença-GPL--3.0-blue)]()
 [![Status](https://img.shields.io/badge/Status-Ativo-success)]()
 [![Changelog](https://shields.io/badge/Changelog-blue)](https://github.com/Y4SH1R01/MSRewardsTool/releases)
@@ -9,7 +9,7 @@
 
 Uma Single-File Application (SFA) que roda direto no navegador, sem dependências, para acompanhar seus pontos diários, streak, meta mensal e conversão em reais.
 
-<img width="891" height="821" alt="image" src="https://github.com/user-attachments/assets/7ef6b865-ba1d-4f8f-aae2-92bd900d228e" />
+<img width="700" height="900" alt="image" src="https://github.com/user-attachments/assets/7d84c620-715d-49ff-95a6-29a186108d72" />
 
 ---
 
@@ -80,11 +80,8 @@ Você não precisa instalar nada! Basta:
 
 ## 📌 To-Do, Bugs, etc.
 
-- [ ] Pensar em novas melhorias e features para a comunidade.
-- [ ] ???
-### [(Bugs Corrigidos/Features da última versão:)](https://github.com/Y4SH1R01/MSRewardsTool/releases/tag/1.3.1)
-- [x] Resolver problemas de Layout na versão Mobile vertical.
-- [x] Resolver bug ao usar a função "Arquivar e resetar" que reseta a sequência de dias sem ter motivos. *Checar a outra função de arquivamento pra caso tenha o mesmo erro xd*
+- Corrigir espaçamento na área de cima do modal de estatísticas.
+- Pensar em novas melhorias e features para a comunidade.
 
 ---
 
