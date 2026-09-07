@@ -32,7 +32,8 @@
             --text-subtle: #555555;
             --text-muted: #666666;
             --accent: #16a34a;
-            --gold: var(--gold-light);
+            --gold: #92400e;
+			--pill-active: #fde047;
             color-scheme: light;
         }
         body {
@@ -116,8 +117,11 @@
             border-bottom:none;
         }
         .example .pts {
-            color:#ffd700;
-            font-weight:600;
+            color: #ffd700;
+            font-weight: 600;
+        }
+        body.light .example .pts {
+            color: var(--gold); /* Passa a usar o dourado legível no modo claro */
         }
         
         /* CONTAINER VERTICAL PARA TAXA E ATIVIDADES */
@@ -202,6 +206,9 @@
             background: var(--gold);
             box-shadow: 0 0 5px rgba(253, 224, 71, 0.5);
         }
+		body.light .act-pill.active {
+            box-shadow: 0 0 4px rgba(217, 119, 6, 0.35); /* Brilho suave ajustado pro modo claro */
+        }
         .act-pill.done {
             background: var(--accent);
             box-shadow: 0 0 5px rgba(34, 197, 94, 0.5);
@@ -285,6 +292,8 @@
             display: flex;
             flex-direction: column;
             gap: 12px;
+            padding: 0 12px; /* 👈 Alinha os cards com o restante da página */
+            box-sizing: border-box;
         }
         .section, .estimate, .stats {
             margin: 0;
@@ -332,26 +341,28 @@
         .tooltip-icon:hover {
             opacity: 1;
         }
-        @media (min-width: 481px) and (orientation: landscape) {
-            .app {
-                max-width: 960px;
-                border-radius: 20px;
-                padding: 10px 0;
-            }
-            .main {
-                flex-direction: row;
-                flex-wrap: wrap;
-                gap: 18px;
-                padding: 0 12px;
-            }
-            .section, .estimate, .streak, .stats {
-                flex: 1;
-                min-width: 380px;
-                margin: 0;
-            }
-            .streak {
-                flex: 1 1 380px;
-            }
+        /* Modo Horizontal acionado apenas pela classe .horizontal */
+        .app.horizontal {
+            max-width: 860px;
+            border-radius: 20px;
+            padding: 10px 0;
+        }
+        .app.horizontal .main {
+            flex-direction: row;
+            flex-wrap: wrap;
+            gap: 18px;
+            padding: 0 12px;
+        }
+        .app.horizontal .section,
+        .app.horizontal .estimate,
+        .app.horizontal .streak,
+        .app.horizontal .stats {
+            flex: 1;
+            min-width: 380px;
+            margin: 0;
+        }
+        .app.horizontal .streak {
+            flex: 1 1 380px;
         }
         @media (max-width: 360px) {
             .streak-number {
@@ -461,6 +472,18 @@
             font-weight:600;
             flex:1;
         }
+		.total-acumulado-wrap {
+            text-align: center;
+            margin: 12px 0 8px;
+            font-size: 15px;
+            color: #4ade80;
+        }
+        body.light .total-acumulado-wrap {
+            color:#000000;
+        }
+		body.light .history-points {
+            color: #15803d;
+        }
         .history-points .pts-value {
             font-size:16.5px;
         }
@@ -499,6 +522,9 @@
         .estimate strong {
             color:#4ade80;
             font-size:23px;
+        }
+		body.light .estimate strong {
+            color: #15803d;
         }
         .estimate-grid {
             display:flex;
@@ -541,6 +567,9 @@
             line-height:1;
             transition:transform 0.4s ease;
         }
+		body.light .streak-number {
+            color: #16a34a; /* Verde escuro nítido no modo claro */
+        }
         .streak-edit {
             background:#22c55e;
             color:#000;
@@ -558,6 +587,10 @@
             animation: streakBurst 1.8s cubic-bezier(0.68, -0.55, 0.27, 1.55) forwards;
             color: #fde047;
             text-shadow: 0 0 15px #fde047, 0 0 30px #fde047, 0 0 45px #fde047;
+        }
+		body.light .streak-milestone .streak-number {
+            color: var(--gold);
+            text-shadow: 0 0 15px rgba(146, 64, 14, 0.4);
         }
         @keyframes streakBurst {
             0% { transform:scale(0.75) rotate(-12deg); }
@@ -581,6 +614,13 @@
         .manual-mode {
             color: #fde047;
         }
+        body.light .manual-mode {
+            color: var(--gold); /* Substitui o amarelo ilegível pelo tom legível */
+        }
+        .auto-mode {
+            color: #888;
+        }
+        body.light .auto-mode { color: #666; }
         .auto-mode {
             color: #888;
         }
@@ -682,6 +722,9 @@
             color:var(--gold);
             font-weight:600;
         }
+		body.light .result .value {
+		    color:#000000;
+			}
         .meta-title {
             display:flex;
             justify-content:space-between;
@@ -697,6 +740,9 @@
         .meta-value {
             font-weight:600;
             color:#4ade80;
+        }
+		body.light .meta-value {
+            color: #15803d;
         }
         .edit-btn {
             background:#22c55e;
@@ -735,9 +781,9 @@
         body.light .history {
             background:#f8f9fa;
         }
-        .history h3 {
-            margin:0 0 14px 0;
-            font-size:18px;
+        .history h3, .stats h3 {
+            margin: 0 0 14px 0;
+            font-size: 18px;
         }
         .history-list {
             max-height:240px;
@@ -897,6 +943,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
+			position: relative;
         }
         .mini-chart svg {
             width: 100%;
@@ -954,6 +1001,124 @@
         }
         body.light .stat-box {
             background: rgba(0, 0, 0, 0.08);
+        }
+		/* TOOLTIP FLUTUANTE DO GRÁFICO (MOBILE-FRIENDLY) */
+        .chart-tooltip {
+            position: absolute;
+            top: -14px;
+            transform: translateX(-50%);
+            background: var(--card-subtle);
+            color: var(--text);
+            border: 1px solid var(--border);
+            padding: 4px 10px;
+            border-radius: 8px;
+            font-size: 11.5px;
+            font-weight: 600;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.2s ease, left 0.12s ease;
+            white-space: nowrap;
+            box-shadow: 0 4px 14px rgba(0,0,0,0.5);
+            z-index: 20;
+        }
+        .chart-tooltip.visible {
+            opacity: 1;
+        }
+        body.light .chart-tooltip {
+            background: #ffffff;
+            border-color: #cbd5e1;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        }
+
+        /* COMPARATIVO MÊS A MÊS NO RESUMO */
+        .archive-card {
+            background: rgba(255,255,255,0.04);
+            border: 1px solid #333;
+            border-radius: 14px;
+            margin-bottom: 10px;
+            overflow: hidden;
+            transition: border-color 0.2s ease;
+        }
+        body.light .archive-card {
+            background: rgba(0,0,0,0.02);
+            border-color: #ddd;
+        }
+        .archive-header {
+            padding: 14px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            user-select: none;
+        }
+        .archive-main-info {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+        .archive-header-right {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .archive-arrow {
+            font-size: 11px;
+            color: #888;
+            transition: transform 0.25s ease;
+        }
+        .archive-arrow.open {
+            transform: rotate(180deg);
+        }
+        .diff-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 11px;
+            font-weight: 600;
+            padding: 2px 7px;
+            border-radius: 6px;
+            width: fit-content;
+        }
+        .diff-tag.pos {
+            background: rgba(34, 197, 94, 0.15);
+            color: #4ade80;
+        }
+        body.light .diff-tag.pos {
+            background: rgba(22, 163, 74, 0.12);
+            color: #15803d;
+        }
+        .diff-tag.neg {
+            background: rgba(239, 68, 68, 0.15);
+            color: #f87171;
+        }
+        body.light .diff-tag.neg {
+            background: rgba(220, 38, 38, 0.12);
+            color: #dc2626;
+        }
+        .diff-tag.first {
+            background: rgba(150, 150, 150, 0.15);
+            color: #aaa;
+        }
+        body.light .diff-tag.first {
+            color: #666;
+        }
+        .archive-details {
+            border-top: 1px solid rgba(255,255,255,0.08);
+            padding: 12px 14px;
+            background: rgba(0,0,0,0.2);
+            font-size: 12.5px;
+            max-height: 180px;
+            overflow-y: auto;
+        }
+        body.light .archive-details {
+            border-top: 1px solid #e5e7eb;
+            background: rgba(0,0,0,0.02);
+        }
+        .archive-detail-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 3px 0;
+            color: var(--text-subtle);
         }
         #month-change-modal {
             display: none;
@@ -1205,9 +1370,9 @@
             <div class="section history">
                 <h3>📅 Histórico de Pontos</h3>
                 <div class="history-list" id="history-list"></div>
-                <div style="text-align:center; margin:12px 0 8px; font-size:15px; color:#4ade80;">
-                    Total acumulado: <strong id="total-acumulado">0 pts</strong>
-                </div>
+                <div class="total-acumulado-wrap">
+					Total acumulado: <strong id="total-acumulado">0 pts</strong>
+				</div>
                 <div class="add-history">
                     <input type="date" id="hist-date" max="">
                     <input type="text" id="hist-pontos" placeholder="Pontos (ex: 620)" maxlength="5">
@@ -1247,7 +1412,7 @@
         </div>
 
         <div class="footer">
-            <span class="footer-text">Microsoft Rewards Tool — Feito para caçadores brasileiros • <strong>v1.5.0</strong></span>
+            <span class="footer-text">Microsoft Rewards Tool — Feito para caçadores brasileiros • <strong>v1.6.0</strong></span>
             <div class="footer-buttons">
                 <a href="https://rewards.bing.com/about" target="_blank" rel="noopener noreferrer" class="footer-btn">🔗 Sobre Níveis</a>
                 <button onclick="abrirChangelog()" class="footer-btn">Ver Changelog</button>
@@ -1306,8 +1471,8 @@
 
     <script>
         // ==================== CONFIGURAÇÕES INICIAIS ====================
-        const VERSION = "1.5.0";
-        const DATA_VERSION = "1.5.0";
+        const VERSION = "1.6.0";
+        const DATA_VERSION = "1.6.0";
         let isHorizontalMode = localStorage.getItem('horizontalMode') === 'true';
 
         // ==================== HELPER: LOCAL DATE FIX ====================
@@ -1995,6 +2160,11 @@
                 return { x, y, data: d };
             });
 
+            // Cria o balão flutuante do tooltip
+            const tooltip = document.createElement('div');
+            tooltip.className = 'chart-tooltip';
+            chartContainer.appendChild(tooltip);
+
             // Cria o elemento SVG
             const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
             svg.setAttribute("viewBox", `0 0 ${w} ${h}`);
@@ -2027,21 +2197,51 @@
                 svg.appendChild(pathEl);
             }
 
-            // Desenha os pontos circulares
+            // Desenha os pontos com hitbox maior (16px) para toque no celular
             coords.forEach(c => {
+                const g = document.createElementNS("http://www.w3.org/2000/svg", "g");
+
+                // Hitbox transparente (fácil de acertar com o polegar)
+                const hit = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+                hit.setAttribute("cx", c.x);
+                hit.setAttribute("cy", c.y);
+                hit.setAttribute("r", "16");
+                hit.setAttribute("fill", "transparent");
+                hit.style.cursor = "pointer";
+
+                // Ponto visual verde
                 const circle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
                 circle.setAttribute("cx", c.x);
                 circle.setAttribute("cy", c.y);
                 circle.setAttribute("r", "3.8");
                 circle.setAttribute("class", "chart-dot");
 
-                const title = document.createElementNS("http://www.w3.org/2000/svg", "title");
-                title.textContent = `${c.data.displayDate}: +${formatarNumero(c.data.pontos)} pts`;
-                circle.appendChild(title);
+                // Função que mostra o balão
+                const showTip = () => {
+                    const reais = (c.data.pontos / AppState.getConversionRate()).toFixed(2);
+                    tooltip.innerHTML = `${c.data.displayDate}: <strong style="color:var(--accent);">+${formatarNumero(c.data.pontos)} pts</strong> <span style="opacity:0.8;">(${formatarReais(parseFloat(reais))})</span>`;
+                    
+                    // Trava entre 20% e 80% da largura para o balão não cortar nas bordas da tela
+                    const clampedLeft = Math.max(20, Math.min(80, (c.x / w) * 100));
+                    tooltip.style.left = `${clampedLeft}%`;
+                    tooltip.classList.add('visible');
+                };
 
-                svg.appendChild(circle);
+                const hideTip = () => tooltip.classList.remove('visible');
+
+                hit.addEventListener('mouseenter', showTip);
+                hit.addEventListener('mouseleave', hideTip);
+                hit.addEventListener('touchstart', (e) => {
+                    e.preventDefault();
+                    showTip();
+                });
+
+                g.appendChild(circle);
+                g.appendChild(hit);
+                svg.appendChild(g);
             });
 
+            svg.addEventListener('mouseleave', () => tooltip.classList.remove('visible'));
             chartContainer.appendChild(svg);
         }
 
@@ -2539,23 +2739,91 @@
             const list = document.getElementById('archive-list');
             const archives = AppState.data.monthlyArchives;
             
-            const keys = [...new Set(Object.keys(archives))].sort().reverse();
+            // Ordena cronologicamente para calcular o crescimento mês a mês
+            const chronologicalKeys = Object.keys(archives).sort();
             
-            if (keys.length === 0) {
+            if (chronologicalKeys.length === 0) {
                 list.innerHTML = '<div class="archive-empty">Nenhum mês arquivado ainda.</div>';
             } else {
-                list.innerHTML = keys.map(key => {
+                // Inverte para exibir o mais recente primeiro na tela
+                const displayKeys = [...chronologicalKeys].reverse();
+
+                list.innerHTML = displayKeys.map(key => {
                     const data = archives[key];
+                    const currTotal = data.totalPontos || 0;
+                    
+                    // Acha o mês cronologicamente anterior no histórico arquivado
+                    const currentIndex = chronologicalKeys.indexOf(key);
+                    let diffBadgeHtml = '';
+
+                    if (currentIndex > 0) {
+                        const prevKey = chronologicalKeys[currentIndex - 1];
+                        const prevTotal = archives[prevKey].totalPontos || 0;
+                        const diff = currTotal - prevTotal;
+
+                        if (prevTotal > 0) {
+                            const pct = ((diff / prevTotal) * 100).toFixed(1);
+                            if (diff > 0) {
+                                diffBadgeHtml = `<span class="diff-tag pos">▲ +${formatarNumero(diff)} pts (+${pct}%)</span>`;
+                            } else if (diff < 0) {
+                                diffBadgeHtml = `<span class="diff-tag neg">▼ ${formatarNumero(diff)} pts (${pct}%)</span>`;
+                            } else {
+                                diffBadgeHtml = `<span class="diff-tag first">= 0 pts (0%)</span>`;
+                            }
+                        } else {
+                            diffBadgeHtml = `<span class="diff-tag pos">▲ +${formatarNumero(currTotal)} pts</span>`;
+                        }
+                    } else {
+                        diffBadgeHtml = `<span class="diff-tag first">Primeiro mês registrado</span>`;
+                    }
+
+                    // Gera detalhes dos dias caso existam no arquivo
+                    let historyDetailHtml = '';
+                    if (data.history && data.history.length > 0) {
+                        historyDetailHtml = data.history.map(h => `
+                            <div class="archive-detail-item">
+                                <span>${escapeHtml(h.displayDate || h.fullDate)}</span>
+                                <strong style="color:var(--accent);">+${formatarNumero(h.pontos)} pts</strong>
+                            </div>
+                        `).join('');
+                    } else {
+                        historyDetailHtml = '<div style="color:#888; text-align:center; padding:6px;">Sem histórico diário detalhado.</div>';
+                    }
+
                     return `
-                        <div class="archive-item">
-                            <span class="archive-month-name">📅 ${escapeHtml(data.monthName || key)}</span>
-                            <span class="archive-points">${formatarNumero(data.totalPontos)} pts</span>
+                        <div class="archive-card">
+                            <div class="archive-header" onclick="toggleArchiveDetail('${key}')">
+                                <div class="archive-main-info">
+                                    <span class="archive-month-name">📅 ${escapeHtml(data.monthName || key)}</span>
+                                    ${diffBadgeHtml}
+                                </div>
+                                <div class="archive-header-right">
+                                    <span class="archive-points">${formatarNumero(currTotal)} pts</span>
+                                    <span class="archive-arrow" id="arrow-${key}">▼</span>
+                                </div>
+                            </div>
+                            <div class="archive-details" id="detail-${key}" style="display:none;">
+                                <div style="margin-bottom:8px; font-weight:600; color:var(--text);">
+                                    Histórico diário (${data.history ? data.history.length : 0} dias registrados):
+                                </div>
+                                ${historyDetailHtml}
+                            </div>
                         </div>
                     `;
                 }).join('');
             }
             
             document.getElementById('archive-modal').style.display = 'flex';
+        }
+
+        function toggleArchiveDetail(key) {
+            const detail = document.getElementById(`detail-${key}`);
+            const arrow = document.getElementById(`arrow-${key}`);
+            if (!detail) return;
+
+            const isOpen = detail.style.display === 'block';
+            detail.style.display = isOpen ? 'none' : 'block';
+            if (arrow) arrow.classList.toggle('open', !isOpen);
         }
 
         function fecharResumoArquivos() {
@@ -2586,12 +2854,14 @@
         function applyLayoutMode() {
             const app = document.querySelector('.app');
             const btn = document.getElementById('layout-btn');
+            if (!app) return;
+
             if (isHorizontalMode) {
-                app.style.maxWidth = '860px';
-                btn.textContent = '↕️ Modo Vertical';
+                app.classList.add('horizontal');
+                if (btn) btn.textContent = '↕️ Modo Vertical';
             } else {
-                app.style.maxWidth = '480px';
-                btn.textContent = '↔️ Modo Horizontal';
+                app.classList.remove('horizontal');
+                if (btn) btn.textContent = '↔️ Modo Horizontal';
             }
         }
 
