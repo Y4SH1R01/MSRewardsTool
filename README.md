@@ -1,6 +1,6 @@
 # 🎮 Microsoft Rewards Tool
 
-[![Versão](https://img.shields.io/badge/Versão-1.5.0-brightgreen)]()
+[![Versão](https://img.shields.io/badge/Versão-1.6.0-brightgreen)]()
 [![Licença](https://img.shields.io/badge/Licença-GPL--3.0-blue)]()
 [![Status](https://img.shields.io/badge/Status-Ativo-success)]()
 [![Changelog](https://shields.io/badge/Changelog-blue)](https://github.com/Y4SH1R01/MSRewardsTool/releases)
@@ -80,9 +80,8 @@ Você não precisa instalar nada! Basta:
 
 ## 📌 To-Do, Bugs, etc.
 
-- Corrigir espaçamento na área de cima do modal de estatísticas.
 - Pensar em novas melhorias e features para a comunidade.
-
+- ???
 ---
 
 ## 💡 Observações Importantes
