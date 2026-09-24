@@ -4,6 +4,7 @@
     <link rel="icon" type="image/png" href="rewards.png">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <title>Rewards Tool</title>
     <style>
         :root {
@@ -1464,6 +1465,76 @@
                 text-overflow: ellipsis;
             }
         }
+		/* BOTÃO E MODAL DE SINCRONIZAÇÃO QR CODE */
+        .sync-btn {
+            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+            color: #ffffff;
+            padding: 13px;
+            border: none;
+            border-radius: 10px;
+            font-weight: 700;
+            font-size: 14.5px;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            box-shadow: 0 4px 15px rgba(37, 99, 235, 0.25);
+            transition: transform 0.2s ease, opacity 0.2s ease;
+        }
+        .sync-btn:hover {
+            opacity: 0.95;
+            transform: translateY(-1px);
+        }
+        #sync-modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.85);
+            z-index: 4000;
+            align-items: center;
+            justify-content: center;
+        }
+        #sync-content {
+            background: var(--card);
+            border-radius: 20px;
+            padding: 24px;
+            max-width: 400px;
+            width: 90%;
+            text-align: center;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.7);
+            position: relative;
+            color: var(--text);
+        }
+        .qrcode-wrapper {
+            background: #ffffff;
+            padding: 16px;
+            border-radius: 16px;
+            display: inline-block;
+            margin: 16px 0;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+        }
+        #sync-qrcode img, #sync-qrcode canvas {
+            display: block;
+            margin: 0 auto;
+        }
+        .copy-link-btn {
+            background: var(--card-subtle);
+            color: var(--text);
+            border: 1px solid var(--border);
+            padding: 10px 16px;
+            border-radius: 10px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 8px;
+        }
+        .copy-link-btn:hover {
+            background: var(--border);
+        }
     </style>
     
 </head>
@@ -1605,6 +1676,7 @@
                     <button onclick="importarDados()" class="import-btn">📥 Importar JSON</button>
                     <button onclick="importarCSV()" class="import-btn">📄 Importar CSV</button>
                 </div>
+                <button onclick="abrirModalSync()" class="sync-btn">📲 Sincronizar com Celular (QR Code)</button>
                 <span onclick="mostrarTooltip('Histórico de Pontos', 'Registre aqui os pontos que você ganha todo dia.<br><br>' +
                     'Usado para calcular sua média diária, projeções de meta e sequência de dias.<br><br>' +
                     'Dica da comunidade brasileira: registre todos os dias para ter projeções precisas e acompanhar seu progresso real.')" class="tooltip-icon">ℹ️</span>
@@ -1706,6 +1778,21 @@
             <div class="dialog-buttons" style="margin-top: 20px;">
                 <button id="dialog-confirm-btn" class="dialog-btn confirm" style="width:100%;">Confirmar</button>
             </div>
+        </div>
+    </div>
+
+    <!-- 👇 COLE O MODAL DO QR CODE BEM AQUI 👇 -->
+    <!-- Modal Sincronização QR Code -->
+    <div id="sync-modal" onclick="if(event.target.id==='sync-modal')fecharModalSync()">
+        <div id="sync-content">
+            <h3 style="margin:0; font-size:20px; display:flex; align-items:center; justify-content:center; gap:8px;">📲 Sincronizar Aparelho</h3>
+            <p style="color:var(--text-subtle); font-size:13px; margin:8px 0 0 0; line-height:1.4;">
+                Aponte a câmera do celular para o código abaixo para transferir seus pontos e sequência na hora:
+            </p>
+            <div class="qrcode-wrapper">
+                <div id="sync-qrcode"></div>
+            </div>
+            <button onclick="copiarLinkSync()" class="copy-link-btn" id="copy-sync-btn">🔗 Copiar Link Direto</button>
         </div>
     </div>
 	
@@ -3363,6 +3450,180 @@
             };
         }
 
+		// ==================== SINCRONIZAÇÃO VIA QR CODE ====================
+        let currentSyncUrl = "";
+
+        // Compacta apenas o essencial para gerar um QR Code super leve
+        function packSyncData(data) {
+            return {
+                m: data.metaMensal,
+                s: data.streak,
+                o: data.streakManualOverride ? 1 : 0,
+                e: [data.exemploPontos, data.exemploReais],
+                h: (data.history || []).map(i => [i.fullDate, i.pontos]),
+                a: data.activitiesData,
+                arc: Object.keys(data.monthlyArchives || {}).reduce((acc, k) => {
+                    const arc = data.monthlyArchives[k];
+                    acc[k] = {
+                        m: arc.month,
+                        n: arc.monthName,
+                        t: arc.totalPontos,
+                        s: arc.streak,
+                        h: (arc.history || []).map(i => [i.fullDate, i.pontos])
+                    };
+                    return acc;
+                }, {})
+            };
+        }
+
+        // Reconstrói o histórico completo ao receber no celular
+        function unpackSyncData(packed) {
+            const history = (packed.h || []).map(([fullDate, pontos]) => {
+                const dateObj = new Date(fullDate + 'T00:00:00');
+                const displayDate = dateObj.toLocaleDateString('pt-BR', { day: 'numeric', month: 'short' }).replace('.', '');
+                return { fullDate, displayDate, pontos, timestamp: Date.now() };
+            });
+
+            const monthlyArchives = {};
+            if (packed.arc) {
+                for (let k in packed.arc) {
+                    const arc = packed.arc[k];
+                    monthlyArchives[k] = {
+                        month: arc.m,
+                        monthName: arc.n,
+                        totalPontos: arc.t,
+                        streak: arc.s,
+                        history: (arc.h || []).map(([fullDate, pontos]) => {
+                            const dateObj = new Date(fullDate + 'T00:00:00');
+                            const displayDate = dateObj.toLocaleDateString('pt-BR', { day: 'numeric', month: 'short' }).replace('.', '');
+                            return { fullDate, displayDate, pontos, timestamp: Date.now() };
+                        }),
+                        archivedAt: new Date().toISOString()
+                    };
+                }
+            }
+
+            return {
+                metaMensal: packed.m || 0,
+                totalMensal: 0,
+                streak: packed.s || 0,
+                streakManualOverride: Boolean(packed.o),
+                exemploPontos: packed.e ? packed.e[0] : 5165,
+                exemploReais: packed.e ? packed.e[1] : 30,
+                history: history,
+                monthlyArchives: monthlyArchives,
+                activitiesData: packed.a || getDefaultActivities(),
+                lastStreakDate: null,
+                lastMonth: null
+            };
+        }
+
+        async function compressData(str) {
+            try {
+                const stream = new Blob([str]).stream().pipeThrough(new CompressionStream('deflate'));
+                const buffer = await new Response(stream).arrayBuffer();
+                const binary = String.fromCharCode(...new Uint8Array(buffer));
+                return btoa(binary).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+            } catch (e) {
+                return encodeURIComponent(str);
+            }
+        }
+
+        async function decompressData(base64Str) {
+            try {
+                const padding = '='.repeat((4 - base64Str.length % 4) % 4);
+                const base64 = (base64Str + padding).replace(/-/g, '+').replace(/_/g, '/');
+                const binary = atob(base64);
+                const bytes = Uint8Array.from(binary, c => c.charCodeAt(0));
+                const stream = new Blob([bytes]).stream().pipeThrough(new DecompressionStream('deflate'));
+                return await new Response(stream).text();
+            } catch (e) {
+                return decodeURIComponent(base64Str);
+            }
+        }
+
+        async function abrirModalSync() {
+            const modal = document.getElementById('sync-modal');
+            const qrcodeContainer = document.getElementById('sync-qrcode');
+            qrcodeContainer.innerHTML = '<div style="color:#000; padding:20px; font-size:13px;">Gerando código...</div>';
+            modal.style.display = 'flex';
+
+            try {
+                const minified = packSyncData(AppState.data);
+                const payload = JSON.stringify(minified);
+                const compressed = await compressData(payload);
+
+                // Se estiver testando local no PC (file:// ou localhost), aponta direto pro GitHub Pages!
+                const baseUrl = (window.location.protocol === 'file:' || window.location.hostname === 'localhost' || !window.location.hostname)
+                    ? 'https://y4sh1r01.github.io/MSRewardsTool/'
+                    : `${window.location.origin}${window.location.pathname}`;
+
+                currentSyncUrl = `${baseUrl}#sync=${compressed}`;
+
+                qrcodeContainer.innerHTML = '';
+                new QRCode(qrcodeContainer, {
+                    text: currentSyncUrl,
+                    width: 200,
+                    height: 200,
+                    colorDark: "#000000",
+                    colorLight: "#ffffff",
+                    correctLevel: QRCode.CorrectLevel.L
+                });
+            } catch (err) {
+                qrcodeContainer.innerHTML = '<div style="color:#ef4444; padding:15px; font-size:13px;">Erro ao gerar QR Code.<br>Use o botão abaixo para copiar o link.</div>';
+            }
+        }
+
+        function fecharModalSync() {
+            document.getElementById('sync-modal').style.display = 'none';
+        }
+
+        function copiarLinkSync() {
+            if (!currentSyncUrl) return;
+            navigator.clipboard.writeText(currentSyncUrl).then(() => {
+                const btn = document.getElementById('copy-sync-btn');
+                btn.textContent = "✅ Link Copiado!";
+                setTimeout(() => btn.textContent = "🔗 Copiar Link Direto", 2000);
+            });
+        }
+
+        async function verificarSincronizacaoURL() {
+            if (!window.location.hash.startsWith('#sync=')) return;
+
+            const compressedData = window.location.hash.replace('#sync=', '');
+            try {
+                const decompressed = await decompressData(compressedData);
+                const parsed = JSON.parse(decompressed);
+
+                if (!parsed || typeof parsed !== 'object') throw new Error("Dados inválidos");
+
+                // Descompacta os dados estruturados
+                const dados = parsed.h ? unpackSyncData(parsed) : parsed;
+
+                const ok = await Dialog.confirm(
+                    `Dados de sincronização recebidos!\n\n` +
+                    `• Meta: ${formatarNumero(dados.metaMensal || 0)} pts\n` +
+                    `• Sequência (Streak): ${dados.streak || 0} dias\n` +
+                    `• Registros no Histórico: ${dados.history ? dados.history.length : 0}\n\n` +
+                    `Deseja aplicar esses dados neste aparelho agora?`,
+                    "Sincronizar Dispositivos"
+                );
+
+                if (ok) {
+                    AppState.data = dados;
+                    AppState.recalculateMonthlyTotal();
+                    normalizeHistory();
+                    AppState.save();
+                    atualizarInterfaceCompleta();
+                    showToast("✅ Aparelho sincronizado com sucesso!", 3000);
+                }
+            } catch (err) {
+                showToast("❌ Erro ao ler dados de sincronização.", 3000);
+            } finally {
+                history.replaceState(null, '', window.location.pathname + window.location.search);
+            }
+        }
+		
         function setupInputValidation() {
             const input = document.getElementById('hist-pontos');
             input.addEventListener('input', () => {
@@ -3386,7 +3647,7 @@
                 }
             });
         }
-        
+	
         // ==================== INICIALIZAÇÃO ====================
         window.onload = () => {
             loadTheme();
@@ -3410,6 +3671,7 @@
             dateInput.max = todayStr;
             
             atualizarInterfaceCompleta();
+            verificarSincronizacaoURL();
             const pontosInput = document.getElementById('pontos');
             pontosInput.addEventListener('input', function() {
                 let val = this.value.replace(/\D/g, '');
