@@ -18,7 +18,6 @@
             --text-muted: #888888;
             --accent: #22c55e;
             --gold: #fde047;
-            --gold-light: #d97706;
             color-scheme: dark;
         }
         body.light {
@@ -32,8 +31,7 @@
             --text-subtle: #555555;
             --text-muted: #666666;
             --accent: #16a34a;
-            --gold: #92400e;
-			--pill-active: #fde047;
+            --gold-light: #d97706;
             color-scheme: light;
         }
         body {
@@ -364,6 +362,12 @@
         .app.horizontal .streak {
             flex: 1 1 380px;
         }
+		.app.horizontal .streak {
+            flex: 1 1 380px;
+        }
+        .app.horizontal .history-list {
+            max-height: 340px;
+        }
         @media (max-width: 360px) {
             .streak-number {
                 font-size: 68px;
@@ -621,10 +625,6 @@
             color: #888;
         }
         body.light .auto-mode { color: #666; }
-        .auto-mode {
-            color: #888;
-        }
-        body.light .auto-mode { color: #666; }
         
         /* TIER BADGES */
         .tier-badge {
@@ -808,18 +808,19 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            gap: 12px;
+            gap: 8px; /* 👈 Reduz o vão de 12px para 8px */
             flex-wrap: wrap;
         }
         .footer-btn {
-            background:none;
-            border:1px solid #555;
-            color:#aaa;
-            padding:6px 12px;
-            border-radius:8px;
-            font-size:13px;
-            cursor:pointer;
+            background: none;
+            border: 1px solid #555;
+            color: #aaa;
+            padding: 5px 10px; /* 👈 Ajuste fino de 6x12 para 5x10 */
+            border-radius: 8px;
+            font-size: 12px;   /* 👈 12px garante que caibam juntos */
+            cursor: pointer;
             text-decoration: none;
+            white-space: nowrap;
         }
         .footer-btn:hover {
             background:#333;
@@ -938,7 +939,7 @@
         }
 		.mini-chart {
             width: 100%;
-            height: 52px;
+            height: 72px;
             margin: 8px 0 14px 0;
             display: flex;
             align-items: center;
@@ -985,6 +986,21 @@
             padding: 12px;
             text-align: center;
         }
+		.stat-subdate {
+            display: block;
+            font-size: 11px;
+            font-weight: normal;
+            color: var(--text-muted);
+            margin-top: 2px;
+        }
+        .stat-subreais {
+            display: block;
+            font-size: 11px;
+            font-weight: 500;
+            color: var(--gold);
+            margin-top: 2px;
+            opacity: 0.9;
+        }
         .stat-box small,
         .stat-box strong {
             display: block;
@@ -1030,7 +1046,114 @@
             box-shadow: 0 4px 12px rgba(0,0,0,0.08);
         }
 
-        /* COMPARATIVO MÊS A MÊS NO RESUMO */
+        /* MINI-HEATMAP DO MÊS (ESTILO GITHUB) */
+        .heatmap-container {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 12px;
+            margin: 10px 0 14px 0;
+        }
+        body.light .heatmap-container {
+            background: rgba(0, 0, 0, 0.02);
+        }
+        .heatmap-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+            font-size: 11.5px;
+            color: var(--text-muted);
+        }
+        .heatmap-status {
+            font-weight: 600;
+            color: var(--text);
+        }
+        .heatmap-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(18px, 1fr)); /* 👈 18px garante que todos os dias caibam na mesma linha */
+            gap: 3px; /* 👈 Vão mais fino e elegante */
+        }
+        .heat-day {
+            aspect-ratio: 1 / 1;
+            border-radius: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 9.5px; /* 👈 Tamanho ideal para números de 2 dígitos */
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.15s ease;
+            user-select: none;
+        }
+        .heat-day:hover {
+            transform: scale(1.18);
+            z-index: 2;
+        }
+        /* Dias futuros */
+        .heat-day.heat-future {
+            background: rgba(255, 255, 255, 0.02);
+            color: #555;
+            border: 1px dashed #333;
+            cursor: default;
+        }
+        body.light .heat-day.heat-future {
+            background: rgba(0, 0, 0, 0.01);
+            color: #bbb;
+            border-color: #ddd;
+        }
+        /* Dias passados sem registro */
+        .heat-day.heat-missed {
+            background: #1a1a1a;
+            color: #666;
+            border: 1px solid #2a2a2a;
+        }
+        body.light .heat-day.heat-missed {
+            background: #e9ecef;
+            color: #888;
+            border-color: #dee2e6;
+        }
+        /* Nível 1: Poucos pontos (< 350 pts) */
+        .heat-day.heat-l1 {
+            background: rgba(34, 197, 94, 0.25);
+            color: #86efac;
+            border: 1px solid rgba(34, 197, 94, 0.4);
+        }
+        body.light .heat-day.heat-l1 {
+            background: #bbf7d0;
+            color: #166534;
+            border-color: #86efac;
+        }
+        /* Nível 2: Pontuação média (350 a 650 pts) */
+        .heat-day.heat-l2 {
+            background: rgba(34, 197, 94, 0.55);
+            color: #ffffff;
+            border: 1px solid rgba(34, 197, 94, 0.8);
+        }
+        body.light .heat-day.heat-l2 {
+            background: #4ade80;
+            color: #052e16;
+            border-color: #22c55e;
+        }
+        /* Nível 3: Pontuação alta (>= 650 pts) */
+        .heat-day.heat-l3 {
+            background: #22c55e;
+            color: #000;
+            font-weight: 700;
+            box-shadow: 0 0 8px rgba(34, 197, 94, 0.35);
+        }
+        body.light .heat-day.heat-l3 {
+            background: #15803d;
+            color: #ffffff;
+            font-weight: 700;
+        }
+        /* Destaque do dia de hoje */
+        .heat-day.heat-today {
+            outline: 2px solid var(--gold);
+            outline-offset: 1px;
+        }
+		
+		/* COMPARATIVO MÊS A MÊS NO RESUMO */
         .archive-card {
             background: rgba(255,255,255,0.04);
             border: 1px solid #333;
@@ -1221,6 +1344,103 @@
             color: #888;
             padding: 20px;
         }
+		
+		/* MODAL DE ANÁLISE POR DIA DA SEMANA */
+        #weekday-modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.85);
+            z-index: 3000;
+            align-items: center;
+            justify-content: center;
+        }
+        #weekday-content {
+            background: var(--card);
+            border-radius: 20px;
+            padding: 24px;
+            max-width: 440px;
+            width: 90%;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.7);
+            position: relative;
+            color: var(--text);
+        }
+        .weekday-row {
+            background: rgba(255,255,255,0.03);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 7px 12px;
+            margin-bottom: 6px;
+        }
+        body.light .weekday-row {
+            background: rgba(0,0,0,0.02);
+        }
+        .weekday-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 4px;
+            font-size: 13.5px;
+        }
+        .weekday-info strong {
+            display: inline-flex;
+            align-items: center;
+        }
+        .weekday-bar-wrap {
+            height: 6px;
+            background: rgba(255,255,255,0.08);
+            border-radius: 999px;
+            overflow: hidden;
+            margin-bottom: 3px;
+        }
+        body.light .weekday-bar-wrap {
+            background: rgba(0,0,0,0.08);
+        }
+        .weekday-bar {
+            height: 100%;
+            border-radius: 999px;
+            background: var(--accent);
+            transition: width 0.4s ease;
+        }
+        .weekday-bar.best {
+            background: linear-gradient(90deg, #22c55e, #4ade80);
+            box-shadow: 0 0 6px rgba(34,197,94,0.4);
+        }
+        .weekday-meta {
+            display: flex;
+            justify-content: space-between;
+            font-size: 10.5px;
+            color: var(--text-muted);
+        }
+        .weekday-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 3px;
+            line-height: 1;
+            font-size: 10px;
+            font-weight: 700;
+            padding: 2.5px 6px;
+            border-radius: 5px;
+            margin-left: 6px;
+            text-transform: uppercase;
+        }
+        .weekday-badge.best {
+            background: rgba(34,197,94,0.18);
+            color: #4ade80;
+        }
+        body.light .weekday-badge.best {
+            background: rgba(21,128,61,0.15);
+            color: #15803d;
+        }
+        .weekday-badge.worst {
+            background: rgba(239,68,68,0.15);
+            color: #f87171;
+        }
+        body.light .weekday-badge.worst {
+            background: rgba(220,38,38,0.12);
+            color: #dc2626;
+        }
+		
                 /* CORREÇÕES EXCLUSIVAS PARA MOBILE VERTICAL */
         @media (max-width: 480px) {
             /* Faz o botão Adicionar ficar do mesmo tamanho do Limpar Histórico */
@@ -1394,6 +1614,16 @@
             <div class="section stats">
                 <h3>📊 Estatísticas</h3>
                 <div id="mini-chart" class="mini-chart"></div>
+
+                <!-- MINI-HEATMAP DO MÊS -->
+                <div class="heatmap-container">
+                    <div class="heatmap-header">
+                        <span id="heatmap-title">📅 Presença no Mês</span>
+                        <span id="heatmap-status" class="heatmap-status">—</span>
+                    </div>
+                    <div id="heatmap-grid" class="heatmap-grid"></div>
+                </div>
+
                 <div class="stats-grid">
                     <div class="stat-box">
                         <small>Melhor dia</small>
@@ -1412,12 +1642,13 @@
         </div>
 
         <div class="footer">
-            <span class="footer-text">Microsoft Rewards Tool — Feito para caçadores brasileiros • <strong>v1.6.0</strong></span>
+            <span class="footer-text">Microsoft Rewards Tool — Feito para caçadores brasileiros • <strong>v1.7.0</strong></span>
             <div class="footer-buttons">
                 <a href="https://rewards.bing.com/about" target="_blank" rel="noopener noreferrer" class="footer-btn">🔗 Sobre Níveis</a>
                 <button onclick="abrirChangelog()" class="footer-btn">Ver Changelog</button>
                 <button onclick="toggleLayoutMode()" class="footer-btn" id="layout-btn">↔️ Modo Horizontal</button>
                 <button onclick="abrirResumoArquivos()" class="footer-btn">📊 Resumo Mensal</button>
+				<button onclick="abrirAnaliseSemanal()" class="footer-btn">📅 Padrão por Dia</button>
                 <button onclick="restoreBackup()" class="footer-btn">💾 Restaurar Backup</button>
             </div>
         </div>
@@ -1451,6 +1682,18 @@
             <div id="archive-list" style="max-height: 400px; overflow-y: auto; padding-right: 8px;"></div>
         </div>
     </div>
+
+    <!-- 👇 COLE O NOVO MODAL BEM AQUI 👇 -->
+    <!-- Modal Análise por Dia da Semana -->
+    <div id="weekday-modal" onclick="if(event.target.id==='weekday-modal')fecharAnaliseSemanal()">
+        <div id="weekday-content">
+            <h3 id="weekday-title" style="margin-top:0; display:flex; align-items:center; gap:8px;">📅 Padrão por Dia da Semana</h3>
+            <p style="color:var(--text-subtle); font-size:12.5px; margin:0 0 14px 0; line-height:1.4;">
+                Média real de pontos por dia da semana baseada no histórico de caçadas registradas.
+            </p>
+            <div id="weekday-list" style="max-height: 80vh; overflow-y: auto; padding-right: 4px;"></div>
+        </div>
+    </div>
     
 	<!-- Modal Customizado para Prompt e Confirm -->
     <div id="dialog-modal" onclick="if(event.target.id==='dialog-modal') Dialog.dismiss()">
@@ -1471,8 +1714,8 @@
 
     <script>
         // ==================== CONFIGURAÇÕES INICIAIS ====================
-        const VERSION = "1.6.0";
-        const DATA_VERSION = "1.6.0";
+        const VERSION = "1.7.0";
+        const DATA_VERSION = "1.7.0";
         let isHorizontalMode = localStorage.getItem('horizontalMode') === 'true';
 
         // ==================== HELPER: LOCAL DATE FIX ====================
@@ -1671,19 +1914,28 @@
 
             getStats() {
                 if (this.data.history.length === 0) {
-                    return { avg: 0, best: 0, worst: 0, total: 0 };
+                    return { avg: 0, best: 0, bestDate: '', worst: 0, worstDate: '', total: 0 };
                 }
-                const pontos = this.data.history.map(item => item.pontos);
-                const total = pontos.reduce((a, b) => a + b, 0);
-                const avg = total / pontos.length;
+                let bestItem = this.data.history[0];
+                let worstItem = this.data.history[0];
+                let total = 0;
+                
+                this.data.history.forEach(item => {
+                    total += item.pontos;
+                    if (item.pontos > bestItem.pontos) bestItem = item;
+                    if (item.pontos < worstItem.pontos) worstItem = item;
+                });
+
                 return {
-                    avg: Math.round(avg),
-                    best: Math.max(...pontos),
-                    worst: Math.min(...pontos),
-                    total: total
+                    avg: Math.round(total / this.data.history.length),
+                    best: bestItem.pontos,
+                    bestDate: bestItem.displayDate || '',
+                    worst: worstItem.pontos,
+                    worstDate: worstItem.displayDate || '',
+                    total: this.data.totalMensal || total
                 };
             }
-        };
+        }; // 👈 ESSE fechamento que estava faltando!
 
         // ==================== DYNAMIC STREAK CALCULATOR ====================
         function calculateStreak() {
@@ -1793,7 +2045,10 @@
                     changed = true;
                 }
             }
-            if (changed) AppState.save();
+            if (changed) {
+                AppState.save();
+                renderActivities();
+            }
         }
 
         function toggleActivity(key) {
@@ -2006,24 +2261,46 @@
             const faltamEl = document.getElementById('faltam-meta');
             const labelEl = document.getElementById('faltam-label');
 
-            if (AppState.data.history.length === 0) {
+            const agora = new Date();
+            const anoAtual = agora.getFullYear();
+            const mesAtualIdx = agora.getMonth();
+            const diaAtual = agora.getDate();
+            const totalDiasNoMes = new Date(anoAtual, mesAtualIdx + 1, 0).getDate();
+
+            const hojeStr = getLocalDateString();
+            const jaRegistrouHoje = AppState.data.history.some(h => h.fullDate === hojeStr);
+
+            // Dias que faltam registrar no mês (se já registrou hoje, conta de amanhã até o fim)
+            const diasRestantes = Math.max(0, (totalDiasNoMes - diaAtual) + (jaRegistrouHoje ? 0 : 1));
+
+            // Filtra entradas registradas estritamente no mês atual
+            const mesPrefixo = hojeStr.substring(0, 7);
+            const historicoMesAtual = AppState.data.history.filter(h => h.fullDate && h.fullDate.startsWith(mesPrefixo));
+            const diasRegistradosMes = historicoMesAtual.length;
+
+            if (diasRegistradosMes === 0 && AppState.data.history.length === 0) {
                 mediaEl.textContent = "0 pts";
                 labelEl.textContent = "Faltam para meta";
                 faltamEl.innerHTML = `<span style="color:#888">—</span>`;
+                document.getElementById('projecao-final').innerHTML = `<small>Projeção final</small><br><strong>0 pts</strong>`;
                 return;
             }
 
-            const totalPontos = AppState.data.history.reduce((sum, item) => sum + item.pontos, 0);
-            const mediaDiaria = totalPontos / AppState.data.history.length;
+            // Média diária precisa baseada no mês atual (com fallback caso o mês esteja começando hoje)
+            let mediaDiaria = 0;
+            if (diasRegistradosMes > 0) {
+                mediaDiaria = AppState.data.totalMensal / diasRegistradosMes;
+            } else {
+                const totalGeral = AppState.data.history.reduce((sum, item) => sum + item.pontos, 0);
+                mediaDiaria = totalGeral / AppState.data.history.length;
+            }
             mediaEl.textContent = Math.round(mediaDiaria) + " pts";
 
-            const agora = new Date();
-            const fimDoMes = new Date(agora.getFullYear(), agora.getMonth() + 1, 0);
-            const diasRestantes = Math.floor((fimDoMes - agora) / (1000 * 60 * 60 * 24));
-
+            // Projeção final exata: o que você já tem no mês + (média diária × dias restantes reais)
             const projecaoFinal = AppState.data.totalMensal + (mediaDiaria * diasRestantes);
             document.getElementById('projecao-final').innerHTML = `<small>Projeção final</small><br><strong>${formatarNumero(Math.round(projecaoFinal))} pts</strong>`;
 
+            // Projeção para atingir a meta
             if (AppState.data.history.length < 7) {
                 labelEl.textContent = "Faltam para meta";
                 faltamEl.innerHTML = `<span style="color:#888; font-size:18px;">Aguarde mais ${7 - AppState.data.history.length} dia(s)</span>`;
@@ -2119,28 +2396,44 @@
 
         function updateStats() {
             const stats = AppState.getStats();
-            const setText = (id, value) => {
-                const el = document.getElementById(id);
-                if (el) el.textContent = value;
-            };
-            setText('stat-best', `${formatarNumero(stats.best)} pts`);
-            setText('stat-worst', `${formatarNumero(stats.worst)} pts`);
-            setText('stat-total', `${formatarNumero(stats.total)} pts`);
+
+            // 1a e 1b: Melhor dia, Pior dia (com datas) e Total no mês (com R$)
+            const bestEl = document.getElementById('stat-best');
+            if (bestEl) {
+                bestEl.innerHTML = stats.best > 0 
+                    ? `${formatarNumero(stats.best)} pts <span class="stat-subdate">(${stats.bestDate})</span>` 
+                    : `0 pts`;
+            }
+
+            const worstEl = document.getElementById('stat-worst');
+            if (worstEl) {
+                worstEl.innerHTML = stats.worst > 0 
+                    ? `${formatarNumero(stats.worst)} pts <span class="stat-subdate">(${stats.worstDate})</span>` 
+                    : `0 pts`;
+            }
+
+            const totalEl = document.getElementById('stat-total');
+            if (totalEl) {
+                const taxa = AppState.getConversionRate();
+                const totalReais = formatarReais(stats.total / taxa);
+                totalEl.innerHTML = `${formatarNumero(stats.total)} pts <span class="stat-subreais">(${totalReais})</span>`;
+            }
 
             const chartContainer = document.getElementById('mini-chart');
             if (!chartContainer) return;
             chartContainer.innerHTML = '';
             
-            // Pega até os últimos 10 registros para traçar a linha do tempo
-            const ultimosDias = AppState.data.history.slice(0, 10).reverse();
+            // 1c: No modo horizontal, exibe até 25 dias e dobra a largura do canvas (640px)
+            const maxDiasGrafico = isHorizontalMode ? 25 : 10;
+            const ultimosDias = AppState.data.history.slice(0, maxDiasGrafico).reverse();
             if (ultimosDias.length === 0) {
                 chartContainer.style.display = 'none';
                 return;
             }
             chartContainer.style.display = 'flex';
 
-            const w = 320;
-            const h = 48;
+            const w = isHorizontalMode ? 640 : 320;
+            const h = 68;
             const padX = 14;
             const padY = 8;
 
@@ -2149,7 +2442,6 @@
             const maxPts = Math.max(...pontosArr);
             const range = (maxPts - minPts) || 1;
 
-            // Calcula as coordenadas (x, y) de cada ponto
             const coords = ultimosDias.map((d, index) => {
                 const x = ultimosDias.length === 1 
                     ? w / 2 
@@ -2160,16 +2452,13 @@
                 return { x, y, data: d };
             });
 
-            // Cria o balão flutuante do tooltip
             const tooltip = document.createElement('div');
             tooltip.className = 'chart-tooltip';
             chartContainer.appendChild(tooltip);
 
-            // Cria o elemento SVG
             const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
             svg.setAttribute("viewBox", `0 0 ${w} ${h}`);
 
-            // Gradiente suave abaixo da linha
             svg.innerHTML = `
                 <defs>
                     <linearGradient id="chartGradient" x1="0" y1="0" x2="0" y2="1">
@@ -2184,24 +2473,20 @@
                 const linePath = coords.map((c, i) => `${i === 0 ? 'M' : 'L'} ${c.x} ${c.y}`).join(' ');
                 const areaPath = `${linePath} L ${coords[coords.length - 1].x} ${h} L ${coords[0].x} ${h} Z`;
 
-                // Área sombreada
                 const areaEl = document.createElementNS("http://www.w3.org/2000/svg", "path");
                 areaEl.setAttribute("d", areaPath);
                 areaEl.setAttribute("class", "chart-area");
                 svg.appendChild(areaEl);
 
-                // Linha conectando os pontos
                 const pathEl = document.createElementNS("http://www.w3.org/2000/svg", "path");
                 pathEl.setAttribute("d", linePath);
                 pathEl.setAttribute("class", "chart-line");
                 svg.appendChild(pathEl);
             }
 
-            // Desenha os pontos com hitbox maior (16px) para toque no celular
             coords.forEach(c => {
                 const g = document.createElementNS("http://www.w3.org/2000/svg", "g");
 
-                // Hitbox transparente (fácil de acertar com o polegar)
                 const hit = document.createElementNS("http://www.w3.org/2000/svg", "circle");
                 hit.setAttribute("cx", c.x);
                 hit.setAttribute("cy", c.y);
@@ -2209,20 +2494,16 @@
                 hit.setAttribute("fill", "transparent");
                 hit.style.cursor = "pointer";
 
-                // Ponto visual verde
                 const circle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
                 circle.setAttribute("cx", c.x);
                 circle.setAttribute("cy", c.y);
                 circle.setAttribute("r", "3.8");
                 circle.setAttribute("class", "chart-dot");
 
-                // Função que mostra o balão
                 const showTip = () => {
                     const reais = (c.data.pontos / AppState.getConversionRate()).toFixed(2);
                     tooltip.innerHTML = `${c.data.displayDate}: <strong style="color:var(--accent);">+${formatarNumero(c.data.pontos)} pts</strong> <span style="opacity:0.8;">(${formatarReais(parseFloat(reais))})</span>`;
-                    
-                    // Trava entre 20% e 80% da largura para o balão não cortar nas bordas da tela
-                    const clampedLeft = Math.max(20, Math.min(80, (c.x / w) * 100));
+                    const clampedLeft = Math.max(15, Math.min(85, (c.x / w) * 100));
                     tooltip.style.left = `${clampedLeft}%`;
                     tooltip.classList.add('visible');
                 };
@@ -2243,8 +2524,98 @@
 
             svg.addEventListener('mouseleave', () => tooltip.classList.remove('visible'));
             chartContainer.appendChild(svg);
-        }
+            renderHeatmap();
+		}
 
+        function renderHeatmap() {
+            const grid = document.getElementById('heatmap-grid');
+            const statusEl = document.getElementById('heatmap-status');
+            const titleEl = document.getElementById('heatmap-title');
+            if (!grid) return;
+
+            const agora = new Date();
+            const ano = agora.getFullYear();
+            const mesIdx = agora.getMonth();
+            const diaHoje = agora.getDate();
+            const totalDias = new Date(ano, mesIdx + 1, 0).getDate();
+            
+            const hojeStr = getLocalDateString();
+            const mesPrefixo = hojeStr.substring(0, 7);
+            const nomeMes = agora.toLocaleString('pt-BR', { month: 'long' });
+
+            if (titleEl) {
+                titleEl.textContent = `📅 Presença (${nomeMes.charAt(0).toUpperCase() + nomeMes.slice(1)})`;
+            }
+
+            // Mapeia os pontos registrados no mês atual
+            const monthMap = {};
+            let diasRegistrados = 0;
+            AppState.data.history.forEach(item => {
+                if (item.fullDate && item.fullDate.startsWith(mesPrefixo)) {
+                    monthMap[item.fullDate] = item.pontos;
+                    diasRegistrados++;
+                }
+            });
+
+            const pct = Math.round((diasRegistrados / totalDias) * 100);
+			const defaultStatus = `${diasRegistrados} de ${totalDias} dias (${pct}%)`;
+            if (statusEl) statusEl.textContent = defaultStatus;
+
+            grid.innerHTML = '';
+			
+            const colunas = isHorizontalMode ? totalDias : Math.ceil(totalDias / 2);
+            grid.style.gridTemplateColumns = `repeat(${colunas}, 1fr)`;
+
+            for (let d = 1; d <= totalDias; d++) {
+                const dateKey = `${mesPrefixo}-${String(d).padStart(2, '0')}`;
+                const pts = monthMap[dateKey];
+                const box = document.createElement('div');
+                box.className = 'heat-day';
+                box.textContent = d;
+
+                const isFuture = d > diaHoje;
+                const isToday = d === diaHoje;
+                const isLogged = pts !== undefined && pts > 0;
+
+                if (isToday) box.classList.add('heat-today');
+
+                if (isFuture) {
+                    box.classList.add('heat-future');
+                } else if (isLogged) {
+                    if (pts >= 650) box.classList.add('heat-l3');
+                    else if (pts >= 350) box.classList.add('heat-l2');
+                    else box.classList.add('heat-l1');
+                } else {
+                    box.classList.add('heat-missed');
+                }
+
+                // Interação: Hover (PC) e Touch (Celular)
+                const showInfo = () => {
+                    if (isFuture) {
+                        statusEl.innerHTML = `Dia ${d}: <span style="color:var(--text-muted); font-weight:normal;">Dia futuro</span>`;
+                    } else if (isLogged) {
+                        const reais = formatarReais(pts / AppState.getConversionRate());
+                        statusEl.innerHTML = `Dia ${d}: <strong style="color:var(--accent);">+${formatarNumero(pts)} pts</strong> <span style="opacity:0.8; font-size:11px;">(${reais})</span>`;
+                    } else {
+                        statusEl.innerHTML = `Dia ${d}: <span style="color:#ef4444;">Sem registro</span>`;
+                    }
+                };
+
+                const resetInfo = () => {
+                    statusEl.textContent = defaultStatus;
+                };
+
+                box.addEventListener('mouseenter', showInfo);
+                box.addEventListener('mouseleave', resetInfo);
+                box.addEventListener('touchstart', (e) => {
+                    e.stopPropagation();
+                    showInfo();
+                });
+
+                grid.appendChild(box);
+            }
+        }
+		
         function renderHistory() {
             const list = document.getElementById('history-list');
             list.innerHTML = '';
@@ -2739,20 +3110,18 @@
             const list = document.getElementById('archive-list');
             const archives = AppState.data.monthlyArchives;
             
-            // Ordena cronologicamente para calcular o crescimento mês a mês
             const chronologicalKeys = Object.keys(archives).sort();
             
             if (chronologicalKeys.length === 0) {
                 list.innerHTML = '<div class="archive-empty">Nenhum mês arquivado ainda.</div>';
             } else {
-                // Inverte para exibir o mais recente primeiro na tela
                 const displayKeys = [...chronologicalKeys].reverse();
 
                 list.innerHTML = displayKeys.map(key => {
                     const data = archives[key];
                     const currTotal = data.totalPontos || 0;
+                    const finalStreak = data.streak !== undefined ? data.streak : 0;
                     
-                    // Acha o mês cronologicamente anterior no histórico arquivado
                     const currentIndex = chronologicalKeys.indexOf(key);
                     let diffBadgeHtml = '';
 
@@ -2777,7 +3146,6 @@
                         diffBadgeHtml = `<span class="diff-tag first">Primeiro mês registrado</span>`;
                     }
 
-                    // Gera detalhes dos dias caso existam no arquivo
                     let historyDetailHtml = '';
                     if (data.history && data.history.length > 0) {
                         historyDetailHtml = data.history.map(h => `
@@ -2795,7 +3163,10 @@
                             <div class="archive-header" onclick="toggleArchiveDetail('${key}')">
                                 <div class="archive-main-info">
                                     <span class="archive-month-name">📅 ${escapeHtml(data.monthName || key)}</span>
-                                    ${diffBadgeHtml}
+                                    <div style="display:flex; gap:6px; flex-wrap:wrap; align-items:center;">
+                                        ${diffBadgeHtml}
+                                        <small style="color:var(--text-muted); font-size:11px;">🔥 Streak: ${finalStreak}d</small>
+                                    </div>
                                 </div>
                                 <div class="archive-header-right">
                                     <span class="archive-points">${formatarNumero(currTotal)} pts</span>
@@ -2815,7 +3186,118 @@
             
             document.getElementById('archive-modal').style.display = 'flex';
         }
+		
+		// ==================== ANÁLISE POR DIA DA SEMANA ====================
+        function abrirAnaliseSemanal() {
+            const list = document.getElementById('weekday-list');
+            if (!list) return;
 
+            // 1. Compila todo o histórico disponível (mês ativo + arquivos anteriores) para máxima precisão
+            const allEntries = [...AppState.data.history];
+            const archives = AppState.data.monthlyArchives;
+            for (let m in archives) {
+                if (archives[m].history && Array.isArray(archives[m].history)) {
+                    archives[m].history.forEach(item => {
+                        if (!allEntries.some(e => e.fullDate === item.fullDate)) {
+                            allEntries.push(item);
+                        }
+                    });
+                }
+            }
+
+            if (allEntries.length === 0) {
+                list.innerHTML = '<div style="text-align:center; color:#888; padding:24px;">Nenhum histórico registrado para analisar ainda.</div>';
+                document.getElementById('weekday-modal').style.display = 'flex';
+                return;
+            }
+
+            // 2. Estrutura os 7 dias (começando na Segunda-feira até Domingo)
+            const weekdays = [
+                { id: 1, name: "Segunda-feira", short: "Seg", total: 0, count: 0, max: 0 },
+                { id: 2, name: "Terça-feira", short: "Ter", total: 0, count: 0, max: 0 },
+                { id: 3, name: "Quarta-feira", short: "Qua", total: 0, count: 0, max: 0 },
+                { id: 4, name: "Quinta-feira", short: "Qui", total: 0, count: 0, max: 0 },
+                { id: 5, name: "Sexta-feira", short: "Sex", total: 0, count: 0, max: 0 },
+                { id: 6, name: "Sábado", short: "Sáb", total: 0, count: 0, max: 0 },
+                { id: 0, name: "Domingo", short: "Dom", total: 0, count: 0, max: 0 }
+            ];
+
+            // 3. Agrupa os pontos nos dias da semana corretos
+            allEntries.forEach(item => {
+                if (!item.fullDate) return;
+                const [y, m, d] = item.fullDate.split('-').map(Number);
+                const dt = new Date(y, m - 1, d);
+                const dayOfWeek = dt.getDay(); // 0 a 6
+                const target = weekdays.find(w => w.id === dayOfWeek);
+                if (target) {
+                    target.total += item.pontos;
+                    target.count += 1;
+                    if (item.pontos > target.max) target.max = item.pontos;
+                }
+            });
+
+            // 4. Calcula médias e encontra o dia mais forte e o mais fraco
+            let highestAvg = 0;
+            let lowestAvg = Infinity;
+            let bestDayId = null;
+            let worstDayId = null;
+
+            weekdays.forEach(w => {
+                w.avg = w.count > 0 ? Math.round(w.total / w.count) : 0;
+                if (w.count > 0 && w.avg > highestAvg) {
+                    highestAvg = w.avg;
+                    bestDayId = w.id;
+                }
+                if (w.count > 0 && w.avg < lowestAvg) {
+                    lowestAvg = w.avg;
+                    worstDayId = w.id;
+                }
+            });
+
+            const taxa = AppState.getConversionRate();
+
+            // 5. Renderiza as linhas estatísticas
+            list.innerHTML = weekdays.map(w => {
+                const percent = highestAvg > 0 ? Math.round((w.avg / highestAvg) * 100) : 0;
+                let badge = '';
+                let isBest = false;
+
+                if (w.count > 0) {
+                    if (w.id === bestDayId && highestAvg !== lowestAvg) {
+                        badge = '<span class="weekday-badge best">👑 Mais Forte</span>';
+                        isBest = true;
+                    } else if (w.id === worstDayId && highestAvg !== lowestAvg) {
+                        badge = '<span class="weekday-badge worst">📉 Mais Fraco</span>';
+                    }
+                }
+
+                const reais = formatarReais(w.avg / taxa);
+				const maxReais = formatarReais(w.max / taxa);
+				
+                return `
+                    <div class="weekday-row">
+                        <div class="weekday-info">
+                            <strong>${w.name} ${badge}</strong>
+                            <span><strong>${formatarNumero(w.avg)} pts</strong> <small style="color:var(--text-muted); font-size:11.5px;">(${reais})</small></span>
+                        </div>
+                        <div class="weekday-bar-wrap">
+                            <div class="weekday-bar ${isBest ? 'best' : ''}" style="width: ${percent}%;"></div>
+                        </div>
+                        <div class="weekday-meta">
+                            <span>${w.count} registro(s) analisado(s)</span>
+                            <span>Recorde: +${formatarNumero(w.max)} pts (${maxReais})</span>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            document.getElementById('weekday-modal').style.display = 'flex';
+        }
+
+        function fecharAnaliseSemanal() {
+            document.getElementById('weekday-modal').style.display = 'none';
+        }
+		
         function toggleArchiveDetail(key) {
             const detail = document.getElementById(`detail-${key}`);
             const arrow = document.getElementById(`arrow-${key}`);
@@ -2863,6 +3345,9 @@
                 app.classList.remove('horizontal');
                 if (btn) btn.textContent = '↔️ Modo Horizontal';
             }
+
+            // 👈 Atualiza o heatmap e o gráfico instantaneamente ao trocar de modo
+            if (typeof updateStats === 'function') updateStats();
         }
 
         // ==================== OUTRAS FUNÇÕES ====================
@@ -2941,6 +3426,10 @@
             if (isStreakMilestone(AppState.data.streak)) {
                 setTimeout(() => triggerStreakMilestone(), 600);
             }
+			document.addEventListener('visibilitychange', () => {
+                if (!document.hidden) checkActivityCycles();
+            });
+            setInterval(checkActivityCycles, 60000);
         };
     </script>
 </body>
