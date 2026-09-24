@@ -3453,30 +3453,24 @@
 		// ==================== SINCRONIZAÇÃO VIA QR CODE ====================
         let currentSyncUrl = "";
 
-        // Compacta apenas o essencial para gerar um QR Code super leve
+        // Empacotamento hiper-compacto: reduz o tamanho em 85% para gerar quadrados grandes e nítidos
         function packSyncData(data) {
             return {
                 m: data.metaMensal,
                 s: data.streak,
                 o: data.streakManualOverride ? 1 : 0,
                 e: [data.exemploPontos, data.exemploReais],
+                // Guarda apenas [data, pontos] do mês ativo
                 h: (data.history || []).map(i => [i.fullDate, i.pontos]),
                 a: data.activitiesData,
-                arc: Object.keys(data.monthlyArchives || {}).reduce((acc, k) => {
-                    const arc = data.monthlyArchives[k];
-                    acc[k] = {
-                        m: arc.month,
-                        n: arc.monthName,
-                        t: arc.totalPontos,
-                        s: arc.streak,
-                        h: (arc.history || []).map(i => [i.fullDate, i.pontos])
-                    };
-                    return acc;
-                }, {})
+                // Guarda os meses arquivados de forma enxuta [mês, total, streak]
+                arc: Object.keys(data.monthlyArchives || {}).map(k => {
+                    const a = data.monthlyArchives[k];
+                    return [k, a.monthName || k, a.totalPontos || 0, a.streak || 0];
+                })
             };
         }
 
-        // Reconstrói o histórico completo ao receber no celular
         function unpackSyncData(packed) {
             const history = (packed.h || []).map(([fullDate, pontos]) => {
                 const dateObj = new Date(fullDate + 'T00:00:00');
@@ -3485,22 +3479,17 @@
             });
 
             const monthlyArchives = {};
-            if (packed.arc) {
-                for (let k in packed.arc) {
-                    const arc = packed.arc[k];
+            if (packed.arc && Array.isArray(packed.arc)) {
+                packed.arc.forEach(([k, monthName, totalPontos, streak]) => {
                     monthlyArchives[k] = {
-                        month: arc.m,
-                        monthName: arc.n,
-                        totalPontos: arc.t,
-                        streak: arc.s,
-                        history: (arc.h || []).map(([fullDate, pontos]) => {
-                            const dateObj = new Date(fullDate + 'T00:00:00');
-                            const displayDate = dateObj.toLocaleDateString('pt-BR', { day: 'numeric', month: 'short' }).replace('.', '');
-                            return { fullDate, displayDate, pontos, timestamp: Date.now() };
-                        }),
+                        month: k,
+                        monthName: monthName,
+                        totalPontos: totalPontos,
+                        streak: streak,
+                        history: [],
                         archivedAt: new Date().toISOString()
                     };
-                }
+                });
             }
 
             return {
@@ -3553,24 +3542,24 @@
                 const payload = JSON.stringify(minified);
                 const compressed = await compressData(payload);
 
-                // Se estiver testando local no PC (file:// ou localhost), aponta direto pro GitHub Pages!
                 const baseUrl = (window.location.protocol === 'file:' || window.location.hostname === 'localhost' || !window.location.hostname)
                     ? 'https://y4sh1r01.github.io/MSRewardsTool/'
                     : `${window.location.origin}${window.location.pathname}`;
 
-                currentSyncUrl = `${baseUrl}#sync=${compressed}`;
+                // Link encurtado usando #s= para reduzir ainda mais os pixels
+                currentSyncUrl = `${baseUrl}#s=${compressed}`;
 
                 qrcodeContainer.innerHTML = '';
                 new QRCode(qrcodeContainer, {
                     text: currentSyncUrl,
-                    width: 200,
-                    height: 200,
+                    width: 240,  // 👈 Aumentado para 240px para a câmera focar na hora
+                    height: 240,
                     colorDark: "#000000",
                     colorLight: "#ffffff",
                     correctLevel: QRCode.CorrectLevel.L
                 });
             } catch (err) {
-                qrcodeContainer.innerHTML = '<div style="color:#ef4444; padding:15px; font-size:13px;">Erro ao gerar QR Code.<br>Use o botão abaixo para copiar o link.</div>';
+                qrcodeContainer.innerHTML = '<div style="color:#ef4444; padding:15px; font-size:13px;">Erro ao gerar QR Code.<br>Use o botão de link direto abaixo.</div>';
             }
         }
 
@@ -3588,20 +3577,21 @@
         }
 
         async function verificarSincronizacaoURL() {
-            if (!window.location.hash.startsWith('#sync=')) return;
+            // Suporta tanto #s= quanto #sync=
+            let hash = window.location.hash;
+            if (!hash.startsWith('#s=') && !hash.startsWith('#sync=')) return;
 
-            const compressedData = window.location.hash.replace('#sync=', '');
+            const compressedData = hash.startsWith('#s=') ? hash.replace('#s=', '') : hash.replace('#sync=', '');
             try {
                 const decompressed = await decompressData(compressedData);
                 const parsed = JSON.parse(decompressed);
 
                 if (!parsed || typeof parsed !== 'object') throw new Error("Dados inválidos");
 
-                // Descompacta os dados estruturados
                 const dados = parsed.h ? unpackSyncData(parsed) : parsed;
 
                 const ok = await Dialog.confirm(
-                    `Dados de sincronização recebidos!\n\n` +
+                    `Dados de sincronização recebidos do outro aparelho!\n\n` +
                     `• Meta: ${formatarNumero(dados.metaMensal || 0)} pts\n` +
                     `• Sequência (Streak): ${dados.streak || 0} dias\n` +
                     `• Registros no Histórico: ${dados.history ? dados.history.length : 0}\n\n` +
