@@ -2498,7 +2498,7 @@
             chartContainer.innerHTML = '';
             
             // 1c: No modo horizontal, exibe até 25 dias e dobra a largura do canvas (640px)
-            const maxDiasGrafico = isHorizontalMode ? 25 : 10;
+            const maxDiasGrafico = 30;
             const ultimosDias = AppState.data.history.slice(0, maxDiasGrafico).reverse();
             if (ultimosDias.length === 0) {
                 chartContainer.style.display = 'none';
