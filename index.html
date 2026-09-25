@@ -340,34 +340,40 @@
         .tooltip-icon:hover {
             opacity: 1;
         }
-        /* Modo Horizontal acionado apenas pela classe .horizontal */
-        .app.horizontal {
-            max-width: 860px;
-            border-radius: 20px;
-            padding: 10px 0;
+        /* Modo Horizontal: Ativo APENAS em telas de PC/Tablet (> 600px) */
+        @media (min-width: 601px) {
+            .app.horizontal {
+                max-width: 860px;
+                border-radius: 20px;
+                padding: 10px 0;
+            }
+            .app.horizontal .main {
+                flex-direction: row;
+                flex-wrap: wrap;
+                gap: 18px;
+                padding: 0 12px;
+            }
+            .app.horizontal .section,
+            .app.horizontal .estimate,
+            .app.horizontal .streak,
+            .app.horizontal .stats {
+                flex: 1;
+                min-width: 380px;
+                margin: 0;
+            }
+            .app.horizontal .streak {
+                flex: 1 1 380px;
+            }
+            .app.horizontal .history-list {
+                max-height: 340px;
+            }
         }
-        .app.horizontal .main {
-            flex-direction: row;
-            flex-wrap: wrap;
-            gap: 18px;
-            padding: 0 12px;
-        }
-        .app.horizontal .section,
-        .app.horizontal .estimate,
-        .app.horizontal .streak,
-        .app.horizontal .stats {
-            flex: 1;
-            min-width: 380px;
-            margin: 0;
-        }
-        .app.horizontal .streak {
-            flex: 1 1 380px;
-        }
-		.app.horizontal .streak {
-            flex: 1 1 380px;
-        }
-        .app.horizontal .history-list {
-            max-height: 340px;
+
+        /* Oculta o botão de layout no mobile permanentemente */
+        @media (max-width: 600px) {
+            #layout-btn {
+                display: none !important;
+            }
         }
         @media (max-width: 360px) {
             .streak-number {
@@ -1714,7 +1720,7 @@
         </div>
 
         <div class="footer">
-            <span class="footer-text">Microsoft Rewards Tool — Feito para caçadores brasileiros • <strong>v1.7.0</strong></span>
+            <span class="footer-text">Microsoft Rewards Tool — Feito para caçadores brasileiros • <strong>v1.7.0a</strong></span>
             <div class="footer-buttons">
                 <a href="https://rewards.bing.com/about" target="_blank" rel="noopener noreferrer" class="footer-btn">🔗 Sobre Níveis</a>
                 <button onclick="abrirChangelog()" class="footer-btn">Ver Changelog</button>
@@ -1799,8 +1805,8 @@
 
     <script>
         // ==================== CONFIGURAÇÕES INICIAIS ====================
-        const VERSION = "1.7.0";
-        const DATA_VERSION = "1.7.0";
+        const VERSION = "1.7.0a";
+        const DATA_VERSION = "1.7.0a";
         let isHorizontalMode = localStorage.getItem('horizontalMode') === 'true';
 
         // ==================== HELPER: LOCAL DATE FIX ====================
@@ -2381,9 +2387,11 @@
             }
             mediaEl.textContent = Math.round(mediaDiaria) + " pts";
 
-            // Projeção final exata: o que você já tem no mês + (média diária × dias restantes reais)
+            // Projeção final exata com estimativa em Reais
+            const taxa = AppState.getConversionRate();
             const projecaoFinal = AppState.data.totalMensal + (mediaDiaria * diasRestantes);
-            document.getElementById('projecao-final').innerHTML = `<small>Projeção final</small><br><strong>${formatarNumero(Math.round(projecaoFinal))} pts</strong>`;
+            const projecaoReais = formatarReais(projecaoFinal / taxa);
+            document.getElementById('projecao-final').innerHTML = `<small>Projeção final</small><br><strong>${formatarNumero(Math.round(projecaoFinal))} pts</strong><span class="stat-subreais">(${projecaoReais})</span>`;
 
             // Projeção para atingir a meta
             if (AppState.data.history.length < 7) {
@@ -3412,16 +3420,17 @@
             }
         }
 
-        function toggleLayoutMode() {
-            isHorizontalMode = !isHorizontalMode;
-            localStorage.setItem('horizontalMode', isHorizontalMode);
-            applyLayoutMode();
-        }
-
         function applyLayoutMode() {
             const app = document.querySelector('.app');
             const btn = document.getElementById('layout-btn');
             if (!app) return;
+
+            // Se for celular (tela <= 600px), força modo vertical e não deixa vazar
+            if (window.innerWidth <= 600) {
+                app.classList.remove('horizontal');
+                if (btn) btn.style.display = 'none';
+                return;
+            }
 
             if (isHorizontalMode) {
                 app.classList.add('horizontal');
@@ -3431,7 +3440,6 @@
                 if (btn) btn.textContent = '↔️ Modo Horizontal';
             }
 
-            // 👈 Atualiza o heatmap e o gráfico instantaneamente ao trocar de modo
             if (typeof updateStats === 'function') updateStats();
         }
 
@@ -3451,24 +3459,29 @@
 		// ==================== SINCRONIZAÇÃO VIA QR CODE ====================
         let currentSyncUrl = "";
 
-        // Empacotamento hiper-compacto: reduz o tamanho em 85% para gerar quadrados grandes e nítidos
+        // Empacota dados essenciais incluindo o histórico detalhado dos meses arquivados
         function packSyncData(data) {
             return {
                 m: data.metaMensal,
                 s: data.streak,
                 o: data.streakManualOverride ? 1 : 0,
                 e: [data.exemploPontos, data.exemploReais],
-                // Guarda apenas [data, pontos] do mês ativo
                 h: (data.history || []).map(i => [i.fullDate, i.pontos]),
                 a: data.activitiesData,
-                // Guarda os meses arquivados de forma enxuta [mês, total, streak]
+                // Salva cada mês com sua lista compacta de [dia, pontos]
                 arc: Object.keys(data.monthlyArchives || {}).map(k => {
                     const a = data.monthlyArchives[k];
-                    return [k, a.monthName || k, a.totalPontos || 0, a.streak || 0];
+                    const diasCompactos = (a.history || []).map(i => {
+                        const partes = i.fullDate.split('-');
+                        const dia = parseInt(partes[2]) || i.fullDate;
+                        return [dia, i.pontos];
+                    });
+                    return [k, a.monthName || k, a.totalPontos || 0, a.streak || 0, diasCompactos];
                 })
             };
         }
 
+        // Reconstrói o histórico ativo E todos os dias dos meses arquivados
         function unpackSyncData(packed) {
             const history = (packed.h || []).map(([fullDate, pontos]) => {
                 const dateObj = new Date(fullDate + 'T00:00:00');
@@ -3478,13 +3491,22 @@
 
             const monthlyArchives = {};
             if (packed.arc && Array.isArray(packed.arc)) {
-                packed.arc.forEach(([k, monthName, totalPontos, streak]) => {
+                packed.arc.forEach(([k, monthName, totalPontos, streak, diasCompactos]) => {
+                    const monthHistory = (diasCompactos || []).map(([dia, pontos]) => {
+                        const fullDate = typeof dia === 'number'
+                            ? `${k}-${String(dia).padStart(2, '0')}`
+                            : String(dia);
+                        const dateObj = new Date(fullDate + 'T00:00:00');
+                        const displayDate = dateObj.toLocaleDateString('pt-BR', { day: 'numeric', month: 'short' }).replace('.', '');
+                        return { fullDate, displayDate, pontos, timestamp: Date.now() };
+                    });
+
                     monthlyArchives[k] = {
                         month: k,
                         monthName: monthName,
                         totalPontos: totalPontos,
                         streak: streak,
-                        history: [],
+                        history: monthHistory, // 👈 DIAS INDIVIDUAIS RESTAURADOS!
                         archivedAt: new Date().toISOString()
                     };
                 });
