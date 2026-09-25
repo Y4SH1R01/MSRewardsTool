@@ -33,6 +33,7 @@
             --text-muted: #666666;
             --accent: #16a34a;
             --gold-light: #d97706;
+			--gold: var(--gold-light)
             color-scheme: light;
         }
         body {
@@ -340,53 +341,33 @@
         .tooltip-icon:hover {
             opacity: 1;
         }
-        /* Modo Horizontal: Ativo APENAS em telas de PC/Tablet (> 600px) */
-        @media (min-width: 601px) {
-            .app.horizontal {
-                max-width: 860px;
-                border-radius: 20px;
-                padding: 10px 0;
-            }
-            .app.horizontal .main {
-                flex-direction: row;
-                flex-wrap: wrap;
-                gap: 18px;
-                padding: 0 12px;
-            }
-            .app.horizontal .section,
-            .app.horizontal .estimate,
-            .app.horizontal .streak,
-            .app.horizontal .stats {
-                flex: 1;
-                min-width: 380px;
-                margin: 0;
-            }
-            .app.horizontal .streak {
-                flex: 1 1 380px;
-            }
-            .app.horizontal .history-list {
-                max-height: 340px;
-            }
+        /* Modo Horizontal acionado apenas pela classe .horizontal */
+        .app.horizontal {
+            max-width: 860px;
+            border-radius: 20px;
+            padding: 10px 0;
         }
-
-        /* Oculta o botão de layout no mobile permanentemente */
-        @media (max-width: 600px) {
-            #layout-btn {
-                display: none !important;
-            }
+        .app.horizontal .main {
+            flex-direction: row;
+            flex-wrap: wrap;
+            gap: 18px;
+            padding: 0 12px;
         }
-        @media (max-width: 360px) {
-            .streak-number {
-                font-size: 68px;
-            }
-            .section, .estimate, .streak, .stats {
-                padding: 18px 16px;
-            }
-            .stats-row {
-                flex-direction: column;
-                padding: 0 12px;
-            }
+        .app.horizontal .section,
+        .app.horizontal .estimate,
+        .app.horizontal .streak,
+        .app.horizontal .stats {
+            flex: 1;
+            min-width: 380px;
+            margin: 0;
         }
+        .app.horizontal .streak {
+            flex: 1 1 380px;
+        }
+        .app.horizontal .history-list {
+            max-height: 340px;
+        }
+		
         .add-history {
             display:flex;
             gap:10px;
@@ -2525,7 +2506,7 @@
             }
             chartContainer.style.display = 'flex';
 
-            const w = isHorizontalMode ? 640 : 320;
+            const w = isLandscapeActive() ? 640 : 320;
             const h = 68;
             const padX = 14;
             const padY = 8;
@@ -2656,7 +2637,7 @@
 
             grid.innerHTML = '';
 			
-            const colunas = isHorizontalMode ? totalDias : Math.ceil(totalDias / 2);
+            const colunas = isLandscapeActive() ? totalDias : Math.ceil(totalDias / 2);
             grid.style.gridTemplateColumns = `repeat(${colunas}, 1fr)`;
 
             for (let d = 1; d <= totalDias; d++) {
@@ -3420,18 +3401,50 @@
             }
         }
 
+        function toggleLayoutMode() {
+            isHorizontalMode = !isHorizontalMode;
+            localStorage.setItem('horizontalMode', isHorizontalMode);
+            applyLayoutMode();
+        }
+
+        // Detecta a orientação física do celular automaticamente
+        function checkAutoOrientation() {
+            const isTouchMobile = ('ontouchstart' in window) || navigator.maxTouchPoints > 0;
+            const app = document.querySelector('.app');
+            if (!app) return false;
+
+            // Se for celular / tela touch
+            if (isTouchMobile) {
+                // Celular virado de lado (largura maior que altura) -> MODO HORIZONTAL
+                if (window.innerWidth > window.innerHeight) {
+                    app.classList.add('horizontal');
+                    return true;
+                } else {
+                    // Celular em pé (altura maior que largura) -> MODO VERTICAL
+                    app.classList.remove('horizontal');
+                    return false;
+                }
+            }
+            return false;
+        }
+
+        // applyLayoutMode atualizada: Gerencia Celular e PC de forma independente
         function applyLayoutMode() {
             const app = document.querySelector('.app');
             const btn = document.getElementById('layout-btn');
             if (!app) return;
 
-            // Se for celular (tela <= 600px), força modo vertical e não deixa vazar
-            if (window.innerWidth <= 600) {
-                app.classList.remove('horizontal');
+            // 1. NO CELULAR: A orientação física manda em tudo e o botão de alternar fica oculto
+            const isMobile = ('ontouchstart' in window) || navigator.maxTouchPoints > 0;
+            if (isMobile) {
                 if (btn) btn.style.display = 'none';
+                checkAutoOrientation();
+                if (typeof updateStats === 'function') updateStats();
                 return;
             }
 
+            // 2. NO COMPUTADOR: O botão manual do rodapé e a preferência salva mandam
+            if (btn) btn.style.display = '';
             if (isHorizontalMode) {
                 app.classList.add('horizontal');
                 if (btn) btn.textContent = '↕️ Modo Vertical';
@@ -3443,7 +3456,13 @@
             if (typeof updateStats === 'function') updateStats();
         }
 
-        // ==================== OUTRAS FUNÇÕES ====================
+        // Helper: Avisa os gráficos e o heatmap quando o modo horizontal está ativo (PC ou celular)
+        function isLandscapeActive() {
+            const app = document.querySelector('.app');
+            return app ? app.classList.contains('horizontal') : false;
+        }
+        
+		// ==================== OUTRAS FUNÇÕES ====================
         function abrirChangelog() {
             window.open('https://github.com/Y4SH1R01/MSRewardsTool/releases', '_blank');
         }
@@ -3703,6 +3722,18 @@
             });
             setInterval(checkActivityCycles, 60000);
         };
+		// Redesenha gráficos e cards automaticamente ao rotacionar o celular
+            window.addEventListener('resize', debounce(() => {
+                applyLayoutMode();
+                if (typeof updateStats === 'function') updateStats();
+            }, 100));
+
+            window.addEventListener('orientationchange', () => {
+                setTimeout(() => {
+                    applyLayoutMode();
+                    if (typeof updateStats === 'function') updateStats();
+                }, 150);
+            });
     </script>
 </body>
 </html>
