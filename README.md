@@ -1,6 +1,6 @@
 # 🎮 Microsoft Rewards Tool
 
-[![Versão](https://img.shields.io/badge/Versão-1.7.0-brightgreen)]()
+[![Versão](https://img.shields.io/badge/Versão-1.8.0-brightgreen)]()
 [![Licença](https://img.shields.io/badge/Licença-GPL--3.0-blue)]()
 [![Status](https://img.shields.io/badge/Status-Ativo-success)]()
 [![Changelog](https://shields.io/badge/Changelog-blue)](https://github.com/Y4SH1R01/MSRewardsTool/releases)
@@ -9,7 +9,8 @@
 
 Uma Single-File Application (SFA) que roda direto no navegador, sem necessidade de servidores ou banco de dados, para acompanhar seus pontos diários, streak, meta mensal, estatísticas profundas e conversão em reais.
 
-<img width="713" height="1822" alt="y4sh1r01 github io-MSRewardsTool" src="https://github.com/user-attachments/assets/274a4eb9-6d42-4972-a58b-09f469fe9f76" />
+<img width="1654" height="2630" alt="1 8 0" src="https://github.com/user-attachments/assets/c85f31c7-ed7d-4e88-9408-bd47caa71b56" />
+
 
 ---
 
@@ -107,8 +108,8 @@ Projeto criado com carinho para a comunidade brasileira de caçadores do Microso
 * Correções e features v1.3.0-1.3.1: GLM-5-Turbo.
 * Correções e features v1.3.2: GLM-5.2-Deep Think Max.
 * Correções e features v1.4.0: GLM-5.2-Deep Think Max & Gemini-3.7-flash.
-* Refatorações, novos módulos e versões v1.5.0-1.7.0: Gemini-3.7/3.8-flash.
+* Refatorações, novos módulos e versões v1.5.0-1.8.0: Gemini-3.7/3.8-flash.
 
 Se a ferramenta te ajuda na sua rotina diária de pontos, deixe uma ⭐ no repositório!
 
-**Última grande atualização:** 24 de setembro de 2026.
+**Última atualização:** 25 de setembro de 2026.
