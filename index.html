@@ -53,6 +53,7 @@
             padding: 12px;
             transition: background 0.4s ease, color 0.4s ease;
             color-scheme: dark;
+            overflow-x: hidden;
         }
 
         /* CANVAS DAS ESTRELAS (ATIVO TANTO NO DARK QUANTO NO LIGHT) */
@@ -277,6 +278,64 @@
         .act-pill.done {
             background: var(--accent);
             box-shadow: 0 0 5px rgba(34, 197, 94, 0.5);
+        }
+
+        .act-pill.bonus-pill {
+            background: var(--gold) !important;
+            box-shadow: 0 0 7px rgba(253, 224, 71, 0.9) !important;
+        }
+
+        .act-bonus-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 2px;
+            font-size: 10px;
+            font-weight: 700;
+            color: var(--gold);
+            background: rgba(253, 224, 71, 0.15);
+            border: 1px solid rgba(253, 224, 71, 0.35);
+            padding: 1px 6px;
+            border-radius: 4px;
+            margin-left: 6px;
+            animation: pulseBonusTag 1.8s infinite ease-in-out;
+        }
+
+        body.light .act-bonus-tag {
+            color: var(--gold-light);
+            background: rgba(217, 119, 6, 0.1);
+            border-color: rgba(217, 119, 6, 0.3);
+        }
+
+        .act-bonus-tag.done {
+            color: var(--accent);
+            background: rgba(34, 197, 94, 0.15);
+            border-color: rgba(34, 197, 94, 0.35);
+            animation: none;
+        }
+
+        body.light .act-bonus-tag.done {
+            color: #15803d;
+            background: rgba(22, 163, 74, 0.1);
+            border-color: rgba(22, 163, 74, 0.3);
+        }
+
+        .act-star.bonus-ready {
+            color: var(--gold) !important;
+            animation: pulseBonusStar 1.6s infinite ease-in-out !important;
+        }
+
+        body.light .act-star.bonus-ready {
+            color: var(--gold-light) !important;
+        }
+
+        @keyframes pulseBonusTag {
+            0%, 100% { transform: scale(1); opacity: 0.9; }
+            50% { transform: scale(1.06); opacity: 1; filter: drop-shadow(0 0 4px rgba(253, 224, 71, 0.5)); }
+        }
+
+        @keyframes pulseBonusStar {
+            0%, 100% { transform: scale(1); filter: drop-shadow(0 0 2px rgba(253, 224, 71, 0.3)); }
+            50% { transform: scale(1.3); filter: drop-shadow(0 0 8px rgba(253, 224, 71, 0.9)); }
         }
 
         .act-star {
@@ -596,12 +655,36 @@
             max-height: 340px;
         }
 
-        @media (max-width: 360px) {
+        @media (max-width: 480px) {
+            body {
+                padding: 6px;
+            }
+            .app {
+                border-radius: 18px;
+            }
+            .meta-title {
+                flex-wrap: wrap;
+                gap: 8px;
+            }
+            .section, .estimate, .streak, .stats, .history, .converter {
+                padding: 16px 12px;
+            }
+            .estimate-grid {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 8px;
+            }
+            .estimate-box:last-child {
+                grid-column: span 2;
+            }
+            .estimate-box {
+                padding: 10px 8px;
+            }
+            .estimate-box strong {
+                font-size: 18px;
+            }
             .streak-number {
                 font-size: 68px;
-            }
-            .section, .estimate, .streak, .stats {
-                padding: 18px 16px;
             }
             .stats-row {
                 flex-direction: column;
@@ -901,6 +984,7 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
+            padding-right: 28px;
             margin-bottom: 10px;
             font-size: 17px;
             color: var(--text);
@@ -935,21 +1019,103 @@
             height: 10px;
             background: #333;
             border-radius: 999px;
-            overflow: hidden;
-            margin: 8px 0;
+            overflow: visible;
+            margin: 10px 0;
+            position: relative;
         }
 
         .progress {
             height: 100%;
             background: linear-gradient(90deg, #22c55e, #4ade80);
+            border-radius: 999px;
             transition: width 0.4s;
         }
 
+        .progress-marker {
+            position: absolute;
+            top: -3px;
+            bottom: -3px;
+            width: 3px;
+            background: #ffffff;
+            border-radius: 2px;
+            box-shadow: 0 0 6px rgba(255, 255, 255, 0.9);
+            transition: left 0.3s ease, opacity 0.3s ease;
+            pointer-events: auto;
+            cursor: pointer;
+            z-index: 2;
+            transform: translateX(-50%);
+        }
+
+        .progress-marker:hover {
+            transform: translateX(-50%) scaleY(1.3);
+            box-shadow: 0 0 10px rgba(255, 255, 255, 1);
+        }
+
+        body.light .progress-marker {
+            background: #0f172a;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.4);
+        }
+
+        .progress-marker.meta-done {
+            top: 50% !important;
+            bottom: auto !important;
+            transform: translate(-50%, -50%) !important;
+            width: auto !important;
+            height: 16px !important;
+            padding: 0 6px !important;
+            background: #090e09 !important;
+            border: 1.5px solid var(--gold) !important;
+            border-radius: 999px !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            box-shadow: 0 0 10px rgba(253, 224, 71, 0.7) !important;
+            z-index: 5 !important;
+            cursor: pointer !important;
+        }
+
+        .progress-marker.meta-done:hover {
+            transform: translate(-50%, -50%) scale(1.15) !important;
+            box-shadow: 0 0 14px rgba(253, 224, 71, 1) !important;
+        }
+
+        body.light .progress-marker.meta-done {
+            background: #ffffff !important;
+            border-color: var(--gold-light) !important;
+            box-shadow: 0 0 8px rgba(217, 119, 6, 0.6) !important;
+        }
+
+        .progress-marker.meta-done span {
+            font-size: 9px !important;
+            font-weight: 800 !important;
+            color: var(--gold) !important;
+            letter-spacing: -0.2px !important;
+            line-height: 1 !important;
+            user-select: none !important;
+        }
+
+        body.light .progress-marker.meta-done span {
+            color: var(--gold-light) !important;
+        }
+
         .meta-info {
-            display: flex;
-            justify-content: space-between;
-            font-size: 15px;
-            color: var(--text-light);
+            display: flex !important;
+            justify-content: space-between !important;
+            align-items: baseline !important;
+            width: 100% !important;
+            font-size: 14.5px;
+            color: var(--text-subtle);
+            box-sizing: border-box;
+        }
+
+        #meta-pacing-wrap {
+            margin-left: auto;
+            text-align: right;
+        }
+
+        #tempo-mensal {
+            padding: 0 28px;
+            box-sizing: border-box;
         }
 
         .history {
@@ -1181,11 +1347,9 @@
 
         .mini-chart {
             width: 100%;
-            height: 72px;
+            height: 100px;
             margin: 8px 0 14px 0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            display: block;
             position: relative;
         }
 
@@ -1216,6 +1380,44 @@
             filter: drop-shadow(0 2px 5px rgba(34, 197, 94, 0.4));
         }
 
+        .chart-line-prev {
+            fill: none;
+            stroke: var(--text-muted);
+            stroke-width: 1.8;
+            stroke-dasharray: 4, 4;
+            opacity: 0.45;
+        }
+
+        .chart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .chart-header h3 {
+            margin: 0;
+            font-size: 18px;
+        }
+
+        .chart-select {
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid var(--border);
+            color: var(--text);
+            border-radius: 8px;
+            padding: 4px 8px;
+            font-size: 11.5px;
+            outline: none;
+            cursor: pointer;
+            font-weight: 500;
+        }
+
+        body.light .chart-select {
+            background: #ffffff;
+            border-color: #cbd5e1;
+            color: #000000;
+        }
+
         .chart-dot {
             fill: var(--card);
             stroke: var(--accent);
@@ -1227,6 +1429,21 @@
         .chart-dot:hover {
             r: 5.5;
             fill: var(--accent);
+        }
+
+        .chart-dot-prev {
+            fill: var(--card);
+            stroke: var(--text-muted);
+            stroke-width: 1.8;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            opacity: 0.6;
+        }
+
+        .chart-dot-prev:hover {
+            r: 4.8;
+            fill: var(--text-muted);
+            opacity: 1;
         }
 
         .stats {
@@ -1321,7 +1538,7 @@
             box-shadow: 0 4px 12px rgba(0,0,0,0.08);
         }
 
-        /* HEATMAP COM 15 COLUNAS (2 LINHAS) E TRAVA ANTI-VAZAMENTO */
+        /* HEATMAP DINAMICO (ADAPTAVEL PARA 28, 29, 30 E 31 DIAS) */
         .heatmap-container {
             background: rgba(255, 255, 255, 0.03);
             border: 1px solid var(--border);
@@ -1350,11 +1567,58 @@
             color: var(--text);
         }
 
+        .heatmap-toggle-btn {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border);
+            color: var(--text);
+            border-radius: 6px;
+            padding: 2px 7px;
+            font-size: 11px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            white-space: nowrap;
+        }
+
+        .heatmap-toggle-btn:hover {
+            background: rgba(255, 255, 255, 0.12);
+        }
+
+        body.light .heatmap-toggle-btn {
+            background: #ffffff;
+            border-color: #cbd5e1;
+            color: #000000;
+        }
+
+        .heat-weekday-header {
+            font-size: 9.5px;
+            font-weight: 700;
+            color: var(--text-muted);
+            text-align: center;
+            padding-bottom: 2px;
+            user-select: none;
+        }
+
+        .heat-empty {
+            aspect-ratio: 1 / 1;
+            min-width: 0;
+            pointer-events: none;
+        }
+
         .heatmap-grid {
             display: grid;
-            grid-template-columns: repeat(15, 1fr);
             gap: 3px;
             box-sizing: border-box;
+            width: 100%;
+        }
+
+        @media (max-width: 420px) {
+            .heatmap-grid {
+                gap: 2px;
+            }
+            .heat-day {
+                font-size: 8.5px;
+                border-radius: 4px;
+            }
         }
 
         .heat-day {
@@ -1567,11 +1831,24 @@
             align-items: center;
             margin-bottom: 4px;
             font-size: 13.5px;
+            gap: 8px;
         }
 
-        .weekday-info strong {
-            display: inline-flex;
+        .weekday-left {
+            display: flex;
             align-items: center;
+            gap: 6px;
+            flex-wrap: wrap;
+            min-width: 0;
+        }
+
+        .weekday-right {
+            display: flex;
+            align-items: baseline;
+            gap: 4px;
+            white-space: nowrap;
+            flex-shrink: 0;
+            text-align: right;
         }
 
         .weekday-bar-wrap {
@@ -1603,6 +1880,8 @@
             justify-content: space-between;
             font-size: 10.5px;
             color: var(--text-muted);
+            gap: 6px;
+            flex-wrap: wrap;
         }
 
         .weekday-badge {
@@ -1614,8 +1893,8 @@
             font-weight: 700;
             padding: 2.5px 6px;
             border-radius: 5px;
-            margin-left: 6px;
             text-transform: uppercase;
+            white-space: nowrap;
         }
 
         .weekday-badge.best {
@@ -1681,17 +1960,30 @@
             transform: translateY(-1px);
         }
 
+        /* MODAL QR CODE */
+        #sync-content {
+            text-align: center;
+            max-width: 520px !important;
+        }
+
         .qrcode-wrapper {
             background: #ffffff;
             padding: 16px;
-            border-radius: 16px;
-            display: inline-block;
-            margin: 16px 0;
+            border-radius: 18px;
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            margin: 16px auto;
             box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+            max-width: 100%;
+            box-sizing: border-box;
         }
+
         #sync-qrcode img, #sync-qrcode canvas {
             display: block;
             margin: 0 auto;
+            max-width: 100%;
+            height: auto;
         }
         .copy-link-btn {
             background: var(--card-subtle);
@@ -1729,12 +2021,24 @@
             margin-bottom: 6px;
             font-weight: 600;
         }
+        /* MODAL HISTORICO DE MESES AMPLIADO */
+        #archive-content {
+            max-width: 580px !important;
+            width: 95% !important;
+        }
+
+        #archive-list {
+            max-height: 65vh !important;
+        }
+
         .consolidated-badge {
             background: rgba(255, 255, 255, 0.08);
-            padding: 2px 7px;
+            padding: 2px 8px;
             border-radius: 6px;
             font-size: 11px;
             color: var(--text);
+            white-space: nowrap;
+            flex-shrink: 0;
         }
         body.light .consolidated-badge {
             background: rgba(0, 0, 0, 0.06);
@@ -1819,24 +2123,27 @@
         <div class="main">
             <!-- META MENSAL -->
             <div class="section meta">
+                <span onclick="mostrarTooltip('Meta Mensal & Níveis', 'Defina sua meta pessoal mensal de pontos.<br>A barra verde mostra seu progresso em tempo real.<br><br>' +
+                    '<strong>O badge de nível ao lado atualiza automaticamente com base nos seus pontos mensais!</strong><br><br>' +
+                    '📌 <strong>Níveis do MS Rewards Brasil:</strong><br>' +
+                    '🥉 <strong>Membro:</strong> Até 499 pts/mês (Buscas: 15, ganhos por dólar gasto na MS Store: 1x)<br>' +
+                    '🥈 <strong>Prata:</strong> 500 a 749 pts/mês (Buscas: 30, ganhos por dólar gasto na MS Store: 10x)<br>' +
+                    '🥇 <strong>Gold:</strong> 750+ pts/mês (Buscas: 60, ganhos por dólar gasto na MS Store: 10x)<br><br>' +
+                    '💡 <strong>Dica:</strong> Clique no botão &quot;🔗 Sobre Níveis&quot; no rodapé da página para abrir a página oficial da Microsoft com a tabela completa de níveis e benefícios.')" class="tooltip-icon">ℹ️</span>
                 <div class="meta-title">
                     <span>Meta Mensal <span id="current-tier" class="tier-badge tier-membro">Membro</span></span>
                     <div class="meta-value-group">
                         <button onclick="editMeta()" class="edit-btn">Editar</button>
                         <span id="meta-value" class="meta-value">0 pts</span>
-                        <span onclick="mostrarTooltip('Meta Mensal & Níveis', 'Defina sua meta pessoal mensal de pontos.<br>A barra verde mostra seu progresso em tempo real.<br><br>' +
-                            '<strong>O badge de nível ao lado atualiza automaticamente com base nos seus pontos mensais!</strong><br><br>' +
-                            '📌 <strong>Níveis do MS Rewards Brasil:</strong><br>' +
-                            '🥉 <strong>Membro:</strong> Até 499 pts/mês (Buscas: 15, ganhos por dólar gasto na MS Store: 1x)<br>' +
-                            '🥈 <strong>Prata:</strong> 500 a 749 pts/mês (Buscas: 30, ganhos por dólar gasto na MS Store: 10x)<br>' +
-                            '🥇 <strong>Gold:</strong> 750+ pts/mês (Buscas: 60, ganhos por dólar gasto na MS Store: 10x)<br><br>' +
-                            '💡 <strong>Dica:</strong> Clique no botão &quot;🔗 Sobre Níveis&quot; no rodapé da página para abrir a página oficial da Microsoft com a tabela completa de níveis e benefícios <strong>(requer login no Rewards!)</strong>')" class="tooltip-icon" style="position:static;">ℹ️</span>
                     </div>
                 </div>
-                <div class="progress-bar"><div class="progress" id="progress"></div></div>
+                <div class="progress-bar">
+                    <div class="progress" id="progress"></div>
+                    <div class="progress-marker" id="progress-marker" onclick="explicarMarcaFantasma()" title="Clique para entender o Ritmo Ideal"></div>
+                </div>
                 <div class="meta-info">
                     <span id="pontos-meta">0 pts</span>
-                    <span><strong id="percent">0%</strong> da meta</span>
+                    <span id="meta-pacing-wrap"><strong id="percent">0%</strong> da meta</span>
                 </div>
             </div>
 
@@ -1924,14 +2231,23 @@
 
             <!-- ESTATÍSTICAS -->
             <div class="section stats">
-                <h3>📊 Estatísticas</h3>
+                <div class="chart-header">
+                    <h3>📊 Estatísticas</h3>
+                    <select id="chart-compare-select" class="chart-select" onchange="updateStats()">
+                        <option value="prev">vs Mês Anterior</option>
+                        <option value="none">Sem Comparação</option>
+                    </select>
+                </div>
                 <div id="mini-chart" class="mini-chart"></div>
 
                 <!-- MINI-HEATMAP DO MÊS -->
                 <div class="heatmap-container">
                     <div class="heatmap-header">
                         <span id="heatmap-title">📅 Presença no Mês</span>
-                        <span id="heatmap-status" class="heatmap-status">—</span>
+                        <div style="display:flex; align-items:center; gap:8px;">
+                            <button id="heatmap-toggle-btn" class="heatmap-toggle-btn" onclick="toggleHeatmapView()">🗓️ Calendário</button>
+                            <span id="heatmap-status" class="heatmap-status">—</span>
+                        </div>
                     </div>
                     <div id="heatmap-grid" class="heatmap-grid"></div>
                 </div>
@@ -1952,7 +2268,7 @@
                 </div>
 
         <div class="footer">
-            <span class="footer-text">Microsoft Rewards Tool — Feito para caçadores brasileiros • <strong>v1.8.0</strong></span>
+            <span class="footer-text">Microsoft Rewards Tool — Feito para caçadores brasileiros • <strong>v1.9.0</strong></span>
             <div class="footer-buttons">
                 <a href="https://rewards.bing.com/about" target="_blank" rel="noopener noreferrer" class="footer-btn">🔗 Sobre Níveis</a>
                 <button onclick="abrirChangelog()" class="footer-btn">Ver Changelog</button>
@@ -2038,8 +2354,8 @@
 
     <script>
         // ==================== CONFIGURAÇÕES INICIAIS ====================
-        const VERSION = "1.8.0";
-        const DATA_VERSION = "1.8.0";
+        const VERSION = "1.9.0";
+        const DATA_VERSION = "1.9.0";
         let isHorizontalMode = localStorage.getItem('horizontalMode') === 'true';
 
         // ==================== HELPER: LOCAL DATE FIX ====================
@@ -2167,12 +2483,10 @@
                 const todayStr = getLocalDateString();
                 const oldStreak = this.data.streak;
 
-                if (this.data.streakManualOverride) {
-                    if (fullDate === todayStr && this.data.lastStreakDate !== todayStr) {
-                        this.data.streak++;
-                        this.data.lastStreakDate = todayStr;
-                    }
-                } else {
+                if (fullDate === todayStr && this.data.lastStreakDate !== todayStr) {
+                    this.data.streak++;
+                    this.data.lastStreakDate = todayStr;
+                } else if (!this.data.streakManualOverride) {
                     this.data.streak = calculateStreak();
                 }
 
@@ -2215,7 +2529,7 @@
             },
 
             setStreak(newStreak, isManual) {
-                this.data.streak = newStreak;
+                this.data.streak = validatePositiveNumber(newStreak, 20000);
                 this.data.streakManualOverride = isManual;
                 this.save();
             },
@@ -2266,46 +2580,36 @@
             const today = getLocalDateString();
             const yesterday = getPreviousDay(today);
             
-            // 1. Pega as datas únicas do histórico ativo (mês atual)
             let activeDates = [];
             if (AppState.data.history.length > 0) {
                 activeDates = [...new Set(AppState.data.history.map(h => h.fullDate))];
             }
             activeDates.sort().reverse();
 
-            // Se tem histórico ativo, mas o mais recente não é hoje nem ontem, a sequência quebrou.
+            // Se o último registro foi antes de ontem, a sequência realmente quebrou!
             if (activeDates.length > 0 && activeDates[0] !== today && activeDates[0] !== yesterday) {
                 return 0;
             }
 
-            // Define de onde começar a contagem
             let checkDate = activeDates.length > 0 ? activeDates[0] : yesterday;
-            let streak = 0;
+            let streakTabela = 0;
             let activeIndex = 0;
 
-            // FASE 1: Contar os dias consecutivos no histórico ATIVO
             while (activeIndex < activeDates.length) {
                 if (activeDates[activeIndex] === checkDate) {
-                    streak++;
+                    streakTabela++;
                     checkDate = getPreviousDay(checkDate);
                     activeIndex++;
                 } else if (activeDates[activeIndex] < checkDate) {
-                    break; // Faltou um dia no meio do mês atual
+                    break;
                 } else {
-                    activeIndex++; // Ignora datas fora de ordem
+                    activeIndex++;
                 }
             }
 
-            // FASE 2: Se terminou o histórico ativo e ainda faltam dias, procurar nos ARQUIVOS
-            if (activeIndex >= activeDates.length && streak > 0) {
-                let missingMonthKey = checkDate.substring(0, 7); // Pega o "YYYY-MM" do dia que falta
+            if (activeIndex >= activeDates.length && streakTabela > 0) {
+                let missingMonthKey = checkDate.substring(0, 7);
                 let archiveToCheck = AppState.data.monthlyArchives[missingMonthKey];
-                
-                // Se não tiver arquivo do mês que estamos checando, tenta pular direto pro mês anterior
-                if (!archiveToCheck || !archiveToCheck.history) {
-                    missingMonthKey = getPreviousDay(checkDate + '-01').substring(0, 7);
-                    archiveToCheck = AppState.data.monthlyArchives[missingMonthKey];
-                }
 
                 while (archiveToCheck && archiveToCheck.history) {
                     let archiveDates = [...new Set(archiveToCheck.history.map(h => h.fullDate))].sort().reverse();
@@ -2314,45 +2618,38 @@
                     
                     while (archiveIndex < archiveDates.length) {
                         if (archiveDates[archiveIndex] === checkDate) {
-                            streak++;
+                            streakTabela++;
                             checkDate = getPreviousDay(checkDate);
                             archiveIndex++;
                             foundInThisArchive = true;
                         } else if (archiveDates[archiveIndex] < checkDate) {
-                            break; // Faltou um dia neste arquivo, vamos pular pro mês anterior
+                            break;
                         } else {
                             archiveIndex++;
                         }
                     }
 
-                    // CORREÇÃO DO BUG: Se chegou no fim das datas deste arquivo E ainda faltam dias,
-                    // significa que o mês simplesmente acabou. Força a troca para o mês anterior.
                     if (!foundInThisArchive || archiveIndex >= archiveDates.length) {
-                        const prevMonthKey = getPreviousDay(checkDate + '-01').substring(0, 7);
-                        if (prevMonthKey === missingMonthKey) break; // Segurança contra loop infinito
-                        
-                        archiveToCheck = AppState.data.monthlyArchives[prevMonthKey];
-                        missingMonthKey = prevMonthKey;
+                        const nextMonthKey = checkDate.substring(0, 7);
+                        if (nextMonthKey === missingMonthKey) break;
+                        archiveToCheck = AppState.data.monthlyArchives[nextMonthKey];
+                        missingMonthKey = nextMonthKey;
                     }
                 }
-            } 
-            // FASE 3 (Ocorre se der um Reset total): Histório vazio, mas tem arquivos salvos.
-            else if (activeDates.length === 0 && streak === 0) {
-                const archiveKeys = Object.keys(AppState.data.monthlyArchives).sort().reverse();
-                if (archiveKeys.length > 0) {
-                    const lastArchive = AppState.data.monthlyArchives[archiveKeys[0]];
-                    // Puxa a streak exata que foi salva no último arquivo gerado
-                    if (lastArchive.streak !== undefined) return lastArchive.streak;
-                }
-                return 0;
             }
 
-            return streak;
+            // NUNCA rebaixa sua streak real (ex: 418) para a quantidade de dias da tabela (120)!
+            return Math.max(AppState.data.streak || 0, streakTabela);
         }
 
         // ==================== ATIVITIES LOGIC ====================
         function checkActivityCycles() {
             const today = getLocalDateString();
+            const dateInput = document.getElementById('hist-date');
+            if (dateInput && dateInput.max !== today) {
+                dateInput.max = today;
+            }
+
             const acts = AppState.data.activitiesData;
             let changed = false;
 
@@ -2420,22 +2717,54 @@
             for (let key in acts) {
                 const act = acts[key];
                 const isCompleted = act.completedToday;
+                const isDay7 = act.day === 7;
                 const item = document.createElement('div');
                 item.className = 'act-item';
-                
+
+                let bonusBadgeHtml = '';
+                if (isDay7) {
+                    bonusBadgeHtml = isCompleted
+                        ? `<span class="act-bonus-tag done">🎁 Resgatado</span>`
+                        : `<span class="act-bonus-tag">🎁 Bônus Hoje!</span>`;
+                }
+
                 let pillsHtml = '<div class="act-track">';
                 for (let i = 1; i <= 7; i++) {
-                    const statusClass = i <= act.day ? (isCompleted ? 'done' : 'active') : '';
+                    let statusClass = '';
+                    if (i < act.day) {
+                        statusClass = 'done';
+                    } else if (i === act.day) {
+                        if (isCompleted) {
+                            statusClass = 'done';
+                        } else {
+                            statusClass = isDay7 ? 'active bonus-pill' : 'active';
+                        }
+                    }
                     pillsHtml += `<span class="act-pill ${statusClass}"></span>`;
                 }
                 pillsHtml += `</div>`;
 
+                let starClass = 'not-completed';
+                if (isCompleted) {
+                    starClass = 'completed';
+                } else if (isDay7) {
+                    starClass = 'bonus-ready not-completed';
+                }
+
+                const starTitle = isDay7
+                    ? (isCompleted ? 'Bônus semanal do 7º dia concluído!' : 'Dia 7! Marque para garantir o bônus semanal!')
+                    : 'Marcar como concluído';
+
                 item.innerHTML = `
                     <div class="act-info" onclick="editActivityDay('${key}')">
-                        <span class="act-name">${ACTIVITY_NAMES[key]} <small style="color:var(--text-muted); font-size:11px; font-weight:normal;">(${act.day}/7)</small></span>
+                        <span class="act-name">
+                            ${ACTIVITY_NAMES[key]} 
+                            <small style="color:var(--text-muted); font-size:11px; font-weight:normal;">(${act.day}/7)</small>
+                            ${bonusBadgeHtml}
+                        </span>
                         ${pillsHtml}
                     </div>
-                    <button class="act-star ${isCompleted ? 'completed' : 'not-completed'}" onclick="toggleActivity('${key}')" title="Marcar como concluído">
+                    <button class="act-star ${starClass}" onclick="toggleActivity('${key}')" title="${starTitle}">
                         ${isCompleted ? '★' : '☆'}
                     </button>
                 `;
@@ -2539,12 +2868,14 @@
             return valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
         }
 
+        let toastTimeout = null;
         function showToast(message, duration = 2500) {
             const toast = document.getElementById('toast');
-            toast.textContent = message;
+            toast.innerHTML = message;
             toast.style.opacity = '1';
             toast.style.transform = 'translateX(-50%) translateY(0)';
-            setTimeout(() => {
+            if (toastTimeout) clearTimeout(toastTimeout);
+            toastTimeout = setTimeout(() => {
                 toast.style.opacity = '0';
                 toast.style.transform = 'translateX(-50%) translateY(20px)';
             }, duration);
@@ -2561,6 +2892,15 @@
 
         function fecharTooltip() {
             document.getElementById('tooltip-modal').style.display = 'none';
+        }
+
+        function explicarMarcaFantasma() {
+            mostrarTooltip('📍 Marca de Ritmo Ideal', 
+                'Esta linha na barra de meta indica <strong>onde o calendário está hoje</strong> no mês.<br><br>' +
+                '• <strong>Linha Branca (Meta em andamento):</strong> Mostra onde você deveria estar. Se a barra verde passou da marca, você está adiantado no mês.<br>' +
+                '• <strong>Linha Dourada (Meta concluída):</strong> Mesmo após bater 100%, ela marca a data de hoje para você ver o quanto você já ultrapassou a meta antes do fim do mês!<br><br>' +
+                '🏆 <strong>Pontos Extras:</strong> Tudo o que você pontuar além dos 100% passa a ser contabilizado como saldo excedente.'
+            );
         }
 
         // ==================== FUNÇÕES DE TEMPO ====================
@@ -2602,15 +2942,16 @@
             const historicoMesAtual = AppState.data.history.filter(h => h.fullDate && h.fullDate.startsWith(mesPrefixo));
             const diasRegistradosMes = historicoMesAtual.length;
 
+            const taxa = AppState.getConversionRate();
+
             if (diasRegistradosMes === 0 && AppState.data.history.length === 0) {
-                mediaEl.textContent = "0 pts";
+                mediaEl.innerHTML = `0 pts<span class="stat-subreais">(R$ 0,00)</span>`;
                 labelEl.textContent = "Faltam para meta";
                 faltamEl.innerHTML = `<span style="color:#888">—</span>`;
                 document.getElementById('projecao-final').innerHTML = `<small>Projeção final</small><br><strong>0 pts</strong>`;
                 return;
             }
 
-            // Média diária precisa baseada no mês atual (com fallback caso o mês esteja começando hoje)
             let mediaDiaria = 0;
             if (diasRegistradosMes > 0) {
                 mediaDiaria = AppState.data.totalMensal / diasRegistradosMes;
@@ -2618,10 +2959,10 @@
                 const totalGeral = AppState.data.history.reduce((sum, item) => sum + item.pontos, 0);
                 mediaDiaria = totalGeral / AppState.data.history.length;
             }
-            mediaEl.textContent = Math.round(mediaDiaria) + " pts";
+            
+            const mediaReais = formatarReais(mediaDiaria / taxa);
+            mediaEl.innerHTML = `${formatarNumero(Math.round(mediaDiaria))} pts<span class="stat-subreais">(${mediaReais})</span>`;
 
-            // Projeção final exata com estimativa em Reais
-            const taxa = AppState.getConversionRate();
             const projecaoFinal = AppState.data.totalMensal + (mediaDiaria * diasRestantes);
             const projecaoReais = formatarReais(projecaoFinal / taxa);
             document.getElementById('projecao-final').innerHTML = `<small>Projeção final</small><br><strong>${formatarNumero(Math.round(projecaoFinal))} pts</strong><span class="stat-subreais">(${projecaoReais})</span>`;
@@ -2684,18 +3025,70 @@
             const taxa = AppState.getConversionRate();
             document.getElementById('resultado').textContent = formatarReais(pontosInput / taxa);
             document.getElementById('taxa-atual').textContent = `${taxa.toFixed(2).replace('.', ',')} pontos ≈ R$ 1,00`;
-            const percent = AppState.getMetaProgress();
-            document.getElementById('pontos-meta').textContent = `${formatarNumero(AppState.data.totalMensal)} pts`;
-            document.getElementById('percent').textContent = `${percent}%`;
-            document.getElementById('progress').style.width = `${percent}%`;
-         // Cor dinâmica da barra de progresso
+            const meta = AppState.data.metaMensal;
+            const total = AppState.data.totalMensal;
+            const metaBatida = meta > 0 && total >= meta;
+            const rawPercent = meta > 0 ? parseFloat(((total / meta) * 100).toFixed(1)) : 0;
+            const visualBarPercent = metaBatida ? 100 : Math.min(100, rawPercent);
+
+            document.getElementById('pontos-meta').textContent = `${formatarNumero(total)} pts`;
+            document.getElementById('progress').style.width = `${visualBarPercent}%`;
+
+            const agora = new Date();
+            const diaHoje = agora.getDate();
+            const totalDiasMes = new Date(agora.getFullYear(), agora.getMonth() + 1, 0).getDate();
+            const pctEsperada = parseFloat(((diaHoje / totalDiasMes) * 100).toFixed(1));
+
+            const marker = document.getElementById('progress-marker');
+
+            if (marker) {
+                marker.style.display = 'block';
+
+                if (metaBatida) {
+                    // Gamificação: A marca dourada recua para o ponto onde você atingiu 100%!
+                    const pos100 = parseFloat(((meta / total) * 100).toFixed(1));
+                    marker.style.left = `${pos100}%`;
+                    marker.classList.add('meta-done');
+                    marker.innerHTML = '<span>100%</span>';
+                    marker.title = `100% da Meta (${formatarNumero(meta)} pts) batido aqui! Você já está em ${rawPercent}%!`;
+                } else {
+                    marker.style.left = `${Math.min(100, pctEsperada)}%`;
+                    marker.classList.remove('meta-done');
+                    marker.innerHTML = '';
+                    marker.title = `Ritmo ideal para hoje: dia ${diaHoje} de ${totalDiasMes}`;
+                }
+            }
+
+            let badgePacing = '';
+            const infoBtnRitmo = ` <span onclick="explicarMarcaFantasma()" style="cursor:pointer; font-size:13px; opacity:0.85; margin-left:3px; vertical-align:middle;" title="Entenda o Ritmo Ideal">ℹ️</span>`;
+
+            if (metaBatida) {
+                const extras = total - meta;
+                badgePacing = ` <small style="color:var(--gold); font-size:11.5px; font-weight:700; cursor:pointer;" onclick="explicarMarcaFantasma()">(🎉 +${formatarNumero(extras)} pts além da meta)</small>${infoBtnRitmo}`;
+            } else if (meta > 0) {
+                const diffPacing = parseFloat((rawPercent - pctEsperada).toFixed(1));
+                if (diffPacing >= 0) {
+                    badgePacing = ` <small style="color:var(--accent); font-size:11.5px; font-weight:600; cursor:pointer;" onclick="explicarMarcaFantasma()">(+${diffPacing}% 🚀)</small>${infoBtnRitmo}`;
+                } else {
+                    badgePacing = ` <small style="color:#ef4444; font-size:11.5px; font-weight:600; cursor:pointer;" onclick="explicarMarcaFantasma()">(${diffPacing}% ⚠️)</small>${infoBtnRitmo}`;
+                }
+            }
+
+            const pacingWrap = document.getElementById('meta-pacing-wrap');
+            if (pacingWrap) {
+                const percentColor = metaBatida ? 'color:#4ade80;' : '';
+                pacingWrap.innerHTML = `<strong id="percent" style="${percentColor}">${rawPercent}%</strong> da meta${badgePacing}`;
+            } else {
+                document.getElementById('percent').textContent = `${rawPercent}%`;
+            }
+
             const progressBar = document.getElementById('progress');
             if (percent < 30) {
-                progressBar.style.background = 'linear-gradient(90deg, #ef4444, #f87171)'; // Vermelho
+                progressBar.style.background = 'linear-gradient(90deg, #ef4444, #f87171)';
             } else if (percent < 70) {
-                progressBar.style.background = 'linear-gradient(90deg, #fde047, #fbbf24)'; // Amarelo
+                progressBar.style.background = 'linear-gradient(90deg, #fde047, #fbbf24)';
             } else {
-                progressBar.style.background = 'linear-gradient(90deg, #22c55e, #4ade80)'; // Verde
+                progressBar.style.background = 'linear-gradient(90deg, #22c55e, #4ade80)';
             }
             document.getElementById('meta-value').textContent = `${formatarNumero(AppState.data.metaMensal)} pts`;
             atualizarTempoMensal();
@@ -2749,22 +3142,66 @@
             if (!chartContainer) return;
             chartContainer.innerHTML = '';
             
-            const maxDiasGrafico = isHorizontalMode ? 30 : 30;
+            const agoraStats = new Date();
+            const maxDiasGrafico = new Date(agoraStats.getFullYear(), agoraStats.getMonth() + 1, 0).getDate();
             const ultimosDias = AppState.data.history.slice(0, maxDiasGrafico).reverse();
             if (ultimosDias.length === 0) {
                 chartContainer.style.display = 'none';
                 return;
             }
-            chartContainer.style.display = 'flex';
+            chartContainer.style.display = 'block';
 
-            const w = isLandscapeActive() ? 640 : 320;
-            const h = 68;
-            const padX = 14;
-            const padY = 8;
+            const selectEl = document.getElementById('chart-compare-select');
+            const archives = AppState.data.monthlyArchives || {};
+            const archiveKeys = Object.keys(archives).sort().reverse();
+
+            if (selectEl) {
+                const currentVal = selectEl.value;
+                let optionsHtml = `
+                    <option value="prev">vs Mês Anterior</option>
+                    <option value="none">Sem Comparação</option>
+                `;
+                archiveKeys.forEach(k => {
+                    const arc = archives[k];
+                    const label = arc.monthName || k;
+                    optionsHtml += `<option value="${k}">vs ${label}</option>`;
+                });
+                selectEl.innerHTML = optionsHtml;
+                if (currentVal && Array.from(selectEl.options).some(o => o.value === currentVal)) {
+                    selectEl.value = currentVal;
+                }
+            }
+
+            const compareMode = selectEl ? selectEl.value : 'prev';
+            let prevDays = [];
+            let compareLabel = "Mês Anterior";
+
+            if (compareMode !== 'none') {
+                if (compareMode === 'prev') {
+                    const hoje = new Date();
+                    const prevMonthDate = new Date(hoje.getFullYear(), hoje.getMonth() - 1, 1);
+                    const prevMonthKey = `${prevMonthDate.getFullYear()}-${String(prevMonthDate.getMonth() + 1).padStart(2, '0')}`;
+                    const prevArchive = archives[prevMonthKey] || (archiveKeys.length > 0 ? archives[archiveKeys[0]] : null);
+                    if (prevArchive && prevArchive.history) {
+                        prevDays = [...prevArchive.history].reverse().slice(0, ultimosDias.length);
+                        compareLabel = prevArchive.monthName || "Mês Anterior";
+                    }
+                } else if (archives[compareMode] && archives[compareMode].history) {
+                    prevDays = [...archives[compareMode].history].reverse().slice(0, ultimosDias.length);
+                    compareLabel = archives[compareMode].monthName || compareMode;
+                }
+            }
+
+            const isMobile = window.innerWidth <= 480 || !isLandscapeActive();
+            const w = isMobile ? 360 : 800;
+            const h = 100;
+            const padX = isMobile ? 8 : 12;
+            const padY = 14;
 
             const pontosArr = ultimosDias.map(d => d.pontos);
-            const minPts = Math.min(...pontosArr);
-            const maxPts = Math.max(...pontosArr);
+            const todosPontos = prevDays.length > 0 ? pontosArr.concat(prevDays.map(d => d.pontos)) : pontosArr;
+            const minPts = Math.min(...todosPontos);
+            const maxPts = Math.max(...todosPontos);
             const range = (maxPts - minPts) || 1;
 
             const coords = ultimosDias.map((d, index) => {
@@ -2774,6 +3211,13 @@
                 const y = ultimosDias.length === 1 
                     ? h / 2 
                     : (h - padY) - ((d.pontos - minPts) / range) * (h - padY * 2);
+                return { x, y, data: d };
+            });
+
+            const prevCoords = prevDays.map((d, index) => {
+                const totalPoints = Math.max(ultimosDias.length, prevDays.length);
+                const x = padX + (index / (totalPoints - 1 || 1)) * (w - padX * 2);
+                const y = (h - padY) - ((d.pontos - minPts) / range) * (h - padY * 2);
                 return { x, y, data: d };
             });
 
@@ -2794,6 +3238,14 @@
                 <line x1="0" y1="${h / 2}" x2="${w}" y2="${h / 2}" class="chart-guide" />
             `;
 
+            if (prevCoords.length > 1) {
+                const prevPath = prevCoords.map((c, i) => `${i === 0 ? 'M' : 'L'} ${c.x} ${c.y}`).join(' ');
+                const pathPrevEl = document.createElementNS("http://www.w3.org/2000/svg", "path");
+                pathPrevEl.setAttribute("d", prevPath);
+                pathPrevEl.setAttribute("class", "chart-line-prev");
+                svg.appendChild(pathPrevEl);
+            }
+
             if (coords.length > 1) {
                 const linePath = coords.map((c, i) => `${i === 0 ? 'M' : 'L'} ${c.x} ${c.y}`).join(' ');
                 const areaPath = `${linePath} L ${coords[coords.length - 1].x} ${h} L ${coords[0].x} ${h} Z`;
@@ -2809,37 +3261,82 @@
                 svg.appendChild(pathEl);
             }
 
-            coords.forEach(c => {
+            const showUnifiedTip = (index, targetX) => {
+                const currD = ultimosDias[index];
+                const prevD = prevDays[index];
+                let html = "";
+
+                if (currD) {
+                    const reais = (currD.pontos / AppState.getConversionRate()).toFixed(2);
+                    html += `${currD.displayDate}: <strong style="color:var(--accent);">+${formatarNumero(currD.pontos)} pts</strong> <span style="opacity:0.8;">(${formatarReais(parseFloat(reais))})</span>`;
+                }
+
+                if (prevD) {
+                    const prevReais = (prevD.pontos / AppState.getConversionRate()).toFixed(2);
+                    const dataComparada = prevD.displayDate || prevD.fullDate || compareLabel;
+                    if (html) html += "<br>";
+                    html += `<span style="color:var(--text-muted); font-size:11px; font-weight:normal;">vs ${dataComparada}: +${formatarNumero(prevD.pontos)} pts (${formatarReais(parseFloat(prevReais))})</span>`;
+                }
+
+                tooltip.innerHTML = html;
+                const minClamp = isMobile ? 26 : 14;
+                const maxClamp = isMobile ? 74 : 86;
+                const clampedLeft = Math.max(minClamp, Math.min(maxClamp, (targetX / w) * 100));
+                tooltip.style.left = `${clampedLeft}%`;
+                tooltip.classList.add('visible');
+            };
+
+            const hideTip = () => tooltip.classList.remove('visible');
+
+            prevCoords.forEach((c, index) => {
                 const g = document.createElementNS("http://www.w3.org/2000/svg", "g");
 
                 const hit = document.createElementNS("http://www.w3.org/2000/svg", "circle");
                 hit.setAttribute("cx", c.x);
                 hit.setAttribute("cy", c.y);
-                hit.setAttribute("r", "16");
+                hit.setAttribute("r", isMobile ? "12" : "8");
                 hit.setAttribute("fill", "transparent");
                 hit.style.cursor = "pointer";
 
                 const circle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
                 circle.setAttribute("cx", c.x);
                 circle.setAttribute("cy", c.y);
-                circle.setAttribute("r", "3.8");
-                circle.setAttribute("class", "chart-dot");
+                circle.setAttribute("r", isMobile ? "2.5" : "3");
+                circle.setAttribute("class", "chart-dot-prev");
 
-                const showTip = () => {
-                    const reais = (c.data.pontos / AppState.getConversionRate()).toFixed(2);
-                    tooltip.innerHTML = `${c.data.displayDate}: <strong style="color:var(--accent);">+${formatarNumero(c.data.pontos)} pts</strong> <span style="opacity:0.8;">(${formatarReais(parseFloat(reais))})</span>`;
-                    const clampedLeft = Math.max(15, Math.min(85, (c.x / w) * 100));
-                    tooltip.style.left = `${clampedLeft}%`;
-                    tooltip.classList.add('visible');
-                };
-
-                const hideTip = () => tooltip.classList.remove('visible');
-
-                hit.addEventListener('mouseenter', showTip);
+                hit.addEventListener('mouseenter', () => showUnifiedTip(index, c.x));
                 hit.addEventListener('mouseleave', hideTip);
                 hit.addEventListener('touchstart', (e) => {
                     e.preventDefault();
-                    showTip();
+                    showUnifiedTip(index, c.x);
+                });
+
+                g.appendChild(circle);
+                g.appendChild(hit);
+                svg.appendChild(g);
+            });
+
+            coords.forEach((c, index) => {
+                const g = document.createElementNS("http://www.w3.org/2000/svg", "g");
+
+                const hit = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+                hit.setAttribute("cx", c.x);
+                hit.setAttribute("cy", c.y);
+                hit.setAttribute("r", isMobile ? "13" : "9");
+                hit.setAttribute("fill", "transparent");
+                hit.style.cursor = "pointer";
+
+                const circle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+                circle.setAttribute("cx", c.x);
+                circle.setAttribute("cy", c.y);
+                circle.setAttribute("r", isMobile ? "3" : "3.8");
+                circle.setAttribute("class", "chart-dot");
+
+                hit.addEventListener('mouseenter', () => showUnifiedTip(index, c.x));
+                hit.addEventListener('mouseleave', hideTip);
+                hit.addEventListener('touchstart', (e) => {
+                    e.preventDefault();
+                    showUnifiedTip(index, c.x);
                 });
 
                 g.appendChild(circle);
@@ -2887,9 +3384,35 @@
             if (statusEl) statusEl.textContent = defaultStatus;
 
             grid.innerHTML = '';
-			
-            const colunas = isLandscapeActive() ? totalDias : Math.ceil(totalDias / 2);
-            grid.style.gridTemplateColumns = `repeat(${colunas}, 1fr)`;
+
+            const isCalendarView = localStorage.getItem('heatmapCalendarView') === 'true';
+            const toggleBtn = document.getElementById('heatmap-toggle-btn');
+            if (toggleBtn) {
+                toggleBtn.textContent = isCalendarView ? '⚡ Faixa' : '🗓️ Calendário';
+            }
+
+            if (isCalendarView) {
+                grid.style.gridTemplateColumns = 'repeat(7, 1fr)';
+                const weekDays = ['Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb', 'Dom'];
+                weekDays.forEach(diaNome => {
+                    const h = document.createElement('div');
+                    h.className = 'heat-weekday-header';
+                    h.textContent = diaNome;
+                    grid.appendChild(h);
+                });
+
+                const primeiroDiaSemana = new Date(ano, mesIdx, 1).getDay();
+                const offsetSegunda = (primeiroDiaSemana + 6) % 7;
+                for (let i = 0; i < offsetSegunda; i++) {
+                    const empty = document.createElement('div');
+                    empty.className = 'heat-empty';
+                    grid.appendChild(empty);
+                }
+            } else {
+                const colunasVertical = Math.ceil(totalDias / 2);
+                const colunas = isLandscapeActive() ? totalDias : colunasVertical;
+                grid.style.gridTemplateColumns = `repeat(${colunas}, 1fr)`;
+            }
 
             for (let d = 1; d <= totalDias; d++) {
                 const dateKey = `${mesPrefixo}-${String(d).padStart(2, '0')}`;
@@ -2934,13 +3457,33 @@
                 box.addEventListener('mouseleave', resetInfo);
                 box.addEventListener('touchstart', (e) => {
                     e.stopPropagation();
-                    showInfo();
+                    if (box.dataset.activeTouch === 'true') {
+                        delete box.dataset.activeTouch;
+                        resetInfo();
+                    } else {
+                        grid.querySelectorAll('.heat-day').forEach(b => delete b.dataset.activeTouch);
+                        box.dataset.activeTouch = 'true';
+                        showInfo();
+                    }
                 });
 
                 grid.appendChild(box);
             }
+
+            document.addEventListener('touchstart', (e) => {
+                if (!grid.contains(e.target)) {
+                    grid.querySelectorAll('.heat-day').forEach(b => delete b.dataset.activeTouch);
+                    statusEl.textContent = defaultStatus;
+                }
+            }, { passive: true });
         }
 		
+        function toggleHeatmapView() {
+            const current = localStorage.getItem('heatmapCalendarView') === 'true';
+            localStorage.setItem('heatmapCalendarView', !current);
+            renderHeatmap();
+        }
+
         function renderHistory() {
             const list = document.getElementById('history-list');
             list.innerHTML = '';
@@ -3002,10 +3545,24 @@
             atualizarInterfaceCompleta();
             input.value = '';
             
+            const prevDayDate = getPreviousDay(selectedDate);
+            const prevDayEntry = AppState.data.history.find(h => h.fullDate === prevDayDate);
+            let diffMsg = "";
+            if (prevDayEntry) {
+                const diff = pts - prevDayEntry.pontos;
+                if (diff > 0) {
+                    diffMsg = ` (▲ +${formatarNumero(diff)} que ontem 🚀)`;
+                } else if (diff < 0) {
+                    diffMsg = ` (▼ ${formatarNumero(diff)} que ontem)`;
+                } else {
+                    diffMsg = ` (= mesmo valor de ontem)`;
+                }
+            }
+
             if (hitMilestone) {
                 triggerStreakMilestone();
             } else {
-                showToast(`+${formatarNumero(pts)} pontos adicionados!`, 1800);
+                showToast(`+${formatarNumero(pts)} pontos adicionados!${diffMsg}`, 12000);
             }
         }
 
@@ -3050,7 +3607,12 @@
 
         async function editStreak() {
             const currentMode = AppState.data.streakManualOverride ? "Manual" : "Automático";
-            let novo = await Dialog.prompt(`Sequência atual: ${AppState.data.streak} dias (Modo: ${currentMode})\n\nDigite o novo valor para definir manualmente, ou digite "auto" para restaurar o cálculo automático:`, AppState.data.streak, "Editar Sequência");
+            let novo = await Dialog.prompt(
+                `Sequência atual: ${AppState.data.streak} dias (Modo: ${currentMode})\n\n` +
+                `Digite o novo valor para definir manualmente, ou digite "auto" para ativar o cálculo automático:`,
+                AppState.data.streak,
+                "Editar Sequência"
+            );
             if (novo === null) return;
             
             novo = novo.trim().toLowerCase();
@@ -3060,9 +3622,9 @@
                 AppState.data.streak = calculateStreak();
                 AppState.save();
                 atualizarInterfaceCompleta();
-                showToast("✨ Cálculo automático de sequência restaurado!", 1800);
+                showToast("✨ Modo automático ativado!", 1800);
             } else {
-                const newStreak = validatePositiveNumber(novo, 1000);
+                const newStreak = validatePositiveNumber(novo, 20000);
                 if (newStreak < AppState.data.streak) {
                     const confirmReduzir = await Dialog.confirm(`Reduzir a sequência de ${AppState.data.streak} para ${newStreak} dias?`, "Reduzir Sequência");
                     if (!confirmReduzir) return;
@@ -3152,7 +3714,7 @@
                 csv += `,"Total:","R$ ${formatarReais(AppState.data.totalMensal / taxa)}"`;
             }
 
-            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+            const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8;' });
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
@@ -3216,6 +3778,7 @@
                         
                         const ok = await Dialog.confirm(`Importar dados:\n- Meta: ${formatarNumero(dados.metaMensal || 0)} pts\n- Total: ${formatarNumero(dados.totalMensal || 0)} pts\n- Streak: ${dados.streak || 0} dias\n- Histórico: ${dados.history?.length || 0} entradas`, "Confirmar Importação");
                         if (ok) {
+                            localStorage.setItem('rewardsSafetyBackup', JSON.stringify({ data: JSON.parse(JSON.stringify(AppState.data)), timestamp: new Date().toISOString() }));
                             AppState.data.metaMensal = dados.metaMensal || 0;
                             AppState.data.totalMensal = dados.totalMensal || 0;
                             AppState.data.streak = dados.streak || 0;
@@ -3287,6 +3850,7 @@
                         if (newHistory.length === 0) throw new Error("Nenhum dado válido encontrado no CSV.");
                         const okCsv = await Dialog.confirm(`Importar ${newHistory.length} entradas do CSV?`, "Importar CSV");
                         if (okCsv) {
+                            localStorage.setItem('rewardsSafetyBackup', JSON.stringify({ data: JSON.parse(JSON.stringify(AppState.data)), timestamp: new Date().toISOString() }));
                             AppState.data.history = newHistory;
                             AppState.data.totalMensal = newHistory.reduce((sum, item) => sum + item.pontos, 0);
                             normalizeHistory();
@@ -3304,25 +3868,52 @@
 
         // ==================== FUNÇÕES DE BACKUP ====================
         async function restoreBackup() {
-            const backup = localStorage.getItem('rewardsBackup');
-            if (!backup) {
-                showToast("Nenhum backup encontrado.", 2000);
+            const autoBackupRaw = localStorage.getItem('rewardsBackup');
+            const safetyBackupRaw = localStorage.getItem('rewardsSafetyBackup');
+
+            if (!autoBackupRaw && !safetyBackupRaw) {
+                showToast("Nenhum ponto de restauração encontrado.", 2000);
                 return;
             }
+
+            let targetData = null;
+
+            if (autoBackupRaw && safetyBackupRaw) {
+                const auto = JSON.parse(autoBackupRaw);
+                const safety = JSON.parse(safetyBackupRaw);
+
+                const choice = await Dialog.prompt(
+                    `Pontos de restauração disponíveis:\n\n` +
+                    `1 = Backup Automático (${new Date(auto.timestamp).toLocaleString('pt-BR')})\n` +
+                    `2 = Ponto Seguro Pré-Importação (${new Date(safety.timestamp).toLocaleString('pt-BR')})\n\n` +
+                    `Digite 1 ou 2:`,
+                    "1",
+                    "Restaurar Dados"
+                );
+
+                if (choice === "1") targetData = auto.data;
+                else if (choice === "2") targetData = safety.data;
+                else return;
+            } else {
+                const raw = autoBackupRaw || safetyBackupRaw;
+                const parsed = JSON.parse(raw);
+                const tipo = safetyBackupRaw ? "Ponto Seguro Pré-Importação" : "Backup Automático";
+                const ok = await Dialog.confirm(`Restaurar ${tipo} de ${new Date(parsed.timestamp).toLocaleString('pt-BR')}?`, "Restaurar Dados");
+                if (ok) targetData = parsed.data;
+                else return;
+            }
+
             try {
-                const backupData = JSON.parse(backup);
-                const ok = await Dialog.confirm(`Restaurar backup de ${new Date(backupData.timestamp).toLocaleString('pt-BR')}?`, "Restaurar Backup");
-                if (ok) {
-                    AppState.data = backupData.data;
-                    if (!AppState.data.activitiesData) {
-                        AppState.data.activitiesData = getDefaultActivities();
-                    }
-                    normalizeHistory(); 
-                    atualizarInterfaceCompleta();
-                    showToast("Backup restaurado!");
+                AppState.data = targetData;
+                if (!AppState.data.activitiesData) {
+                    AppState.data.activitiesData = getDefaultActivities();
                 }
+                normalizeHistory();
+                AppState.save();
+                atualizarInterfaceCompleta();
+                showToast("Dados restaurados com sucesso!");
             } catch (e) {
-                showToast("Erro ao restaurar backup.", 2000);
+                showToast("Erro ao processar dados de restauração.", 2000);
             }
         }
 
@@ -3444,7 +4035,12 @@
             const reaisConsolidado = formatarReais(totalConsolidado / taxa);
             const totalMeses = chronologicalKeys.length + (AppState.data.totalMensal > 0 ? 1 : 0);
 
-            // Banner superior consolidado
+            // Projeção anual baseada no ritmo diário atual
+            const stats = AppState.getStats();
+            const projecaoAnualPts = Math.round(stats.avg * 365);
+            const projecaoAnualReais = formatarReais(projecaoAnualPts / taxa);
+
+            // Banner superior consolidado + Projeção Anual (365d)
             const consolidatedBannerHtml = `
                 <div class="archive-consolidated-card">
                     <div class="consolidated-header">
@@ -3454,6 +4050,16 @@
                     <div class="consolidated-body">
                         <div class="consolidated-pts">${formatarNumero(totalConsolidado)} pts</div>
                         <div class="consolidated-reais">${reaisConsolidado}</div>
+                    </div>
+                </div>
+                <div class="archive-consolidated-card" style="margin-top:-6px; border-color: rgba(249, 115, 22, 0.35);">
+                    <div class="consolidated-header">
+                        <span>🚀 Poder de Compra em 365 Dias (Ritmo Atual)</span>
+                        <span class="consolidated-badge">~${stats.avg} pts/dia</span>
+                    </div>
+                    <div class="consolidated-body">
+                        <div class="consolidated-pts" style="color:var(--gold); font-size:20px;">${formatarNumero(projecaoAnualPts)} pts</div>
+                        <div class="consolidated-reais">${projecaoAnualReais} / ano</div>
                     </div>
                 </div>
             `;
@@ -3562,37 +4168,36 @@
             const tituloMes = nomeMes.toUpperCase();
 
             const canvas = document.createElement('canvas');
-            canvas.width = 800;
-            canvas.height = 460;
+            canvas.width = 1200;
+            canvas.height = 700;
             const ctx = canvas.getContext('2d');
 
-            // Fundo dinâmico (Claro ou Escuro)
             if (isLight) {
-                const bgGrad = ctx.createLinearGradient(0, 0, 800, 460);
+                const bgGrad = ctx.createLinearGradient(0, 0, 1200, 700);
                 bgGrad.addColorStop(0, '#f8fafc');
-                bgGrad.addColorStop(1, '#f1f5f9');
+                bgGrad.addColorStop(1, '#eef2f6');
                 ctx.fillStyle = bgGrad;
-                ctx.fillRect(0, 0, 800, 460);
+                ctx.fillRect(0, 0, 1200, 700);
 
-                const glowGrad = ctx.createRadialGradient(700, 60, 10, 700, 60, 250);
-                glowGrad.addColorStop(0, 'rgba(22, 163, 74, 0.15)');
+                const glowGrad = ctx.createRadialGradient(1080, 90, 10, 1080, 90, 340);
+                glowGrad.addColorStop(0, 'rgba(22, 163, 74, 0.16)');
                 glowGrad.addColorStop(1, 'rgba(22, 163, 74, 0)');
                 ctx.fillStyle = glowGrad;
-                ctx.fillRect(0, 0, 800, 460);
+                ctx.fillRect(0, 0, 1200, 700);
 
                 ctx.strokeStyle = '#cbd5e1';
             } else {
-                const bgGrad = ctx.createLinearGradient(0, 0, 800, 460);
-                bgGrad.addColorStop(0, '#0d1117');
-                bgGrad.addColorStop(1, '#161b22');
+                const bgGrad = ctx.createLinearGradient(0, 0, 1200, 700);
+                bgGrad.addColorStop(0, '#090d12');
+                bgGrad.addColorStop(1, '#11161d');
                 ctx.fillStyle = bgGrad;
-                ctx.fillRect(0, 0, 800, 460);
+                ctx.fillRect(0, 0, 1200, 700);
 
-                const glowGrad = ctx.createRadialGradient(700, 60, 10, 700, 60, 250);
-                glowGrad.addColorStop(0, 'rgba(34, 197, 94, 0.25)');
+                const glowGrad = ctx.createRadialGradient(1080, 90, 10, 1080, 90, 380);
+                glowGrad.addColorStop(0, 'rgba(34, 197, 94, 0.22)');
                 glowGrad.addColorStop(1, 'rgba(34, 197, 94, 0)');
                 ctx.fillStyle = glowGrad;
-                ctx.fillRect(0, 0, 800, 460);
+                ctx.fillRect(0, 0, 1200, 700);
 
                 ctx.strokeStyle = '#30363d';
             }
@@ -3600,24 +4205,93 @@
             ctx.lineWidth = 2;
             if (ctx.roundRect) {
                 ctx.beginPath();
-                ctx.roundRect(16, 16, 768, 428, 20);
+                ctx.roundRect(20, 20, 1160, 660, 24);
                 ctx.stroke();
             }
 
-            // Título e subtítulo
             ctx.fillStyle = isLight ? '#15803d' : '#22c55e';
-            ctx.font = 'bold 13px system-ui, -apple-system, sans-serif';
-            ctx.fillText('MICROSOFT REWARDS • BRASIL', 40, 56);
+            ctx.font = 'bold 14px system-ui, -apple-system, sans-serif';
+            ctx.fillText('MICROSOFT REWARDS • BRASIL', 50, 58);
 
+            const titleText = `MEU RESUMO DE ${tituloMes}`;
             ctx.fillStyle = isLight ? '#0f172a' : '#ffffff';
-            ctx.font = 'bold 28px system-ui, -apple-system, sans-serif';
-            ctx.fillText(`RESUMO DE ${tituloMes}`, 40, 92);
+            ctx.font = 'bold 30px system-ui, -apple-system, sans-serif';
+            ctx.fillText(titleText, 50, 100);
+            const titleW = ctx.measureText(titleText).width;
+
+            let tierName = "MEMBRO";
+            let tierIcon = "🥉";
+            if (totalPontos >= 750) { tierName = "GOLD"; tierIcon = "🥇"; }
+            else if (totalPontos >= 500) { tierName = "PRATA"; tierIcon = "🥈"; }
+
+            const badgeX = 50 + titleW + 24;
+            const badgeY = 73;
+            const badgeW = 145;
+            const badgeH = 32;
+
+            ctx.fillStyle = isLight ? 'rgba(0, 0, 0, 0.05)' : 'rgba(255, 255, 255, 0.07)';
+            if (ctx.roundRect) {
+                ctx.beginPath();
+                ctx.roundRect(badgeX, badgeY, badgeW, badgeH, 16);
+                ctx.fill();
+                ctx.strokeStyle = isLight ? '#cbd5e1' : 'rgba(255, 255, 255, 0.15)';
+                ctx.stroke();
+            }
+            ctx.fillStyle = isLight ? '#92400e' : '#fde047';
+            ctx.font = 'bold 13px system-ui, -apple-system, sans-serif';
+            ctx.textAlign = 'center';
+            ctx.fillText(`${tierIcon} NÍVEL ${tierName}`, badgeX + badgeW / 2, badgeY + 21);
+            ctx.textAlign = 'left';
+
+            const qrSize = 96;
+            const qrX = 1046;
+            const qrY = 40;
+
+            try {
+                const qrContainer = document.createElement('div');
+                new QRCode(qrContainer, {
+                    text: 'https://y4sh1r01.github.io/MSRewardsTool/',
+                    width: 192,
+                    height: 192,
+                    colorDark: '#000000',
+                    colorLight: '#ffffff',
+                    correctLevel: QRCode.CorrectLevel.M
+                });
+
+                const qrCanvas = qrContainer.querySelector('canvas');
+                if (qrCanvas) {
+                    ctx.fillStyle = '#ffffff';
+                    if (ctx.roundRect) {
+                        ctx.beginPath();
+                        ctx.roundRect(qrX - 6, qrY - 6, qrSize + 12, qrSize + 12, 12);
+                        ctx.fill();
+                    } else {
+                        ctx.fillRect(qrX - 6, qrY - 6, qrSize + 12, qrSize + 12);
+                    }
+
+                    ctx.drawImage(qrCanvas, qrX, qrY, qrSize, qrSize);
+
+                    ctx.textAlign = 'right';
+                    ctx.fillStyle = isLight ? '#0f172a' : '#ffffff';
+                    ctx.font = 'bold 13px system-ui, -apple-system, sans-serif';
+                    ctx.fillText('Aponte a câmera', qrX - 16, qrY + 36);
+
+                    ctx.fillStyle = isLight ? '#64748b' : '#8b949e';
+                    ctx.font = '500 12px system-ui, -apple-system, sans-serif';
+                    ctx.fillText('para abrir a ferramenta', qrX - 16, qrY + 54);
+
+                    ctx.fillStyle = isLight ? '#15803d' : '#4ade80';
+                    ctx.font = '600 11px system-ui, -apple-system, sans-serif';
+                    ctx.fillText('y4sh1r01.github.io/MSRewardsTool', qrX - 16, qrY + 72);
+                    ctx.textAlign = 'left';
+                }
+            } catch (err) {}
 
             ctx.strokeStyle = isLight ? 'rgba(0, 0, 0, 0.08)' : 'rgba(255, 255, 255, 0.08)';
             ctx.lineWidth = 1;
             ctx.beginPath();
-            ctx.moveTo(40, 114);
-            ctx.lineTo(760, 114);
+            ctx.moveTo(50, 150);
+            ctx.lineTo(1150, 150);
             ctx.stroke();
 
             const desenharCaixa = (x, y, w, h, titulo, valorPrincipal, valorSecundario, corDestaque) => {
@@ -3633,35 +4307,183 @@
                 }
 
                 ctx.fillStyle = isLight ? '#64748b' : '#8b949e';
-                ctx.font = '600 12px system-ui, -apple-system, sans-serif';
-                ctx.fillText(titulo, x + 16, y + 28);
+                ctx.font = '600 11.5px system-ui, -apple-system, sans-serif';
+                ctx.fillText(titulo, x + 16, y + 26);
 
                 ctx.fillStyle = corDestaque;
-                ctx.font = 'bold 26px system-ui, -apple-system, sans-serif';
-                ctx.fillText(valorPrincipal, x + 16, y + 65);
+                ctx.font = 'bold 24px system-ui, -apple-system, sans-serif';
+                ctx.fillText(valorPrincipal, x + 16, y + 60);
 
                 if (valorSecundario) {
                     ctx.fillStyle = isLight ? '#92400e' : '#d97706';
-                    ctx.font = '600 14px system-ui, -apple-system, sans-serif';
-                    ctx.fillText(valorSecundario, x + 16, y + 92);
+                    ctx.font = '600 13px system-ui, -apple-system, sans-serif';
+                    ctx.fillText(valorSecundario, x + 16, y + 84);
                 }
             };
 
             const corTotal = isLight ? '#15803d' : '#22c55e';
             const corMelhor = isLight ? '#16a34a' : '#4ade80';
             const corMedia = isLight ? '#0284c7' : '#38bdf8';
+            const corProj = isLight ? '#b45309' : '#fde047';
 
-            desenharCaixa(40, 134, 350, 115, 'TOTAL ACUMULADO NO MÊS', `${formatarNumero(totalPontos)} pts`, totalReais, corTotal);
-            desenharCaixa(410, 134, 350, 115, 'SEQUÊNCIA CONSECUTIVA (STREAK)', `${streak} dias`, '🔥 Sequência ativa', '#ea580c');
+            const totalDiasMes = new Date(agora.getFullYear(), agora.getMonth() + 1, 0).getDate();
+            const mesPrefixo = getLocalDateString().slice(0, 7);
+            const diasRegistrados = AppState.data.history.filter(h => h.fullDate && h.fullDate.startsWith(mesPrefixo)).length;
+            const pctPresenca = Math.round((diasRegistrados / totalDiasMes) * 100);
 
             const textoMelhorDia = stats.best > 0 ? `+${formatarNumero(stats.best)} pts` : '—';
-            const subMelhor = stats.bestDate ? `Data: ${stats.bestDate}` : '';
-            desenharCaixa(40, 265, 350, 115, 'MELHOR DIA DO MÊS', textoMelhorDia, subMelhor, corMelhor);
-            desenharCaixa(410, 265, 350, 115, 'MÉDIA DIÁRIA DE PONTOS', `${stats.avg} pts/dia`, `≈ ${formatarReais(stats.avg / taxa)} por dia`, corMedia);
+            const subMelhor = stats.bestDate ? `Data: ${stats.bestDate}` : 'Recorde do mês';
 
-            ctx.fillStyle = isLight ? '#94a3b8' : '#8b949e';
-            ctx.font = '500 12px system-ui, -apple-system, sans-serif';
-            ctx.fillText('Gerado via Rewards Tool • y4sh1r01.github.io/MSRewardsTool', 40, 418);
+            const projAnualPts = Math.round(stats.avg * 365);
+            const projAnualReais = formatarReais(projAnualPts / taxa);
+
+            desenharCaixa(50, 166, 350, 102, 'TOTAL ACUMULADO NO MÊS', `${formatarNumero(totalPontos)} pts`, totalReais, corTotal);
+            desenharCaixa(425, 166, 350, 102, 'SEQUÊNCIA CONSECUTIVA (STREAK)', `${streak} dias`, '🔥 Sequência ativa', '#ea580c');
+            desenharCaixa(800, 166, 350, 102, 'PRESENÇA NO MÊS', `${diasRegistrados} de ${totalDiasMes} dias`, `⭐ ${pctPresenca}% de consistência`, '#38bdf8');
+
+            desenharCaixa(50, 282, 350, 102, 'MELHOR DIA DO MÊS', textoMelhorDia, subMelhor, corMelhor);
+            desenharCaixa(425, 282, 350, 102, 'MÉDIA DIÁRIA DE PONTOS', `${formatarNumero(stats.avg)} pts/dia`, `≈ ${formatarReais(stats.avg / taxa)} por dia`, corMedia);
+            desenharCaixa(800, 282, 350, 102, 'PODER DE COMPRA (PROJEÇÃO 365D)', `${formatarNumero(projAnualPts)} pts`, `≈ ${projAnualReais} em 1 ano (estimativa)`, corProj);
+
+            const chartBoxX = 50;
+            const chartBoxY = 400;
+            const chartBoxW = 1100;
+            const chartBoxH = 222;
+
+            ctx.fillStyle = isLight ? '#ffffff' : 'rgba(255, 255, 255, 0.02)';
+            if (ctx.roundRect) {
+                ctx.beginPath();
+                ctx.roundRect(chartBoxX, chartBoxY, chartBoxW, chartBoxH, 16);
+                ctx.fill();
+                ctx.strokeStyle = isLight ? '#e2e8f0' : 'rgba(255, 255, 255, 0.07)';
+                ctx.stroke();
+            }
+
+            ctx.fillStyle = isLight ? '#64748b' : '#8b949e';
+            ctx.font = '600 12px system-ui, -apple-system, sans-serif';
+            ctx.fillText('CURVA DE PONTUAÇÃO DIÁRIA (DESTAQUES DOS MAIORES PICOS)', chartBoxX + 18, chartBoxY + 28);
+
+            const maxPontos = AppState.data.history.slice(0, totalDiasMes).reverse();
+            if (maxPontos.length > 1) {
+                const padX = 35;
+                const padY = 38;
+                const plotX = chartBoxX + padX;
+                const plotY = chartBoxY + 45;
+                const plotW = chartBoxW - padX * 2;
+                const plotH = chartBoxH - 65;
+
+                const ptsVals = maxPontos.map(d => d.pontos);
+                const min = Math.min(...ptsVals);
+                const max = Math.max(...ptsVals);
+                const range = (max - min) || 1;
+
+                const coords = maxPontos.map((d, i) => {
+                    const cx = plotX + (i / (maxPontos.length - 1)) * plotW;
+                    const cy = (plotY + plotH - padY) - ((d.pontos - min) / range) * (plotH - padY * 2);
+                    return { x: cx, y: cy, pts: d.pontos, date: d.displayDate };
+                });
+
+                ctx.strokeStyle = isLight ? 'rgba(0, 0, 0, 0.06)' : 'rgba(255, 255, 255, 0.06)';
+                ctx.setLineDash([4, 4]);
+                ctx.beginPath();
+                ctx.moveTo(plotX, plotY + plotH / 2);
+                ctx.lineTo(plotX + plotW, plotY + plotH / 2);
+                ctx.stroke();
+                ctx.setLineDash([]);
+
+                const gradArea = ctx.createLinearGradient(0, plotY, 0, plotY + plotH);
+                gradArea.addColorStop(0, isLight ? 'rgba(22, 163, 74, 0.22)' : 'rgba(34, 197, 94, 0.28)');
+                gradArea.addColorStop(1, 'rgba(34, 197, 94, 0.0)');
+
+                ctx.beginPath();
+                ctx.moveTo(coords[0].x, coords[0].y);
+                for (let i = 1; i < coords.length; i++) {
+                    ctx.lineTo(coords[i].x, coords[i].y);
+                }
+                ctx.lineTo(coords[coords.length - 1].x, plotY + plotH);
+                ctx.lineTo(coords[0].x, plotY + plotH);
+                ctx.closePath();
+                ctx.fillStyle = gradArea;
+                ctx.fill();
+
+                ctx.beginPath();
+                ctx.moveTo(coords[0].x, coords[0].y);
+                for (let i = 1; i < coords.length; i++) {
+                    ctx.lineTo(coords[i].x, coords[i].y);
+                }
+                ctx.strokeStyle = isLight ? '#16a34a' : '#22c55e';
+                ctx.lineWidth = 3;
+                ctx.stroke();
+
+                const sortedUnique = [...new Set(ptsVals)].sort((a, b) => b - a);
+                const threshold = sortedUnique[Math.min(3, sortedUnique.length - 1)];
+
+                coords.forEach(c => {
+                    const isRanked = c.pts >= threshold && c.pts > min;
+                    const isAbsMax = c.pts === max;
+
+                    if (isRanked) {
+                        ctx.strokeStyle = isLight ? 'rgba(0, 0, 0, 0.12)' : 'rgba(255, 255, 255, 0.12)';
+                        ctx.setLineDash([2, 3]);
+                        ctx.beginPath();
+                        ctx.moveTo(c.x, c.y);
+                        ctx.lineTo(c.x, plotY + plotH);
+                        ctx.stroke();
+                        ctx.setLineDash([]);
+                    }
+
+                    ctx.beginPath();
+                    ctx.arc(c.x, c.y, isAbsMax ? 6 : (isRanked ? 5 : 3.5), 0, Math.PI * 2);
+                    ctx.fillStyle = isLight ? '#ffffff' : '#141414';
+                    ctx.fill();
+                    ctx.strokeStyle = isAbsMax ? '#fde047' : (isRanked ? '#4ade80' : (isLight ? '#15803d' : '#22c55e'));
+                    ctx.lineWidth = isAbsMax ? 3.5 : (isRanked ? 2.5 : 2);
+                    ctx.stroke();
+
+                    if (isRanked) {
+                        const tagText = isAbsMax ? `👑 +${formatarNumero(c.pts)}` : `+${formatarNumero(c.pts)}`;
+                        ctx.font = 'bold 11px system-ui, -apple-system, sans-serif';
+                        const tagW = ctx.measureText(tagText).width + 14;
+                        const tagH = 21;
+                        const tagX = Math.max(plotX, Math.min(plotX + plotW - tagW, c.x - tagW / 2));
+                        const tagY = Math.max(chartBoxY + 36, c.y - 30);
+
+                        const corFundoTag = isAbsMax
+                            ? (isLight ? '#d97706' : '#fde047')
+                            : (isLight ? '#15803d' : '#22c55e');
+
+                        ctx.fillStyle = corFundoTag;
+                        if (ctx.roundRect) {
+                            ctx.beginPath();
+                            ctx.roundRect(tagX, tagY, tagW, tagH, 6);
+                            ctx.fill();
+                        } else {
+                            ctx.fillRect(tagX, tagY, tagW, tagH);
+                        }
+
+                        ctx.beginPath();
+                        ctx.moveTo(c.x - 4, tagY + tagH);
+                        ctx.lineTo(c.x + 4, tagY + tagH);
+                        ctx.lineTo(c.x, tagY + tagH + 4);
+                        ctx.closePath();
+                        ctx.fillStyle = corFundoTag;
+                        ctx.fill();
+
+                        ctx.fillStyle = (isAbsMax && !isLight) ? '#000000' : '#ffffff';
+                        ctx.textAlign = 'center';
+                        ctx.fillText(tagText, tagX + tagW / 2, tagY + 15);
+                        ctx.textAlign = 'left';
+                    }
+                });
+            } else {
+                ctx.fillStyle = isLight ? '#94a3b8' : '#6b7280';
+                ctx.font = '500 13px system-ui, -apple-system, sans-serif';
+                ctx.fillText('Histórico insuficiente para renderizar o gráfico do mês.', chartBoxX + 20, chartBoxY + 110);
+            }
+
+            ctx.fillStyle = isLight ? '#64748b' : '#8b949e';
+            ctx.font = '500 12.5px system-ui, -apple-system, sans-serif';
+            ctx.fillText('Gerado via Rewards Tool • Feito para caçadores brasileiros', 50, 654);
 
             const link = document.createElement('a');
             const dataIso = getLocalDateString().slice(0, 7);
@@ -3669,7 +4491,7 @@
             link.href = canvas.toDataURL('image/png');
             link.click();
 
-            showToast(`📸 Card (${isLight ? 'Modo Claro' : 'Modo Escuro'}) salvo em PNG!`);
+            showToast(`📸 Card Full HD com QR Code (${isLight ? 'Modo Claro' : 'Modo Escuro'}) gerado!`);
         }
 		// ==================== ANÁLISE POR DIA DA SEMANA ====================
         function abrirAnaliseSemanal() {
@@ -3761,8 +4583,14 @@
                 return `
                     <div class="weekday-row">
                         <div class="weekday-info">
-                            <strong>${w.name} ${badge}</strong>
-                            <span><strong>${formatarNumero(w.avg)} pts</strong> <small style="color:var(--text-muted); font-size:11.5px;">(${reais})</small></span>
+                            <div class="weekday-left">
+                                <strong>${w.name}</strong>
+                                ${badge}
+                            </div>
+                            <div class="weekday-right">
+                                <strong>${formatarNumero(w.avg)} pts</strong>
+                                <small style="color:var(--text-muted); font-size:11.5px;">(${reais})</small>
+                            </div>
                         </div>
                         <div class="weekday-bar-wrap">
                             <div class="weekday-bar ${isBest ? 'best' : ''}" style="width: ${percent}%;"></div>
@@ -3780,20 +4608,6 @@
 
         function fecharAnaliseSemanal() {
             document.getElementById('weekday-modal').style.display = 'none';
-        }
-		
-        function toggleArchiveDetail(key) {
-            const detail = document.getElementById(`detail-${key}`);
-            const arrow = document.getElementById(`arrow-${key}`);
-            if (!detail) return;
-
-            const isOpen = detail.style.display === 'block';
-            detail.style.display = isOpen ? 'none' : 'block';
-            if (arrow) arrow.classList.toggle('open', !isOpen);
-        }
-
-        function fecharResumoArquivos() {
-            document.getElementById('archive-modal').style.display = 'none';
         }
         
         // ==================== FUNÇÕES DE TEMA E LAYOUT ====================
@@ -3890,6 +4704,9 @@
 
         // Empacota dados essenciais incluindo o histórico detalhado dos meses arquivados
         function packSyncData(data) {
+            const sortedKeys = Object.keys(data.monthlyArchives || {}).sort();
+            const latestArchivedKey = sortedKeys.length > 0 ? sortedKeys[sortedKeys.length - 1] : null;
+
             return {
                 m: data.metaMensal,
                 s: data.streak,
@@ -3897,14 +4714,13 @@
                 e: [data.exemploPontos, data.exemploReais],
                 h: (data.history || []).map(i => [i.fullDate, i.pontos]),
                 a: data.activitiesData,
-                // Salva cada mês com sua lista compacta de [dia, pontos]
-                arc: Object.keys(data.monthlyArchives || {}).map(k => {
+                arc: sortedKeys.map(k => {
                     const a = data.monthlyArchives[k];
-                    const diasCompactos = (a.history || []).map(i => {
+                    const diasCompactos = (k === latestArchivedKey) ? (a.history || []).map(i => {
                         const partes = i.fullDate.split('-');
                         const dia = parseInt(partes[2]) || i.fullDate;
                         return [dia, i.pontos];
-                    });
+                    }) : [];
                     return [k, a.monthName || k, a.totalPontos || 0, a.streak || 0, diasCompactos];
                 })
             };
@@ -3999,10 +4815,11 @@
                 currentSyncUrl = `${baseUrl}#s=${compressed}`;
 
                 qrcodeContainer.innerHTML = '';
+                const qrSize = Math.max(220, Math.min(340, window.innerWidth - 70));
                 new QRCode(qrcodeContainer, {
                     text: currentSyncUrl,
-                    width: 240,  // 👈 Aumentado para 240px para a câmera focar na hora
-                    height: 240,
+                    width: qrSize,
+                    height: qrSize,
                     colorDark: "#000000",
                     colorLight: "#ffffff",
                     correctLevel: QRCode.CorrectLevel.L
