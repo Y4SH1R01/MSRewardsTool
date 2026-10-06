@@ -2813,8 +2813,10 @@
                 const dateObj = new Date(fullDate + 'T00:00:00'); 
                 const displayDate = dateObj.toLocaleDateString('pt-BR', { day: 'numeric', month: 'short' }).replace('.', '');
 
+                let diffPontos = pontos;
                 const existingIndex = this.data.history.findIndex(h => h.fullDate === fullDate);
                 if (existingIndex !== -1) {
+                    diffPontos = pontos - this.data.history[existingIndex].pontos;
                     this.data.history.splice(existingIndex, 1);
                 }
 
@@ -2824,6 +2826,8 @@
                     pontos,
                     timestamp: Date.now()
                 });
+
+                this.data.saldoConta = Math.max(0, (this.data.saldoConta || 0) + diffPontos);
 
                 this.data.history.sort((a, b) => b.fullDate.localeCompare(a.fullDate));
                 this.recalculateMonthlyTotal();
@@ -2844,7 +2848,9 @@
             },
 
             removeFromHistory(index) {
+                const removedPontos = this.data.history[index].pontos;
                 this.data.history.splice(index, 1);
+                this.data.saldoConta = Math.max(0, (this.data.saldoConta || 0) - removedPontos);
                 this.recalculateMonthlyTotal();
                 
                 if (!this.data.streakManualOverride) {
@@ -2855,7 +2861,9 @@
             },
 
             editHistoryItem(index, newPontos) {
+                const diff = newPontos - this.data.history[index].pontos;
                 this.data.history[index].pontos = newPontos;
+                this.data.saldoConta = Math.max(0, (this.data.saldoConta || 0) + diff);
                 this.recalculateMonthlyTotal();
                 this.save();
             },
