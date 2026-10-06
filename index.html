@@ -145,33 +145,188 @@
             right: 22px;
         }
 
-        .example {
-            background: linear-gradient(135deg, rgba(34, 197, 94, 0.14) 0%, #151515 50%, rgba(249, 115, 22, 0.12) 100%);
+        .top-unified-card {
+            background: linear-gradient(135deg, rgba(34, 197, 94, 0.14) 0%, #151815 50%, rgba(249, 115, 22, 0.12) 100%);
             border: 1px solid rgba(255, 255, 255, 0.08);
-            padding: 16px 22px;
+            border-radius: 18px;
+            padding: 14px 18px;
+            margin: 6px 12px 10px 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.35);
             display: flex;
-            align-items: center;
-            gap: 12px;
-            font-size: 18px;
-            border-radius: 16px;
-            margin: 6px 12px 12px 12px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
-            color: var(--text);
+            flex-direction: column;
+            gap: 10px;
         }
 
-        body.light .example {
-            background: linear-gradient(135deg, rgba(22, 163, 74, 0.08) 0%, #f1f3f5 50%, rgba(217, 119, 6, 0.07) 100%);
-            border: 1px solid rgba(0, 0, 0, 0.06);
+        body.light .top-unified-card {
+            background: linear-gradient(135deg, rgba(22, 163, 74, 0.07) 0%, #ffffff 50%, rgba(217, 119, 6, 0.06) 100%);
+            border: 1px solid #cbd5e1;
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03);
         }
 
-        .example .pts {
-            color: #ffd700;
-            font-weight: 600;
+        .top-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
         }
 
-        body.light .example .pts {
+        .top-row-left {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+            min-width: 0;
+        }
+
+        .top-row-label {
+            font-size: 10.5px;
+            font-weight: 700;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+        }
+
+        .top-row-values {
+            display: flex;
+            align-items: baseline;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .top-saldo-pts {
+            font-size: 21px;
+            font-weight: 700;
+            color: #4ade80;
+        }
+
+        body.light .top-saldo-pts {
+            color: #15803d;
+        }
+
+        .top-saldo-reais {
+            font-size: 14.5px;
+            font-weight: 600;
             color: var(--gold);
+        }
+
+        .top-ex-pts {
+            font-size: 17px;
+            font-weight: 600;
+            color: var(--text);
+        }
+
+        .top-ex-reais {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--gold);
+        }
+
+        .top-divider {
+            height: 1px;
+            background: rgba(255, 255, 255, 0.07);
+        }
+
+        body.light .top-divider {
+            background: rgba(0, 0, 0, 0.07);
+        }
+
+        .top-edit-btn {
+            background: #22c55e;
+            color: #000;
+            border: none;
+            padding: 6px 14px;
+            border-radius: 999px;
+            font-size: 12.5px;
+            font-weight: 600;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: opacity 0.2s ease;
+            flex-shrink: 0;
+        }
+
+        .top-edit-btn:hover {
+            opacity: 0.9;
+        }
+
+        .top-edit-btn.secondary {
+            background: var(--card-subtle);
+            color: var(--text);
+            border: 1px solid var(--border);
+        }
+
+        .preset-group {
+            display: flex;
+            gap: 6px;
+            margin: 10px 0;
+            flex-wrap: wrap;
+        }
+
+        .preset-btn {
+            background: var(--card-subtle);
+            color: var(--text);
+            border: 1px solid var(--border);
+            padding: 6px 11px;
+            border-radius: 8px;
+            font-size: 11.5px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .preset-btn:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+
+        .event-card {
+            background: rgba(0, 0, 0, 0.35);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 14px;
+            padding: 14px;
+            margin-top: 12px;
+            box-sizing: border-box;
+        }
+
+        body.light .event-card {
+            background: rgba(0, 0, 0, 0.03);
+            border-color: #cbd5e1;
+        }
+
+        .event-metric-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            margin-bottom: 6px;
+        }
+
+        .event-badge {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 6px;
+            font-size: 11.5px;
+            font-weight: 700;
+            margin-top: 8px;
+        }
+
+        .event-badge.success {
+            background: rgba(34, 197, 94, 0.18);
+            color: #4ade80;
+            border: 1px solid rgba(34, 197, 94, 0.4);
+        }
+
+        body.light .event-badge.success {
+            background: rgba(22, 163, 74, 0.12);
+            color: #15803d;
+        }
+
+        .event-badge.warning {
+            background: rgba(249, 115, 22, 0.18);
+            color: #fb923c;
+            border: 1px solid rgba(249, 115, 22, 0.4);
+        }
+
+        body.light .event-badge.warning {
+            background: rgba(234, 88, 12, 0.12);
+            color: #c2410c;
         }
         
         .stats-row {
@@ -420,6 +575,45 @@
 
         body.light .section.meta {
             background: linear-gradient(135deg, rgba(22, 163, 74, 0.08) 0%, #ffffff 50%, rgba(217, 119, 6, 0.07) 100%);
+        }
+
+        .estimate-divider {
+            height: 1px;
+            background: rgba(255, 255, 255, 0.08);
+            margin: 14px -4px 12px -4px;
+        }
+
+        body.light .estimate-divider {
+            background: rgba(0, 0, 0, 0.08);
+        }
+
+        .estimate-event-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 6px;
+            text-align: left;
+        }
+
+        .estimate-event-title {
+            font-size: 13.5px;
+            font-weight: 700;
+            color: var(--text);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .estimate-event-body {
+            text-align: left;
+            font-size: 12px;
+            line-height: 1.4;
+        }
+
+        .estimate-event-body strong,
+        .estimate-event-body b {
+            font-size: inherit !important;
+            color: inherit !important;
         }
 
         .estimate {
@@ -1245,7 +1439,7 @@
         }
 
         /* CORREÇÃO DO BUG: MODAIS FIXOS NA JANELA DE VISÃO (VIEWPORT) */
-        #tooltip-modal, #month-change-modal, #archive-modal, #dialog-modal, #weekday-modal, #sync-modal {
+        #tooltip-modal, #month-change-modal, #archive-modal, #dialog-modal, #weekday-modal, #sync-modal, #event-goal-modal {
             display: none;
             position: fixed;
             top: 0;
@@ -1255,7 +1449,9 @@
             width: 100vw;
             height: 100vh;
             height: 100dvh;
-            background: rgba(0, 0, 0, 0.85);
+            background: rgba(0, 0, 0, 0);
+            backdrop-filter: blur(2px);
+            -webkit-backdrop-filter: blur(2px);
             z-index: 9999;
             align-items: center;
             justify-content: center;
@@ -1270,15 +1466,18 @@
         #archive-content, 
         #dialog-content, 
         #weekday-content, 
-        #sync-content {
-            background: linear-gradient(135deg, rgba(34, 197, 94, 0.16) 0%, var(--card) 45%, rgba(249, 115, 22, 0.14) 100%) !important;
+        #sync-content,
+        #event-goal-content {
+            background-color: #121212 !important;
+            background-image: linear-gradient(135deg, rgba(34, 197, 94, 0.18) 0%, #161616 45%, rgba(249, 115, 22, 0.16) 100%) !important;
+            backdrop-filter: blur(12px);
             border: 1px solid rgba(255, 255, 255, 0.1);
             border-radius: 20px;
             padding: 24px;
             max-width: 440px;
             width: 90%;
             color: var(--text);
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8), 0 0 25px rgba(34, 197, 94, 0.06);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.95), 0 0 40px rgba(0, 0, 0, 0.75);
             position: relative;
             box-sizing: border-box;
             max-height: 90vh;
@@ -1290,7 +1489,8 @@
         body.light #archive-content, 
         body.light #dialog-content, 
         body.light #weekday-content, 
-        body.light #sync-content {
+        body.light #sync-content,
+        body.light #event-goal-content {
             background: #ffffff !important;
             border: 1px solid #cbd5e1;
             box-shadow: 0 20px 50px rgba(0, 0, 0, 0.15);
@@ -1313,8 +1513,8 @@
             color: var(--text);
         }
 
-        .dialog-buttons { display: flex; gap: 10px; margin-top: 20px; }
-        .dialog-btn {
+        .dialog-buttons, .month-change-buttons { display: flex; gap: 10px; margin-top: 20px; }
+        .dialog-btn, .month-change-btn {
             flex: 1;
             padding: 12px;
             border-radius: 10px;
@@ -1325,7 +1525,9 @@
         }
 
         .dialog-btn.cancel { background: var(--card-subtle); color: var(--text); border: 1px solid var(--border); }
-        .dialog-btn.confirm { background: var(--accent); color: #000; }
+        .dialog-btn.confirm, .month-change-btn.reset { background: var(--accent); color: #000; }
+        .month-change-btn.archive { background: #3b82f6; color: #fff; }
+        .month-change-btn.skip { background: #ef4444; color: #fff; }
         .dialog-input {
             width: 100%;
             box-sizing: border-box;
@@ -2023,12 +2225,12 @@
         }
         /* MODAL HISTORICO DE MESES AMPLIADO */
         #archive-content {
-            max-width: 580px !important;
+            max-width: 820px !important;
             width: 95% !important;
         }
 
         #archive-list {
-            max-height: 65vh !important;
+            max-height: 75vh !important;
         }
 
         .consolidated-badge {
@@ -2057,6 +2259,90 @@
             font-size: 15px;
             font-weight: 700;
             color: var(--gold);
+        }
+
+        .year-heat-scroll {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            overflow-x: auto;
+            padding: 8px 0 4px 0;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        }
+        .year-heat-scroll::-webkit-scrollbar {
+            display: none;
+        }
+        .year-heat-labels {
+            display: grid;
+            grid-template-rows: repeat(7, 10px);
+            gap: 2.5px;
+            font-size: 8.5px;
+            color: var(--text-muted);
+            user-select: none;
+            line-height: 10px;
+        }
+        .year-heat-grid {
+            display: grid;
+            grid-template-rows: repeat(7, 10px);
+            grid-auto-flow: column;
+            grid-auto-columns: 10px;
+            gap: 2.5px;
+        }
+        .year-heat-cell {
+            width: 10px;
+            height: 10px;
+            border-radius: 2px;
+            cursor: pointer;
+            transition: transform 0.15s ease;
+            box-sizing: border-box;
+        }
+        .year-heat-cell:hover {
+            transform: scale(1.45);
+            z-index: 5;
+        }
+        .year-heat-cell.heat-missed {
+            background: #1a1a1a;
+            border: 1px solid #2a2a2a;
+        }
+        body.light .year-heat-cell.heat-missed {
+            background: #e9ecef;
+            border-color: #dee2e6;
+        }
+        .year-heat-cell.heat-l1 {
+            background: rgba(34, 197, 94, 0.35);
+            border: 1px solid rgba(34, 197, 94, 0.5);
+        }
+        body.light .year-heat-cell.heat-l1 {
+            background: #bbf7d0;
+            border-color: #86efac;
+        }
+        .year-heat-cell.heat-l2 {
+            background: rgba(34, 197, 94, 0.7);
+            border: 1px solid rgba(34, 197, 94, 0.9);
+        }
+        body.light .year-heat-cell.heat-l2 {
+            background: #4ade80;
+            border-color: #22c55e;
+        }
+        .year-heat-cell.heat-l3 {
+            background: #22c55e;
+            box-shadow: 0 0 6px rgba(34, 197, 94, 0.5);
+        }
+        body.light .year-heat-cell.heat-l3 {
+            background: #15803d;
+        }
+        .year-heat-cell.heat-today {
+            outline: 1.5px solid var(--gold);
+            outline-offset: 1px;
+        }
+        .year-heat-tooltip {
+            font-size: 11.5px;
+            color: var(--text-subtle);
+            text-align: center;
+            margin-top: 6px;
+            min-height: 16px;
+            font-weight: 500;
         }
 
         .card-share-btn {
@@ -2099,11 +2385,31 @@
             <button class="header-btn theme-btn" onclick="toggleTheme()">☀️</button>
         </div>
 
-        <div class="example">
-            <span style="font-size:26px;" id="exemplo-pontos">5.165</span>
-            <span>pts =</span>
-            <span class="pts" id="exemplo-reais">R$ 30,00</span>
-            <button onclick="editarExemplo()" class="edit-example-btn" style="margin-left:auto;background:#22c55e;color:#000;border:none;padding:8px 16px;border-radius:999px;font-size:14px;font-weight:600;cursor:pointer;">Editar</button>
+        <div class="top-unified-card">
+            <div class="top-row">
+                <div class="top-row-left">
+                    <span class="top-row-label">💼 Saldo em Conta</span>
+                    <div class="top-row-values">
+                        <strong id="saldo-pontos" class="top-saldo-pts">0 pts</strong>
+                        <span id="saldo-reais" class="top-saldo-reais">≈ R$ 0,00</span>
+                    </div>
+                </div>
+                <button onclick="editarSaldoConta()" class="top-edit-btn">Editar Saldo</button>
+            </div>
+            
+            <div class="top-divider"></div>
+
+            <div class="top-row">
+                <div class="top-row-left">
+                    <span class="top-row-label">⚖️ Taxa Base de Conversão</span>
+                    <div class="top-row-values">
+                        <span id="exemplo-pontos" class="top-ex-pts">5.165</span>
+                        <span style="color:var(--text-subtle);font-size:13.5px;">pts =</span>
+                        <span id="exemplo-reais" class="top-ex-reais">R$ 30,00</span>
+                    </div>
+                </div>
+                <button onclick="editarExemplo()" class="top-edit-btn secondary">Editar Taxa</button>
+            </div>
         </div>
 
         <div class="stats-row">
@@ -2147,12 +2453,12 @@
                 </div>
             </div>
 
-            <!-- ESTIMATIVAS -->
+            <!-- ESTIMATIVAS & META POR DATA -->
             <div class="estimate">
-                <span onclick="mostrarTooltip('Estimativa Mensal', 'Mostra quantos dias faltam para acabar o mês e projeções baseadas no seu histórico.<br><br>' +
+                <span onclick="mostrarTooltip('Estimativas & Meta por Data', 'Mostra quantos dias faltam para acabar o mês, projeções baseadas no seu histórico e estimativa de saldo para datas especiais (Black Friday, Natal, aniversário, etc.).<br><br>' +
                     '• Média diária = total de pontos ÷ dias registrados<br>' +
-                    '• A projeção &quot;Faltam para meta&quot; só aparece a partir do 7º dia.<br>' +
-                    '• &quot;Projeção final&quot; estima quantos pontos você terá no final do mês, mantendo a média atual.')" class="tooltip-icon">ℹ️</span>
+                    '• Projeções mensais aparecem a partir do 7º dia registrado.<br>' +
+                    '• A Meta por Data calcula seu saldo em conta somado aos ganhos até o evento desejado.')" class="tooltip-icon">ℹ️</span>
                 <div id="tempo-mensal">Faltam <strong>0 dias</strong> para acabar o mês</div>
                 <div class="estimate-grid">
                     <div class="estimate-box">
@@ -2168,6 +2474,14 @@
                         <strong>0 pts</strong>
                     </div>
                 </div>
+
+                <div class="estimate-divider"></div>
+
+                <div class="estimate-event-header">
+                    <span id="event-card-title" class="estimate-event-title">🎯 Meta por Data</span>
+                    <button onclick="abrirModalMetaEvento()" class="edit-btn" style="padding:4px 12px; font-size:12px;">Configurar</button>
+                </div>
+                <div id="event-card-body" class="estimate-event-body"></div>
             </div>
 
             <!-- STREAK -->
@@ -2268,7 +2582,7 @@
                 </div>
 
         <div class="footer">
-            <span class="footer-text">Microsoft Rewards Tool — Feito para caçadores brasileiros • <strong>v1.9.0</strong></span>
+            <span class="footer-text">Microsoft Rewards Tool — Feito para caçadores brasileiros • <strong>v1.9.1</strong></span>
             <div class="footer-buttons">
                 <a href="https://rewards.bing.com/about" target="_blank" rel="noopener noreferrer" class="footer-btn">🔗 Sobre Níveis</a>
                 <button onclick="abrirChangelog()" class="footer-btn">Ver Changelog</button>
@@ -2348,14 +2662,44 @@
             <button onclick="copiarLinkSync()" class="copy-link-btn" id="copy-sync-btn">🔗 Copiar Link Direto</button>
         </div>
     </div>
+
+    <!-- Modal Meta para Data Específica -->
+    <div id="event-goal-modal" onclick="if(event.target.id==='event-goal-modal')fecharModalMetaEvento()">
+        <div id="event-goal-content">
+            <h3 style="margin-top:0; font-size:20px; display:flex; align-items:center; gap:8px;">🎯 Meta para Data Específica</h3>
+            <p style="color:var(--text-subtle); font-size:13px; margin:0 0 12px 0; line-height:1.4;">
+                Descubra quanto você terá em conta na data desejada somando seu saldo atual com sua média diária.
+            </p>
+
+            <div class="preset-group">
+                <button class="preset-btn" onclick="aplicarPresetEvento('bf')">🛍️ Black Friday</button>
+                <button class="preset-btn" onclick="aplicarPresetEvento('natal')">🎄 Natal</button>
+                <button class="preset-btn" onclick="aplicarPresetEvento('ano-novo')">🎆 Fim de Ano</button>
+            </div>
+
+            <div style="display:flex; flex-direction:column; gap:8px;">
+                <input type="text" id="event-goal-name" class="dialog-input" placeholder="Nome do Evento (ex: Black Friday, Jogo Novo)" style="margin-top:0;">
+                <div style="display:flex; gap:8px;">
+                    <input type="date" id="event-goal-date" class="dialog-input" style="margin-top:0; flex:1;">
+                    <input type="text" id="event-goal-cost" class="dialog-input" placeholder="Preço alvo R$ (opcional)" style="margin-top:0; flex:1;">
+                </div>
+            </div>
+
+            <div id="event-goal-display" class="event-card"></div>
+
+            <div class="dialog-buttons" style="margin-top:14px;">
+                <button onclick="salvarMetaEvento()" class="dialog-btn confirm">Salvar Meta</button>
+            </div>
+        </div>
+    </div>
 	
     <!-- Toast -->
     <div id="toast" class="toast"></div>
 
     <script>
         // ==================== CONFIGURAÇÕES INICIAIS ====================
-        const VERSION = "1.9.0";
-        const DATA_VERSION = "1.9.0";
+        const VERSION = "1.9.1";
+        const DATA_VERSION = "1.9.1";
         let isHorizontalMode = localStorage.getItem('horizontalMode') === 'true';
 
         // ==================== HELPER: LOCAL DATE FIX ====================
@@ -2398,6 +2742,8 @@
         // ==================== GERENCIAMENTO DE ESTADO ====================
         const AppState = {
             data: {
+                saldoConta: 0,
+                eventGoal: null,
                 metaMensal: 0,
                 totalMensal: 0,
                 streak: 0,
@@ -2416,6 +2762,7 @@
                 const savedData = JSON.parse(localStorage.getItem('rewardsData'));
                 if (savedData) {
                     this.data = { ...this.data, ...savedData };
+                    if (this.data.saldoConta === undefined) this.data.saldoConta = 0;
                     
                     // Migração/Inicialização das Atividades
                     if (!this.data.activitiesData || Object.keys(this.data.activitiesData).length === 0) {
@@ -2425,6 +2772,7 @@
                     return;
                 }
                 // 2. Migração: Se não existir o novo formato, lê o antigo e salva no novo
+                this.data.saldoConta = parseFloat(localStorage.getItem('saldoConta')) || 0;
                 this.data.metaMensal = parseFloat(localStorage.getItem('metaMensal')) || 0;
                 this.data.totalMensal = parseFloat(localStorage.getItem('totalMensal')) || 0;
                 this.data.streak = parseInt(localStorage.getItem('rewardsStreak')) || 0;
@@ -2520,6 +2868,11 @@
                 this.data.streakManualOverride = false;
                 this.data.monthlyArchives = {}; 
                 // ATENÇÃO: Não resetamos as activitiesData aqui conforme pedido.
+                this.save();
+            },
+
+            setSaldoConta(newSaldo) {
+                this.data.saldoConta = validatePositiveNumber(newSaldo, 2000000);
                 this.save();
             },
 
@@ -2963,15 +3316,18 @@
             const mediaReais = formatarReais(mediaDiaria / taxa);
             mediaEl.innerHTML = `${formatarNumero(Math.round(mediaDiaria))} pts<span class="stat-subreais">(${mediaReais})</span>`;
 
-            const projecaoFinal = AppState.data.totalMensal + (mediaDiaria * diasRestantes);
-            const projecaoReais = formatarReais(projecaoFinal / taxa);
-            document.getElementById('projecao-final').innerHTML = `<small>Projeção final</small><br><strong>${formatarNumero(Math.round(projecaoFinal))} pts</strong><span class="stat-subreais">(${projecaoReais})</span>`;
+            const projEl = document.getElementById('projecao-final');
 
-            // Projeção para atingir a meta
             if (AppState.data.history.length < 7) {
+                const diasEspera = 7 - AppState.data.history.length;
                 labelEl.textContent = "Faltam para meta";
-                faltamEl.innerHTML = `<span style="color:#888; font-size:18px;">Aguarde mais ${7 - AppState.data.history.length} dia(s)</span>`;
+                faltamEl.innerHTML = `<span style="color:#888; font-size:18px;">Aguarde mais ${diasEspera} dia(s)</span>`;
+                projEl.innerHTML = `<small>Projeção final</small><br><strong><span style="color:#888; font-size:18px;">Aguarde mais ${diasEspera} dia(s)</span></strong>`;
             } else {
+                const projecaoFinal = AppState.data.totalMensal + (mediaDiaria * diasRestantes);
+                const projecaoReais = formatarReais(projecaoFinal / taxa);
+                projEl.innerHTML = `<small>Projeção final</small><br><strong>${formatarNumero(Math.round(projecaoFinal))} pts</strong><span class="stat-subreais">(${projecaoReais})</span>`;
+
                 const faltamPontos = Math.max(0, AppState.data.metaMensal - AppState.data.totalMensal);
                 const diasNecessarios = mediaDiaria > 0 ? Math.ceil(faltamPontos / mediaDiaria) : Infinity;
                 labelEl.textContent = "Faltam para meta";
@@ -3107,10 +3463,256 @@
 
             updateTier();
             updateStats();
+            const saldoPts = AppState.data.saldoConta || 0;
+            const saldoPontosEl = document.getElementById('saldo-pontos');
+            const saldoReaisEl = document.getElementById('saldo-reais');
+            if (saldoPontosEl) saldoPontosEl.textContent = `${formatarNumero(saldoPts)} pts`;
+            if (saldoReaisEl) saldoReaisEl.textContent = `≈ ${formatarReais(saldoPts / taxa)}`;
+
             document.getElementById('exemplo-pontos').textContent = formatarNumero(AppState.data.exemploPontos);
             document.getElementById('exemplo-reais').textContent = formatarReais(AppState.data.exemploReais);
             renderHistory();
             renderActivities(); // Atualiza as atividades junto com a interface
+            renderEventGoalCard();
+        }
+
+        function renderEventGoalCard() {
+            const bodyEl = document.getElementById('event-card-body');
+            const titleEl = document.getElementById('event-card-title');
+            if (!bodyEl) return;
+
+            const goal = AppState.data.eventGoal;
+            if (!goal || !goal.date) {
+                if (titleEl) titleEl.innerHTML = '🎯 Meta por Data';
+                bodyEl.innerHTML = `
+                    <div style="text-align:center; padding:4px 0; color:var(--text-subtle); font-size:13px; line-height:1.5;">
+                        Projete quanto você terá na conta para Black Friday, Natal ou um jogo específico.<br>
+                        <button onclick="abrirModalMetaEvento()" class="edit-btn" style="margin-top:8px; padding:6px 18px;">Definir Meta</button>
+                    </div>
+                `;
+                return;
+            }
+
+            const hoje = new Date();
+            const hojeZ = new Date(hoje.getFullYear(), hoje.getMonth(), hoje.getDate());
+            const [y, m, d] = goal.date.split('-').map(Number);
+            const targetDate = new Date(y, m - 1, d);
+            const diffTime = targetDate - hojeZ;
+            const diffDias = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+            const stats = AppState.getStats();
+            const taxa = AppState.getConversionRate();
+            const saldoConta = AppState.data.saldoConta || 0;
+            const ganhosNovos = diffDias > 0 ? Math.round(stats.avg * diffDias) : 0;
+            const totalFinalPts = saldoConta + ganhosNovos;
+            const totalFinalReais = totalFinalPts / taxa;
+            const cost = goal.cost || 0;
+
+            if (titleEl) titleEl.innerHTML = `🎯 ${escapeHtml(goal.name || 'Meta por Data')}`;
+
+            let statusText = diffDias < 0 
+                ? '<span style="color:#ef4444; font-size:12px; font-weight:700;">Expirado</span>'
+                : (diffDias === 0 ? '<span style="color:var(--accent); font-size:12px; font-weight:700;">É hoje! 🎉</span>' : `<span style="color:var(--accent); font-size:12px; font-weight:700;">Faltam ${diffDias} dias</span>`);
+
+            let progressHtml = '';
+            let badgeHtml = '';
+
+            if (cost > 0) {
+                const pct = Math.min(100, Math.round((totalFinalReais / cost) * 100));
+                progressHtml = `
+                    <div class="progress-bar" style="margin:8px 0 6px 0;">
+                        <div class="progress" style="width: ${pct}%;"></div>
+                    </div>
+                    <div style="display:flex; justify-content:space-between; font-size:11.5px; color:var(--text-subtle); line-height:1.2;">
+                        <span>Alvo: ${formatarReais(cost)}</span>
+                        <span style="color:var(--accent); font-weight:700; font-size:11.5px;">${pct}% coberto</span>
+                    </div>
+                `;
+
+                if (diffDias >= 0) {
+                    if (totalFinalReais >= cost) {
+                        const folga = totalFinalReais - cost;
+                        badgeHtml = `<div class="event-badge success" style="margin-top:6px;">🚀 Meta garantida (+${formatarReais(folga)} de folga)</div>`;
+                    } else {
+                        const faltaReais = cost - totalFinalReais;
+                        const ptsFaltando = Math.round(faltaReais * taxa);
+                        const extraPorDia = diffDias > 0 ? Math.ceil(ptsFaltando / diffDias) : ptsFaltando;
+                        badgeHtml = `<div class="event-badge warning" style="margin-top:6px;">⚠️ Faltarão ${formatarReais(faltaReais)} (+${extraPorDia} pts/dia para compensar)</div>`;
+                    }
+                }
+            }
+
+            bodyEl.innerHTML = `
+                <div style="display:flex; justify-content:space-between; align-items:baseline; margin-bottom:2px;">
+                    <span style="font-size:11px; color:var(--text-muted); font-weight:700; text-transform:uppercase;">Previsão no dia</span>
+                    ${statusText}
+                </div>
+                <div style="font-size:23px; font-weight:800; color:#4ade80; margin:2px 0;">
+                    ${formatarNumero(totalFinalPts)} pts
+                    <span style="font-size:15px; color:var(--gold); font-weight:700; margin-left:6px;">(${formatarReais(totalFinalReais)})</span>
+                </div>
+                <div style="font-size:11px; color:var(--text-muted); line-height:1.3;">
+                    Saldo: <span style="color:var(--text); font-weight:700; font-size:11px;">${formatarNumero(saldoConta)} pts</span> • Ganhos até lá: <span style="color:var(--text); font-weight:700; font-size:11px;">+${formatarNumero(ganhosNovos)} pts</span>
+                </div>
+                ${progressHtml}
+                ${badgeHtml}
+            `;
+        }
+
+        async function editarSaldoConta() {
+            let novo = await Dialog.prompt(
+                "Digite seu saldo de pontos atual na conta Microsoft (seja após gastar ou resgatar):",
+                AppState.data.saldoConta || 0,
+                "Saldo em Conta"
+            );
+            if (novo === null || novo === "") return;
+            AppState.setSaldoConta(novo);
+            atualizarInterfaceCompleta();
+            showToast(`Saldo atualizado para ${formatarNumero(AppState.data.saldoConta)} pts!`, 1800);
+        }
+
+        function abrirModalMetaEvento() {
+            const modal = document.getElementById('event-goal-modal');
+            const goal = AppState.data.eventGoal || {};
+
+            document.getElementById('event-goal-name').value = goal.name || '';
+            document.getElementById('event-goal-date').value = goal.date || '';
+            document.getElementById('event-goal-cost').value = goal.cost ? goal.cost.toString().replace('.', ',') : '';
+
+            calcularProjEvento();
+            modal.style.display = 'flex';
+
+            document.getElementById('event-goal-date').oninput = calcularProjEvento;
+            document.getElementById('event-goal-cost').oninput = calcularProjEvento;
+            document.getElementById('event-goal-name').oninput = calcularProjEvento;
+        }
+
+        function fecharModalMetaEvento() {
+            document.getElementById('event-goal-modal').style.display = 'none';
+        }
+
+        function aplicarPresetEvento(tipo) {
+            const hoje = new Date();
+            let ano = hoje.getFullYear();
+            let targetDateStr = '';
+            let nome = '';
+
+            if (tipo === 'bf') {
+                nome = `Black Friday ${ano}`;
+                let nov30 = new Date(ano, 10, 30);
+                let day = nov30.getDay();
+                let diff = (day >= 5) ? (day - 5) : (day + 2);
+                let bf = new Date(ano, 10, 30 - diff);
+                if (bf < hoje) {
+                    ano++;
+                    nov30 = new Date(ano, 10, 30);
+                    day = nov30.getDay();
+                    diff = (day >= 5) ? (day - 5) : (day + 2);
+                    bf = new Date(ano, 10, 30 - diff);
+                    nome = `Black Friday ${ano}`;
+                }
+                targetDateStr = getLocalDateString(bf);
+            } else if (tipo === 'natal') {
+                nome = `Natal ${ano}`;
+                let natal = new Date(ano, 11, 25);
+                if (natal < hoje) {
+                    ano++;
+                    natal = new Date(ano, 11, 25);
+                    nome = `Natal ${ano}`;
+                }
+                targetDateStr = getLocalDateString(natal);
+            } else if (tipo === 'ano-novo') {
+                nome = `Fim de Ano ${ano}`;
+                let fim = new Date(ano, 11, 31);
+                if (fim < hoje) {
+                    ano++;
+                    fim = new Date(ano, 11, 31);
+                    nome = `Fim de Ano ${ano}`;
+                }
+                targetDateStr = getLocalDateString(fim);
+            }
+
+            document.getElementById('event-goal-name').value = nome;
+            document.getElementById('event-goal-date').value = targetDateStr;
+            calcularProjEvento();
+        }
+
+        function calcularProjEvento() {
+            const displayEl = document.getElementById('event-goal-display');
+            const dateVal = document.getElementById('event-goal-date').value;
+            const costVal = parseFloat(document.getElementById('event-goal-cost').value.replace(',', '.')) || 0;
+            const nameVal = document.getElementById('event-goal-name').value.trim() || 'Evento';
+
+            if (!dateVal) {
+                displayEl.innerHTML = '<span style="color:var(--text-muted); font-size:13px;">Selecione uma data acima para calcular a projeção.</span>';
+                return;
+            }
+
+            const hoje = new Date();
+            const hojeZ = new Date(hoje.getFullYear(), hoje.getMonth(), hoje.getDate());
+            const [y, m, d] = dateVal.split('-').map(Number);
+            const targetDate = new Date(y, m - 1, d);
+
+            const diffTime = targetDate - hojeZ;
+            const diffDias = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+            if (diffDias < 0) {
+                displayEl.innerHTML = '<span style="color:#ef4444; font-size:13px;">A data selecionada já passou. Escolha uma data futura.</span>';
+                return;
+            }
+
+            const stats = AppState.getStats();
+            const taxa = AppState.getConversionRate();
+            const saldoConta = AppState.data.saldoConta || 0;
+            const ganhosNovos = Math.round(stats.avg * diffDias);
+            const totalFinalPts = saldoConta + ganhosNovos;
+            const totalFinalReais = totalFinalPts / taxa;
+
+            let badgeHtml = '';
+            if (costVal > 0) {
+                if (totalFinalReais >= costVal) {
+                    const folga = totalFinalReais - costVal;
+                    badgeHtml = `<div class="event-badge success">🚀 Meta garantida com folga de ${formatarReais(folga)}!</div>`;
+                } else {
+                    const faltaReais = costVal - totalFinalReais;
+                    const ptsFaltando = Math.round(faltaReais * taxa);
+                    const extraPorDia = diffDias > 0 ? Math.ceil(ptsFaltando / diffDias) : ptsFaltando;
+                    badgeHtml = `<div class="event-badge warning">⚠️ Faltarão ${formatarReais(faltaReais)} (+${extraPorDia} pts/dia para compensar)</div>`;
+                }
+            }
+
+            displayEl.innerHTML = `
+                <div class="event-metric-row">
+                    <span style="font-size:12px; color:var(--text-muted); font-weight:600; text-transform:uppercase;">Previsão para ${escapeHtml(nameVal)}</span>
+                    <span style="font-size:12px; color:var(--accent); font-weight:700;">${diffDias === 0 ? 'É hoje!' : `Faltam ${diffDias} dias`}</span>
+                </div>
+                <div style="font-size:24px; font-weight:800; color:#4ade80;">
+                    ${formatarNumero(totalFinalPts)} pts
+                    <span style="font-size:16px; color:var(--gold); font-weight:700; margin-left:6px;">(${formatarReais(totalFinalReais)})</span>
+                </div>
+                <div style="font-size:11.5px; color:var(--text-muted); margin-top:6px; line-height:1.4;">
+                    • Saldo em conta: <strong>${formatarNumero(saldoConta)} pts</strong><br>
+                    • Ganhos projetados: <strong>+${formatarNumero(ganhosNovos)} pts</strong> (${diffDias}d × ${stats.avg} pts/dia)
+                </div>
+                ${badgeHtml}
+            `;
+        }
+
+        function salvarMetaEvento() {
+            const name = document.getElementById('event-goal-name').value.trim() || 'Evento';
+            const date = document.getElementById('event-goal-date').value;
+            const cost = parseFloat(document.getElementById('event-goal-cost').value.replace(',', '.')) || 0;
+
+            if (!date) {
+                showToast("Por favor, selecione uma data.", 2000);
+                return;
+            }
+
+            AppState.data.eventGoal = { name, date, cost };
+            AppState.save();
+            fecharModalMetaEvento();
+            atualizarInterfaceCompleta();
+            showToast(`Meta para "${name}" salva com sucesso!`, 2000);
         }
 
         function updateStats() {
@@ -3216,7 +3818,9 @@
 
             const prevCoords = prevDays.map((d, index) => {
                 const totalPoints = Math.max(ultimosDias.length, prevDays.length);
-                const x = padX + (index / (totalPoints - 1 || 1)) * (w - padX * 2);
+                const x = prevDays.length === 1 
+                    ? w / 2 
+                    : padX + (index / (totalPoints - 1 || 1)) * (w - padX * 2);
                 const y = (h - padY) - ((d.pontos - minPts) / range) * (h - padY * 2);
                 return { x, y, data: d };
             });
@@ -3653,6 +4257,8 @@
         // ==================== FUNÇÕES DE EXPORT/IMPORT ====================
         function exportarDados() {
             const dados = {
+                saldoConta: AppState.data.saldoConta || 0,
+                eventGoal: AppState.data.eventGoal || null,
                 metaMensal: AppState.data.metaMensal,
                 totalMensal: AppState.data.totalMensal,
                 streak: AppState.data.streak,
@@ -3779,6 +4385,8 @@
                         const ok = await Dialog.confirm(`Importar dados:\n- Meta: ${formatarNumero(dados.metaMensal || 0)} pts\n- Total: ${formatarNumero(dados.totalMensal || 0)} pts\n- Streak: ${dados.streak || 0} dias\n- Histórico: ${dados.history?.length || 0} entradas`, "Confirmar Importação");
                         if (ok) {
                             localStorage.setItem('rewardsSafetyBackup', JSON.stringify({ data: JSON.parse(JSON.stringify(AppState.data)), timestamp: new Date().toISOString() }));
+                            AppState.data.saldoConta = dados.saldoConta || 0;
+                            AppState.data.eventGoal = dados.eventGoal || null;
                             AppState.data.metaMensal = dados.metaMensal || 0;
                             AppState.data.totalMensal = dados.totalMensal || 0;
                             AppState.data.streak = dados.streak || 0;
@@ -4062,6 +4670,27 @@
                         <div class="consolidated-reais">${projecaoAnualReais} / ano</div>
                     </div>
                 </div>
+                <!-- INÍCIO: ESTRUTURA HEATMAP ANUAL (365 DIAS) -->
+                <div class="archive-consolidated-card" style="margin-top:-6px; border-color: rgba(34, 197, 94, 0.35);">
+                    <div class="consolidated-header">
+                        <span>🗓️ Consistência nos Últimos 365 Dias</span>
+                        <span id="year-heat-stats" class="consolidated-badge">—</span>
+                    </div>
+                    <div class="year-heat-scroll" id="year-heat-scroll">
+                        <div class="year-heat-labels">
+                            <span>Seg</span>
+                            <span></span>
+                            <span>Qua</span>
+                            <span></span>
+                            <span>Sex</span>
+                            <span></span>
+                            <span>Dom</span>
+                        </div>
+                        <div id="year-heat-grid" class="year-heat-grid"></div>
+                    </div>
+                    <div id="year-heat-tooltip" class="year-heat-tooltip">Passe o cursor sobre os dias para ver detalhes</div>
+                </div>
+                <!-- FIM: ESTRUTURA HEATMAP ANUAL (365 DIAS) -->
             `;
 
             if (chronologicalKeys.length === 0) {
@@ -4139,6 +4768,94 @@
             }
             
             document.getElementById('archive-modal').style.display = 'flex';
+            renderYearHeatmap();
+        }
+
+        function renderYearHeatmap() {
+            const grid = document.getElementById('year-heat-grid');
+            const statsBadge = document.getElementById('year-heat-stats');
+            const tooltip = document.getElementById('year-heat-tooltip');
+            if (!grid) return;
+
+            const allMap = {};
+            for (let m in AppState.data.monthlyArchives) {
+                const arc = AppState.data.monthlyArchives[m];
+                if (arc.history && Array.isArray(arc.history)) {
+                    arc.history.forEach(item => {
+                        if (item.fullDate) allMap[item.fullDate] = item.pontos;
+                    });
+                }
+            }
+            AppState.data.history.forEach(item => {
+                if (item.fullDate) allMap[item.fullDate] = item.pontos;
+            });
+
+            const today = new Date();
+            const todayStr = getLocalDateString(today);
+            const endDate = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+
+            const startDate = new Date(endDate);
+            startDate.setDate(endDate.getDate() - 364);
+            const startDayOfWeek = (startDate.getDay() + 6) % 7;
+            startDate.setDate(startDate.getDate() - startDayOfWeek);
+
+            grid.innerHTML = '';
+            let totalDiasRegistrados = 0;
+            let totalDiasPossiveis = 0;
+
+            const cur = new Date(startDate);
+            while (cur <= endDate) {
+                const dateStr = getLocalDateString(cur);
+                const isToday = dateStr === todayStr;
+                const pts = allMap[dateStr];
+                const isLogged = pts !== undefined && pts > 0;
+
+                totalDiasPossiveis++;
+                if (isLogged) totalDiasRegistrados++;
+
+                const cell = document.createElement('div');
+                cell.className = 'year-heat-cell';
+
+                if (isToday) cell.classList.add('heat-today');
+
+                if (isLogged) {
+                    if (pts >= 650) cell.classList.add('heat-l3');
+                    else if (pts >= 350) cell.classList.add('heat-l2');
+                    else cell.classList.add('heat-l1');
+                } else {
+                    cell.classList.add('heat-missed');
+                }
+
+                const displayDt = cur.toLocaleDateString('pt-BR', { day: 'numeric', month: 'short', year: 'numeric' });
+                const showInfo = () => {
+                    if (!tooltip) return;
+                    if (isLogged) {
+                        const reais = formatarReais(pts / AppState.getConversionRate());
+                        tooltip.innerHTML = `<strong>${displayDt}:</strong> <span style="color:var(--accent);">+${formatarNumero(pts)} pts</span> (${reais})`;
+                    } else {
+                        tooltip.innerHTML = `<strong>${displayDt}:</strong> <span style="color:var(--text-muted);">Sem registros</span>`;
+                    }
+                };
+
+                cell.addEventListener('mouseenter', showInfo);
+                cell.addEventListener('touchstart', (e) => {
+                    e.stopPropagation();
+                    showInfo();
+                }, { passive: true });
+
+                grid.appendChild(cell);
+                cur.setDate(cur.getDate() + 1);
+            }
+
+            if (statsBadge) {
+                const pct = Math.round((totalDiasRegistrados / totalDiasPossiveis) * 100);
+                statsBadge.textContent = `${totalDiasRegistrados} / ${totalDiasPossiveis} dias (${pct}%)`;
+            }
+
+            const scrollContainer = document.getElementById('year-heat-scroll');
+            if (scrollContainer) {
+                scrollContainer.scrollLeft = scrollContainer.scrollWidth;
+            }
         }
 
         function toggleArchiveDetail(key) {
