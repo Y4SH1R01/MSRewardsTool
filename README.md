@@ -1,6 +1,6 @@
 # 🎮 Microsoft Rewards Tool
 
-[![Versão](https://img.shields.io/badge/Versão-1.9.0-brightgreen)]()
+[![Versão](https://img.shields.io/badge/Versão-1.9.1-brightgreen)]()
 [![Licença](https://img.shields.io/badge/Licença-GPL--3.0-blue)]()
 [![Status](https://img.shields.io/badge/Status-Ativo-success)]()
 [![Changelog](https://shields.io/badge/Changelog-blue)](https://github.com/Y4SH1R01/MSRewardsTool/releases)
@@ -108,8 +108,8 @@ Projeto criado com carinho para a comunidade brasileira de caçadores do Microso
 * Correções e features v1.3.0-1.3.1: GLM-5-Turbo.
 * Correções e features v1.3.2: GLM-5.2-Deep Think Max.
 * Correções e features v1.4.0: GLM-5.2-Deep Think Max & Gemini-3.7-flash.
-* Refatorações, novos módulos e versões v1.5.0-1.9.0: Gemini-3.7/3.8-flash.
+* Refatorações, novos módulos e versões v1.5.0-1.9.1: Gemini-3.7/3.8-flash.
 
 Se a ferramenta te ajuda na sua rotina diária de pontos, deixe uma ⭐ no repositório!
 
-**Última atualização:** 25 de setembro de 2026.
+**Última atualização:** 05 de outubro de 2026.
