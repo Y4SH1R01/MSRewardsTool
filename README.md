@@ -16,7 +16,7 @@ Uma Single-File Application (SFA) que roda direto no navegador, sem necessidade 
 ## ✨ Funcionalidades Principais
 
 ### 🎯 Metas e Progressão
-**Barra de Progresso Dinâmica:** A barra muda de cor automaticamente com base no seu avanço (🔴 Vermelha < 30%, 🟡 Amarela 30-70%, 🟢 Verde > 70%) e exibe a porcentagem **exata** (ex: `33.505%`), sem arredondamentos arbitrários.
+- **Barra de Progresso Dinâmica:** A barra muda de cor automaticamente com base no seu avanço (🔴 Vermelha < 30%, 🟡 Amarela 30-70%, 🟢 Verde > 70%) e exibe a porcentagem **exata** (ex: `33.505%`), sem arredondamentos arbitrários.
 - **📍 Marca de Ritmo Ideal (Pacing Marker):** Marcador luminoso integrado à barra de progresso indicando o dia atual do calendário. Informa instantaneamente se você está adiantado (`🚀`) ou atrasado (`⚠️`) em relação ao fim do mês.
 - **🏆 Nó de Checkpoint de 100% (Modo Excedente):** Ao bater e ultrapassar a meta, a barra libera valores acima de 100% sem travas, fixando uma cápsula neon dourada no ponto exato em que a meta foi concluída.
 - **🎯 Meta para Data Específica (Modo Evento):** Modal preditivo integrado ao card de Estimativas para planejar o acúmulo mirando compras futuras (*Black Friday*, *Natal*, *Fim de Ano* ou oque você preferir (lançamentos de jogos, etc.). Projeta seu montante final através da fórmula $\text{Saldo em Conta} + (\text{Média Diária} \times \text{Dias até lá})$, indicando a cobertura da meta, folga financeira ou a pontuação extra diária necessária.
