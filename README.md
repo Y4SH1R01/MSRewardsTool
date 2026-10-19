@@ -110,14 +110,14 @@ Você não precisa compilar nem instalar nada:
 
 Projeto criado com carinho para a comunidade brasileira de caçadores do Microsoft Rewards. Inspirado originalmente em uma ideia compartilhada por [Augusto Masetti](https://x.com/augustomasetti) no X.
 
-**Desenvolvido por Mateus ([Y4SH1R01](https://github.com/Y4SH1R01))**
+**Desenvolvido por Mateus ([Y4SH1R01](https://github.com/Y4SH1R01)) Com ajuda das IAs:**
 * Assistência inicial: Grok 4.2.0-Quick Thinking e Specialist.
 * Atualização v1.2.0: Kimi-k2.6 e Mistral 3.5b.
 * Correções e features v1.2.1-1.2.2: GLM-5.1.
 * Correções e features v1.3.0-1.3.1: GLM-5-Turbo.
 * Correções e features v1.3.2: GLM-5.2-Deep Think Max.
 * Correções e features v1.4.0: GLM-5.2-Deep Think Max & Gemini-3.7-flash.
-* Refatorações, novos módulos e versões v1.5.0-1.9.1a: Gemini-3.7/3.8-flash.
+* Correções e features v1.5.0-1.9.1a: Gemini-3.7/3.8-flash.
 
 Se a ferramenta te ajuda na sua rotina diária de pontos, deixe uma ⭐ no repositório!
 
