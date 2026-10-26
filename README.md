@@ -1,6 +1,6 @@
 # 🎮 Microsoft Rewards Tool
 
-[![Versão](https://img.shields.io/badge/Versão-1.9.1a-brightgreen)]()
+[![Versão](https://img.shields.io/badge/Versão-1.10-brightgreen)]()
 [![Licença](https://img.shields.io/badge/Licença-GPL--3.0-blue)]()
 [![Status](https://img.shields.io/badge/Status-Ativo-success)]()
 [![Changelog](https://shields.io/badge/Changelog-blue)](https://github.com/Y4SH1R01/MSRewardsTool/releases)
@@ -9,7 +9,7 @@
 
 Uma Single-File Application (SFA) que roda direto no navegador, sem necessidade de servidores ou banco de dados, para acompanhar seus pontos diários, streak, meta mensal, metas de eventos sazonais, estatísticas profundas e conversão em reais.
 
-<img width="1511" height="2915" alt="y4sh1r01 github io_MSRewardsTool_" src="https://github.com/user-attachments/assets/a9d2df4b-5cb6-418c-bf8f-5a4e9d459417" />
+<img width="1654" height="3114" alt="index.html" src="https://github.com/user-attachments/assets/e9034615-135a-4e35-b77b-b40784e6ac82" />
 
 ---
 
@@ -118,7 +118,8 @@ Projeto criado com carinho para a comunidade brasileira de caçadores do Microso
 * Correções e features v1.3.2: GLM-5.2-Deep Think Max.
 * Correções e features v1.4.0: GLM-5.2-Deep Think Max & Gemini-3.7-flash.
 * Correções e features v1.5.0-1.9.1a: Gemini-3.7/3.8-flash.
+* Correções e features v1.10: Gemini-3.8-flash, Gemini-3.5-flash-lite *e* Gemini-3.1-Pro-Preview.
 
 Se a ferramenta te ajuda na sua rotina diária de pontos, deixe uma ⭐ no repositório!
 
-**Última atualização:** 06 de outubro de 2026.
+**Última atualização:** 26 de outubro de 2026.
