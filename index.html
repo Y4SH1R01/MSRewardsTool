@@ -5,6 +5,17 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.2/Sortable.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/countup.js/2.8.0/countUp.umd.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/js-confetti@latest/dist/js-confetti.browser.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/@formkit/auto-animate@0.8.2/index.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.12.2/lottie.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/flatpickr/4.6.13/flatpickr.min.css">
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/flatpickr/4.6.13/flatpickr.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/flatpickr/4.6.13/l10n/pt.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/11.10.8/sweetalert2.all.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
     <title>Rewards Tool</title>
     <style>
         :root {
@@ -140,9 +151,44 @@
             padding: 4px;
         }
 
+        .order-btn {
+            position: absolute;
+            right: 88px;
+            font-size: 20px;
+        }
+
+        .sound-btn {
+            position: absolute;
+            right: 54px;
+        }
+
         .theme-btn {
             position: absolute;
-            right: 22px;
+            right: 20px;
+        }
+
+        .card-drag-handle {
+            cursor: grab;
+            color: var(--text-muted);
+            font-size: 14px;
+            padding: 0 2px;
+            user-select: none;
+            transition: color 0.2s ease, transform 0.15s ease;
+            display: inline-flex;
+            align-items: center;
+            vertical-align: middle;
+            line-height: 1;
+            opacity: 0.7;
+        }
+
+        .card-drag-handle:hover {
+            color: var(--accent);
+            opacity: 1;
+            transform: scale(1.15);
+        }
+
+        .card-drag-handle:active {
+            cursor: grabbing;
         }
 
         .top-unified-card {
@@ -150,7 +196,9 @@
             border: 1px solid rgba(255, 255, 255, 0.08);
             border-radius: 18px;
             padding: 14px 18px;
-            margin: 6px 12px 10px 12px;
+            margin: 0;
+            width: 100%;
+            box-sizing: border-box;
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.35);
             display: flex;
             flex-direction: column;
@@ -333,8 +381,10 @@
             display: flex;
             flex-direction: column;
             gap: 12px;
-            margin: 12px 0;
-            padding: 0 12px;
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            box-sizing: border-box;
         }
 
         .taxa {
@@ -345,6 +395,9 @@
             border-radius: 14px;
             font-size: 14px;
             color: var(--text-subtle);
+            width: 100%;
+            margin: 0;
+            box-sizing: border-box;
         }
 
         body.light .taxa {
@@ -353,20 +406,228 @@
             color: var(--text-subtle);
         }
         
-        .activities-box {
-            background: linear-gradient(135deg, rgba(34, 197, 94, 0.12) 0%, #141414 50%, rgba(249, 115, 22, 0.10) 100%);
+        .activities-puzzle-card {
+            background: linear-gradient(135deg, rgba(34, 197, 94, 0.12) 0%, #141614 50%, rgba(253, 224, 71, 0.08) 100%);
             border: 1px solid rgba(255, 255, 255, 0.07);
-            padding: 14px;
-            border-radius: 14px;
+            border-radius: 16px;
+            padding: 12px 14px;
+            display: flex;
+            gap: 12px;
+            align-items: stretch;
+            width: 100%;
+            margin: 0;
+            box-sizing: border-box;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.35);
+        }
+
+        body.light .activities-puzzle-card {
+            background: linear-gradient(135deg, rgba(22, 163, 74, 0.07) 0%, #ffffff 50%, rgba(217, 119, 6, 0.06) 100%);
+            border: 1px solid #cbd5e1;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03);
+        }
+
+        .col-activities {
+            flex: 1.15;
+            min-width: 0;
             display: flex;
             flex-direction: column;
             justify-content: center;
+            gap: 4px;
+        }
+
+        .act-puz-divider {
+            width: 1px;
+            background: rgba(255, 255, 255, 0.07);
+            align-self: stretch;
+            flex-shrink: 0;
+        }
+
+        body.light .act-puz-divider {
+            background: rgba(0, 0, 0, 0.08);
+        }
+
+        .col-puzzle {
+            flex: 1;
+            min-width: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            gap: 4px;
+            cursor: pointer;
+        }
+
+        @media (max-width: 440px) {
+            .activities-puzzle-card {
+                flex-direction: column;
+                gap: 10px;
+            }
+            .act-puz-divider {
+                width: 100%;
+                height: 1px;
+                margin: 2px 0;
+            }
+        }
+
+        .puzzle-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .puzzle-title {
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--text);
+            display: flex;
+            align-items: center;
             gap: 6px;
         }
 
-        body.light .activities-box {
-            background: linear-gradient(135deg, rgba(22, 163, 74, 0.07) 0%, #f8f9fa 50%, rgba(217, 119, 6, 0.06) 100%);
-            border: 1px solid rgba(0, 0, 0, 0.06);
+        .puzzle-badge {
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--gold);
+            background: rgba(253, 224, 71, 0.14);
+            border: 1px solid rgba(253, 224, 71, 0.3);
+            padding: 2px 7px;
+            border-radius: 6px;
+        }
+
+        body.light .puzzle-badge {
+            color: var(--gold-light);
+            background: rgba(217, 119, 6, 0.1);
+            border-color: rgba(217, 119, 6, 0.3);
+        }
+
+        .puzzle-badge.completed {
+            color: var(--accent);
+            background: rgba(34, 197, 94, 0.15);
+            border-color: rgba(34, 197, 94, 0.35);
+        }
+
+        body.light .puzzle-badge.completed {
+            color: #15803d;
+            background: rgba(22, 163, 74, 0.1);
+            border-color: rgba(22, 163, 74, 0.3);
+        }
+
+        .puzzle-board-container {
+            width: 100%;
+            margin: 2px auto;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .puzzle-svg {
+            width: 100%;
+            height: auto;
+            max-height: 175px;
+            overflow: visible;
+            border-radius: 10px;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5), inset 0 0 12px rgba(0, 0, 0, 0.8);
+        }
+
+        .jigsaw-group {
+            cursor: pointer;
+        }
+
+        .jigsaw-seam {
+            fill: none;
+            stroke-width: 1.5;
+            transition: stroke 0.3s ease, filter 0.3s ease;
+            pointer-events: none;
+        }
+
+        .jigsaw-seam.locked {
+            stroke: rgba(255, 255, 255, 0.12);
+            stroke-dasharray: 4, 3;
+        }
+
+        body.light .jigsaw-seam.locked {
+            stroke: #94a3b8;
+        }
+
+        .jigsaw-seam.unlocked {
+            stroke: #22c55e;
+            filter: drop-shadow(0 0 4px rgba(34, 197, 94, 0.8));
+        }
+
+        body.light .jigsaw-seam.unlocked {
+            stroke: #15803d;
+            filter: drop-shadow(0 0 3px rgba(22, 163, 74, 0.5));
+        }
+
+        .jigsaw-seam.final-unlocked {
+            stroke: #fde047;
+            stroke-width: 2;
+            filter: drop-shadow(0 0 6px rgba(253, 224, 71, 0.9));
+        }
+
+        body.light .jigsaw-seam.final-unlocked {
+            stroke: #d97706;
+        }
+
+        .jigsaw-cover {
+            fill: #121412;
+            fill-opacity: 0.92;
+            transition: fill-opacity 0.3s ease;
+        }
+
+        body.light .jigsaw-cover {
+            fill: #f1f5f9;
+            fill-opacity: 0.94;
+        }
+
+        .jigsaw-group:hover .jigsaw-cover {
+            fill-opacity: 0.82;
+        }
+
+        .jigsaw-number-badge {
+            font-size: 11px;
+            font-weight: 800;
+            fill: var(--text-muted);
+            text-anchor: middle;
+            dominant-baseline: central;
+            pointer-events: none;
+            user-select: none;
+        }
+
+        body.light .jigsaw-number-badge {
+            fill: #64748b;
+        }
+
+        .puzzle-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 11px;
+            color: var(--text-muted);
+            margin-top: 2px;
+        }
+
+        .puzzle-add-btn {
+            background: var(--card-subtle);
+            border: 1px solid var(--border);
+            color: var(--text);
+            width: 22px;
+            height: 22px;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            padding: 0;
+            line-height: 1;
+        }
+
+        .puzzle-add-btn:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+            transform: scale(1.1);
         }
 
         .act-title {
@@ -822,7 +1083,7 @@
 
         /* MODO HORIZONTAL: COLUNA ÚNICA (UM ATRÁS DO OUTRO, NUNCA 2x2) */
         .app.horizontal {
-            max-width: 860px;
+            max-width: 890px;
             border-radius: 20px;
             padding: 10px 0;
         }
@@ -838,7 +1099,10 @@
         .app.horizontal .streak,
         .app.horizontal .converter,
         .app.horizontal .history,
-        .app.horizontal .stats {
+        .app.horizontal .stats,
+        .app.horizontal .top-unified-card,
+        .app.horizontal .taxa,
+        .app.horizontal .activities-puzzle-card {
             width: 100%;
             min-width: 0;
             margin: 0;
@@ -932,40 +1196,168 @@
             flex-shrink: 0;
         }
 
-        .clear-btn, .export-btn, .import-btn {
-            padding: 14px;
+        .backup-accordion {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            margin-top: 12px;
+            overflow: hidden;
+            transition: border-color 0.2s ease;
+        }
+
+        body.light .backup-accordion {
+            background: rgba(0, 0, 0, 0.02);
+            border-color: #cbd5e1;
+        }
+
+        .backup-accordion-header {
+            width: 100%;
+            padding: 12px 14px;
+            background: none;
             border: none;
-            border-radius: 10px;
+            color: var(--text);
+            font-size: 13.5px;
             font-weight: 600;
             cursor: pointer;
-            font-size: 15.5px;
-            width: 100%;
-        }
-
-        .clear-btn {
-            background: #ef4444;
-            color: #fff;
-            margin-top: 12px;
-        }
-
-        .export-btn {
-            background: #3b82f6;
-            color: #fff;
-        }
-
-        .import-btn {
-            background: #22c55e;
-            color: #000;
-        }
-
-        .backup-buttons {
             display: flex;
-            gap: 10px;
-            margin-top: 8px;
+            justify-content: space-between;
+            align-items: center;
+            transition: background 0.2s ease;
         }
 
-        .backup-buttons button {
+        .backup-accordion-header:hover {
+            background: rgba(255, 255, 255, 0.04);
+        }
+
+        body.light .backup-accordion-header:hover {
+            background: rgba(0, 0, 0, 0.04);
+        }
+
+        .accordion-arrow {
+            font-size: 11px;
+            color: var(--text-muted);
+            transition: transform 0.25s ease;
+        }
+
+        .accordion-arrow.open {
+            transform: rotate(180deg);
+        }
+
+        .backup-accordion-content {
+            padding: 0 14px 14px 14px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            border-top: 1px solid rgba(255, 255, 255, 0.06);
+            margin-top: 2px;
+            padding-top: 10px;
+        }
+
+        body.light .backup-accordion-content {
+            border-top: 1px solid rgba(0, 0, 0, 0.06);
+        }
+
+        .backup-section-label {
+            font-size: 10.5px;
+            font-weight: 700;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+            margin-top: 4px;
+        }
+
+        .backup-row {
+            display: flex;
+            gap: 8px;
+        }
+
+        .backup-action-btn {
             flex: 1;
+            padding: 10px 8px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            border: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            white-space: nowrap;
+            transition: all 0.2s ease;
+            box-sizing: border-box;
+        }
+
+        .backup-action-btn.json {
+            background: #3b82f6;
+            color: #ffffff;
+        }
+
+        .backup-action-btn.excel {
+            background: #15803d;
+            color: #ffffff;
+        }
+
+        .backup-action-btn.zip {
+            background: linear-gradient(135deg, #8b5cf6 0%, #6366f1 100%);
+            color: #ffffff;
+        }
+
+        .backup-action-btn.json-import {
+            background: #22c55e;
+            color: #000000;
+        }
+
+        .backup-action-btn.excel-import {
+            background: #22c55e;
+            color: #000000;
+        }
+
+        .backup-action-btn.sync {
+            width: 100%;
+            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+            color: #ffffff;
+            font-size: 13.5px;
+            padding: 11px;
+            box-shadow: 0 4px 15px rgba(37, 99, 235, 0.25);
+        }
+
+        .backup-action-btn:hover {
+            opacity: 0.92;
+            transform: translateY(-1px);
+        }
+
+        .backup-divider {
+            height: 1px;
+            background: rgba(255, 255, 255, 0.08);
+            margin: 4px 0;
+        }
+
+        body.light .backup-divider {
+            background: rgba(0, 0, 0, 0.08);
+        }
+
+        .backup-danger-btn {
+            width: 100%;
+            padding: 11px;
+            border-radius: 8px;
+            background: #ef4444;
+            color: #ffffff;
+            border: none;
+            font-size: 13.5px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .backup-danger-btn:hover {
+            opacity: 0.92;
+            transform: translateY(-1px);
+        }
+
+        body.light .backup-action-btn.zip {
+            background: linear-gradient(135deg, #7c3aed 0%, #4f46e5 100%);
+            color: #ffffff;
         }
 
         .history-item {
@@ -1342,7 +1734,7 @@
         
         .footer {
             text-align: center;
-            padding: 16px;
+            padding: 16px 12px;
             font-size: 13px;
             color: #666;
             display: flex;
@@ -1365,30 +1757,13 @@
             box-sizing: border-box;
         }
 
-        /* NO MODO HORIZONTAL: ESTICA DE CANTO A CANTO PROPORCIONAL AO TEXTO (ZERO VAZAMENTO) */
-        .app.horizontal .footer-buttons {
-            flex-wrap: nowrap;
-            width: 100%;
-            gap: 5px;
-            box-sizing: border-box;
-        }
-
-        .app.horizontal .footer-btn {
-            flex: 1 1 auto; /* 👈 Dá mais espaço para quem tem texto maior sem espremer */
-            text-align: center;
-            padding: 8px 6px;
-            font-size: 11px;
-            letter-spacing: -0.2px;
-            font-weight: 600;
-        }
-
         .footer-btn {
             background: rgba(255, 255, 255, 0.03);
             border: 1px solid rgba(255, 255, 255, 0.1);
             color: #aaa;
-            padding: 7px 10px;
+            padding: 7px 8px;
             border-radius: 9px;
-            font-size: 12px;
+            font-size: 11.5px;
             cursor: pointer;
             text-decoration: none;
             white-space: nowrap;
@@ -1400,6 +1775,30 @@
             background: rgba(255, 255, 255, 0.1);
             color: #fff;
             border-color: rgba(255, 255, 255, 0.25);
+        }
+
+        /* NO MODO HORIZONTAL: LINHA ÚNICA ESTICANDO DE CANTO A CANTO */
+        .app.horizontal .footer {
+            padding: 14px 6px;
+        }
+
+        .app.horizontal .footer-buttons {
+            display: flex;
+            flex-wrap: nowrap;
+            width: 100%;
+            gap: 3px;
+            box-sizing: border-box;
+        }
+
+        .app.horizontal .footer-btn {
+            flex: 1 1 auto;
+            min-width: 0;
+            text-align: center;
+            padding: 7px 4px;
+            font-size: 10.5px;
+            letter-spacing: -0.25px;
+            font-weight: 600;
+            white-space: nowrap;
         }
 
         body.light .footer-btn {
@@ -1439,7 +1838,7 @@
         }
 
         /* CORREÇÃO DO BUG: MODAIS FIXOS NA JANELA DE VISÃO (VIEWPORT) */
-        #tooltip-modal, #month-change-modal, #archive-modal, #dialog-modal, #weekday-modal, #sync-modal, #event-goal-modal {
+        #month-change-modal, #archive-modal, #dialog-modal, #weekday-modal, #sync-modal, #event-goal-modal {
             display: none;
             position: fixed;
             top: 0;
@@ -1460,8 +1859,87 @@
             box-sizing: border-box;
         }
 
+        /* PAINEL FLUTUANTE ARRASTÁVEL DE TOOLTIP (NÃO BLOQUEIA O DASHBOARD) */
+        #tooltip-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 0;
+            height: 0;
+            z-index: 100000;
+            pointer-events: none;
+        }
+
+        #tooltip-content {
+            position: fixed;
+            width: 440px;
+            max-width: calc(100vw - 32px);
+            max-height: 85vh;
+            overflow-y: auto;
+            background-color: #121412 !important;
+            background-image: linear-gradient(135deg, rgba(34, 197, 94, 0.18) 0%, #161816 50%, rgba(249, 115, 22, 0.14) 100%) !important;
+            border: 1px solid rgba(34, 197, 94, 0.4);
+            border-radius: 18px;
+            padding: 20px 22px;
+            color: var(--text);
+            box-shadow: 0 18px 50px rgba(0, 0, 0, 0.8), 0 0 30px rgba(34, 197, 94, 0.12);
+            pointer-events: auto;
+            box-sizing: border-box;
+            z-index: 100001;
+        }
+
+        body.light #tooltip-content {
+            background-color: #ffffff !important;
+            background-image: none !important;
+            border-color: #cbd5e1;
+            box-shadow: 0 18px 45px rgba(0, 0, 0, 0.15);
+        }
+
+        #tooltip-text {
+            font-size: 14.5px;
+            line-height: 1.6;
+            color: var(--text);
+        }
+
+        .tooltip-drag-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            cursor: grab;
+            user-select: none;
+            padding-bottom: 8px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        body.light .tooltip-drag-header {
+            border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+        }
+
+        .tooltip-drag-header:active {
+            cursor: grabbing;
+        }
+
+        .tooltip-close-btn {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            padding: 2px 6px;
+            border-radius: 6px;
+            line-height: 1;
+            transition: color 0.2s ease, background 0.2s ease;
+        }
+
+        .tooltip-close-btn:hover {
+            color: #ef4444;
+            background: rgba(239, 68, 68, 0.1);
+        }
+
         /* EFEITO SPOTLIGHT NOS MODAIS */
-        #tooltip-content, 
         #month-change-content, 
         #archive-content, 
         #dialog-content, 
@@ -1484,7 +1962,6 @@
             overflow-y: auto;
         }
 
-        body.light #tooltip-content, 
         body.light #month-change-content, 
         body.light #archive-content, 
         body.light #dialog-content, 
@@ -2124,18 +2601,9 @@
                 width: 100%;
                 box-sizing: border-box;
             }
-            .backup-buttons {
-                display: grid;
-                grid-template-columns: 1fr 1fr;
-                gap: 8px;
-            }
-            .backup-buttons button {
-                width: 100% !important;
-                padding: 12px 8px !important;
-                font-size: 12.5px !important;
-                white-space: nowrap;
-                overflow: hidden;
-                text-overflow: ellipsis;
+            .backup-row {
+                flex-direction: column;
+                gap: 6px;
             }
         }
 
@@ -2366,6 +2834,149 @@
             background: var(--border);
             transform: translateY(-1px);
         }
+
+        .sortable-ghost {
+            opacity: 0.35 !important;
+            transform: scale(0.98);
+        }
+
+        .zip-btn {
+            background: linear-gradient(135deg, #8b5cf6 0%, #6366f1 100%);
+            color: #ffffff;
+            padding: 13px;
+            border: none;
+            border-radius: 10px;
+            font-weight: 700;
+            font-size: 14.5px;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            box-shadow: 0 4px 15px rgba(99, 102, 241, 0.25);
+            transition: transform 0.2s ease, opacity 0.2s ease;
+        }
+
+        .zip-btn:hover {
+            opacity: 0.95;
+            transform: translateY(-1px);
+        }
+
+        body.light .zip-btn {
+            background: linear-gradient(135deg, #7c3aed 0%, #4f46e5 100%);
+            color: #ffffff;
+            box-shadow: 0 4px 15px rgba(124, 58, 237, 0.2);
+        }
+
+        /* TEMA DO FLATPICKR (MODO ESCURO) */
+        .flatpickr-calendar {
+            background: #141714 !important;
+            border: 1px solid rgba(34, 197, 94, 0.35) !important;
+            border-radius: 14px !important;
+            box-shadow: 0 16px 40px rgba(0, 0, 0, 0.8) !important;
+            color: #ffffff !important;
+        }
+
+        .flatpickr-months .flatpickr-month,
+        .flatpickr-current-month .flatpickr-monthDropdown-months,
+        .flatpickr-current-month input.cur-year {
+            background: transparent !important;
+            color: #ffffff !important;
+            font-weight: 700 !important;
+        }
+
+        span.flatpickr-weekday {
+            color: var(--text-muted) !important;
+            font-weight: 700 !important;
+        }
+
+        .flatpickr-day {
+            color: #dddddd !important;
+            border-radius: 8px !important;
+            position: relative;
+        }
+
+        .flatpickr-day:hover {
+            background: rgba(34, 197, 94, 0.2) !important;
+            border-color: transparent !important;
+        }
+
+        .flatpickr-day.today {
+            border-color: var(--gold) !important;
+        }
+
+        .flatpickr-day.selected {
+            background: var(--accent) !important;
+            color: #000000 !important;
+            font-weight: 700 !important;
+            border-color: var(--accent) !important;
+        }
+
+        .flatpickr-day.has-history-dot::after {
+            content: '';
+            position: absolute;
+            bottom: 3px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 4px;
+            height: 4px;
+            border-radius: 50%;
+            background: #22c55e;
+            box-shadow: 0 0 4px rgba(34, 197, 94, 0.8);
+        }
+
+        /* TEMA DO FLATPICKR (MODO CLARO) */
+        body.light .flatpickr-calendar {
+            background: #ffffff !important;
+            border: 1px solid #cbd5e1 !important;
+            box-shadow: 0 16px 35px rgba(0, 0, 0, 0.12) !important;
+            color: #1f1f1f !important;
+        }
+
+        body.light .flatpickr-months .flatpickr-month,
+        body.light .flatpickr-current-month .flatpickr-monthDropdown-months,
+        body.light .flatpickr-current-month input.cur-year {
+            color: #0f172a !important;
+        }
+
+        body.light span.flatpickr-weekday {
+            color: #64748b !important;
+        }
+
+        body.light .flatpickr-day {
+            color: #1f1f1f !important;
+        }
+
+        body.light .flatpickr-day:hover {
+            background: #f1f3f5 !important;
+        }
+
+        body.light .flatpickr-day.selected {
+            background: #15803d !important;
+            color: #ffffff !important;
+            border-color: #15803d !important;
+        }
+
+        body.light .flatpickr-day.has-history-dot::after {
+            background: #15803d;
+            box-shadow: none;
+        }
+
+        /* ESTILOS DO TOAST SWEETALERT2 COM DESFAZER */
+        .rewards-swal-toast {
+            border-radius: 14px !important;
+            border: 1px solid rgba(34, 197, 94, 0.35) !important;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7) !important;
+            padding: 8px 14px !important;
+            font-size: 13.5px !important;
+        }
+
+        body.light .rewards-swal-toast {
+            border-color: #cbd5e1 !important;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.12) !important;
+        }
     </style>
 </head>
 <body>
@@ -2375,69 +2986,89 @@
             document.body.classList.add('light');
         }
     </script>
-    <div class="app">
+    <div class="app" id="app-main">
         <div class="header">
             <div class="header-logo">
                    <!-- Certifique-se de que o arquivo rewards.png esteja na mesma pasta do index.html -->
                     <img src="rewards.png" alt="Rewards Tool Logo" width="40" height="40" style="flex-shrink: 0; display: block;">
              </div>
             <div class="header-title" id="header-title"></div>
+            <button class="header-btn order-btn" id="order-btn" onclick="mostrarInfoReordenar()" title="Organizar Painel">🔀</button>
+            <button class="header-btn sound-btn" id="sound-btn" onclick="toggleSound()" title="Ativar/Desativar Sons">🔊</button>
             <button class="header-btn theme-btn" onclick="toggleTheme()">☀️</button>
         </div>
 
-        <div class="top-unified-card">
-            <div class="top-row">
-                <div class="top-row-left">
-                    <span class="top-row-label">💼 Saldo em Conta</span>
-                    <div class="top-row-values">
-                        <strong id="saldo-pontos" class="top-saldo-pts">0 pts</strong>
-                        <span id="saldo-reais" class="top-saldo-reais">≈ R$ 0,00</span>
+        <div class="main">
+            <!-- CARTEIRA E TAXA -->
+            <div class="top-unified-card" data-card-id="wallet-taxa">
+                <div class="top-row">
+                    <div class="top-row-left">
+                        <span class="top-row-label"><span class="card-drag-handle" title="Segure e arraste para reordenar">⠿</span> 💼 Saldo em Conta</span>
+                        <div class="top-row-values">
+                            <strong id="saldo-pontos" class="top-saldo-pts">0 pts</strong>
+                            <span id="saldo-reais" class="top-saldo-reais">≈ R$ 0,00</span>
+                        </div>
                     </div>
+                    <button onclick="editarSaldoConta()" class="top-edit-btn">Editar Saldo</button>
                 </div>
-                <button onclick="editarSaldoConta()" class="top-edit-btn">Editar Saldo</button>
-            </div>
-            
-            <div class="top-divider"></div>
+                
+                <div class="top-divider"></div>
 
-            <div class="top-row">
-                <div class="top-row-left">
-                    <span class="top-row-label">⚖️ Taxa Base de Conversão</span>
-                    <div class="top-row-values">
-                        <span id="exemplo-pontos" class="top-ex-pts">5.165</span>
-                        <span style="color:var(--text-subtle);font-size:13.5px;">pts =</span>
-                        <span id="exemplo-reais" class="top-ex-reais">R$ 30,00</span>
+                <div class="top-row">
+                    <div class="top-row-left">
+                        <span class="top-row-label">⚖️ Taxa Base de Conversão</span>
+                        <div class="top-row-values">
+                            <span id="exemplo-pontos" class="top-ex-pts">5.165</span>
+                            <span style="color:var(--text-subtle);font-size:13.5px;">pts =</span>
+                            <span id="exemplo-reais" class="top-ex-reais">R$ 30,00</span>
+                        </div>
                     </div>
+                    <button onclick="editarExemplo()" class="top-edit-btn secondary">Editar Taxa</button>
                 </div>
-                <button onclick="editarExemplo()" class="top-edit-btn secondary">Editar Taxa</button>
             </div>
-        </div>
 
-        <div class="stats-row">
-            <div class="taxa">
-                <strong>Taxa atual de conversão:</strong><br>
+            <!-- TAXA ATUAL -->
+            <div class="taxa" data-card-id="taxa">
+                <strong><span class="card-drag-handle" title="Segure e arraste para reordenar">⠿</span> Taxa atual de conversão:</strong><br>
                 <span id="taxa-atual">172,17 pontos ≈ R$ 1,00</span><br>
                 <small>Baseado no exemplo acima • Atualiza automaticamente</small>
             </div>
             
-            <!-- BOX DE ATIVIDADES NOVO -->
-            <div class="activities-box">
-                <div class="act-title">Atividades (Ciclo 7d)</div>
-                <div id="activities-list"></div>
-            </div>
-        </div>
+            <!-- ATIVIDADES E QUEBRA-CABEÇA -->
+            <div class="activities-puzzle-card" data-card-id="activities-puzzle">
+                <div class="col-activities">
+                    <div class="act-title" style="text-align: left; display: flex; align-items: center; justify-content: space-between; margin-bottom: 2px;">
+                        <span><span class="card-drag-handle" title="Segure e arraste para reordenar">⠿</span> Atividades (7d)</span>
+                    </div>
+                    <div id="activities-list"></div>
+                </div>
 
-        <div class="main">
+                <div class="act-puz-divider"></div>
+
+                <div class="col-puzzle" onclick="editPuzzlePieces()">
+                    <div class="puzzle-header">
+                        <span class="puzzle-title">🧩 Quebra-Cabeça</span>
+                        <span id="puzzle-badge" class="puzzle-badge">0 / 12</span>
+                    </div>
+                    <div id="puzzle-grid" class="puzzle-board-container"></div>
+                    <div class="puzzle-footer">
+                        <span id="puzzle-status-text">12 peças = +1.000 pts</span>
+                        <button class="puzzle-add-btn" onclick="event.stopPropagation(); manualAddPuzzlePiece();" title="Adicionar peça manualmente">+</button>
+                    </div>
+                </div>
+            </div>
+
             <!-- META MENSAL -->
-            <div class="section meta">
+            <div class="section meta" data-card-id="meta">
                 <span onclick="mostrarTooltip('Meta Mensal & Níveis', 'Defina sua meta pessoal mensal de pontos.<br>A barra verde mostra seu progresso em tempo real.<br><br>' +
                     '<strong>O badge de nível ao lado atualiza automaticamente com base nos seus pontos mensais!</strong><br><br>' +
                     '📌 <strong>Níveis do MS Rewards Brasil:</strong><br>' +
                     '🥉 <strong>Membro:</strong> Até 499 pts/mês (Buscas: 15, ganhos por dólar gasto na MS Store: 1x)<br>' +
                     '🥈 <strong>Prata:</strong> 500 a 749 pts/mês (Buscas: 30, ganhos por dólar gasto na MS Store: 10x)<br>' +
                     '🥇 <strong>Gold:</strong> 750+ pts/mês (Buscas: 60, ganhos por dólar gasto na MS Store: 10x)<br><br>' +
-                    '💡 <strong>Dica:</strong> Clique no botão &quot;🔗 Sobre Níveis&quot; no rodapé da página para abrir a página oficial da Microsoft com a tabela completa de níveis e benefícios.')" class="tooltip-icon">ℹ️</span>
+                    '💡 <strong>Dica:</strong> Clique no botão &quot;🔗 Níveis&quot; no rodapé da página para abrir a página oficial da Microsoft com a tabela completa de níveis e benefícios.')" class="tooltip-icon">ℹ️</span>
                 <div class="meta-title">
-                    <span>Meta Mensal <span id="current-tier" class="tier-badge tier-membro">Membro</span></span>
+                    <span><span class="card-drag-handle" title="Segure e arraste para reordenar">⠿</span> Meta Mensal <span id="current-tier" class="tier-badge tier-membro">Membro</span></span>
                     <div class="meta-value-group">
                         <button onclick="editMeta()" class="edit-btn">Editar</button>
                         <span id="meta-value" class="meta-value">0 pts</span>
@@ -2454,12 +3085,12 @@
             </div>
 
             <!-- ESTIMATIVAS & META POR DATA -->
-            <div class="estimate">
+            <div class="estimate" data-card-id="estimate">
                 <span onclick="mostrarTooltip('Estimativas & Meta por Data', 'Mostra quantos dias faltam para acabar o mês, projeções baseadas no seu histórico e estimativa de saldo para datas especiais (Black Friday, Natal, aniversário, etc.).<br><br>' +
                     '• Média diária = total de pontos ÷ dias registrados<br>' +
                     '• Projeções mensais aparecem a partir do 7º dia registrado.<br>' +
                     '• A Meta por Data calcula seu saldo em conta somado aos ganhos até o evento desejado.')" class="tooltip-icon">ℹ️</span>
-                <div id="tempo-mensal">Faltam <strong>0 dias</strong> para acabar o mês</div>
+                <div id="tempo-mensal"><span class="card-drag-handle" title="Segure e arraste para reordenar">⠿</span> Faltam <strong>0 dias</strong> para acabar o mês</div>
                 <div class="estimate-grid">
                     <div class="estimate-box">
                         <small>Média diária</small><br>
@@ -2485,8 +3116,12 @@
             </div>
 
             <!-- STREAK -->
-            <div class="section streak" id="streak-section">
-                <div class="streak-label">🔥 Sequência de Dias</div>
+            <div class="section streak" id="streak-section" data-card-id="streak">
+                <div class="streak-label">
+                    <span class="card-drag-handle" title="Segure e arraste para reordenar">⠿</span> 
+                    <span id="lottie-streak-flame" style="width:34px; height:34px; display:inline-flex; align-items:center; justify-content:center; vertical-align:middle; filter:drop-shadow(0 0 6px rgba(234,88,12,0.6)); margin-top: -3px;" data-html2canvas-ignore="true">🔥</span> 
+                    Sequência de Dias
+                </div>
                 <div class="streak-row">
                     <div class="streak-number" id="streak">0</div>
                     <button onclick="editStreak()" class="streak-edit">✏️</button>
@@ -2500,8 +3135,9 @@
             </div>
 
             <!-- CONVERSOR -->
-            <div class="section converter">
+            <div class="section converter" data-card-id="converter">
                 <div class="converter-title">
+                    <span class="card-drag-handle" title="Segure e arraste para reordenar">⠿</span>
                     <span style="font-size:28px;">🎮</span>
                     <span>Pontos → Reais</span>
                 </div>
@@ -2519,8 +3155,8 @@
             </div>
 
             <!-- HISTÓRICO -->
-            <div class="section history">
-                <h3>📅 Histórico de Pontos</h3>
+            <div class="section history" data-card-id="history">
+                <h3><span class="card-drag-handle" title="Segure e arraste para reordenar">⠿</span> 📅 Histórico de Pontos</h3>
                 <div class="history-list" id="history-list"></div>
                 <div class="total-acumulado-wrap">
 					Total acumulado: <strong id="total-acumulado">0 pts</strong>
@@ -2530,23 +3166,42 @@
                     <input type="text" id="hist-pontos" placeholder="Pontos (ex: 620)" maxlength="5">
                     <button onclick="addToHistory()">Adicionar</button>
                 </div>
-                <button onclick="clearHistory()" class="clear-btn">🗑 Limpar Histórico</button>
-                <div class="backup-buttons">
-                    <button onclick="exportarDados()" class="export-btn">📤 Exportar JSON</button>
-                    <button onclick="exportarCSV()" class="export-btn">📊 Exportar CSV</button>
-                    <button onclick="importarDados()" class="import-btn">📥 Importar JSON</button>
-                    <button onclick="importarCSV()" class="import-btn">📄 Importar CSV</button>
+                <div class="backup-accordion" id="backup-accordion">
+                    <button type="button" class="backup-accordion-header" onclick="toggleBackupAccordion()">
+                        <span>📂 Opções de Backup e Transferência</span>
+                        <span class="accordion-arrow" id="backup-arrow">▼</span>
+                    </button>
+                    <div class="backup-accordion-content" id="backup-content" style="display:none;">
+                        <div class="backup-section-label">📤 Exportar:</div>
+                        <div class="backup-row">
+                            <button onclick="exportarDados()" class="backup-action-btn json">📄 JSON</button>
+                            <button onclick="exportarExcel()" class="backup-action-btn excel">📗 Excel</button>
+                            <button onclick="exportarPacoteCompleto()" class="backup-action-btn zip">📦 Pacote ZIP (Backup + PNG)</button>
+                        </div>
+
+                        <div class="backup-section-label">📥 Importar:</div>
+                        <div class="backup-row">
+                            <button onclick="importarDados()" class="backup-action-btn json-import">📄 Importar JSON</button>
+                            <button onclick="importarExcel()" class="backup-action-btn excel-import">📂 Importar Excel</button>
+                        </div>
+
+                        <div class="backup-section-label">📲 Conexão Direta:</div>
+                        <button onclick="abrirModalSync()" class="backup-action-btn sync">📲 Sincronizar com Celular (QR Code)</button>
+
+                        <div class="backup-divider"></div>
+
+                        <button onclick="clearHistory()" class="backup-danger-btn">🗑 Limpar Todo o Histórico</button>
+                    </div>
                 </div>
-                <button onclick="abrirModalSync()" class="sync-btn">📲 Sincronizar com Celular (QR Code)</button>
                 <span onclick="mostrarTooltip('Histórico de Pontos', 'Registre aqui os pontos que você ganha todo dia.<br><br>' +
                     'Usado para calcular sua média diária, projeções de meta e sequência de dias.<br><br>' +
                     'Dica da comunidade brasileira: registre todos os dias para ter projeções precisas e acompanhar seu progresso real.')" class="tooltip-icon">ℹ️</span>
             </div>
 
             <!-- ESTATÍSTICAS -->
-            <div class="section stats">
+            <div class="section stats" data-card-id="stats">
                 <div class="chart-header">
-                    <h3>📊 Estatísticas</h3>
+                    <h3 style="display:flex; align-items:center; gap:6px;"><span class="card-drag-handle" title="Segure e arraste para reordenar">⠿</span> 📊 Estatísticas</h3>
                     <select id="chart-compare-select" class="chart-select" onchange="updateStats()">
                         <option value="prev">vs Mês Anterior</option>
                         <option value="none">Sem Comparação</option>
@@ -2582,10 +3237,10 @@
                 </div>
 
         <div class="footer">
-            <span class="footer-text">Microsoft Rewards Tool — Feito para caçadores brasileiros • <strong>v1.9.1</strong></span>
+            <span class="footer-text">Microsoft Rewards Tool — Feito para caçadores brasileiros • <strong>v1.10</strong></span>
             <div class="footer-buttons">
-                <a href="https://rewards.bing.com/about" target="_blank" rel="noopener noreferrer" class="footer-btn">🔗 Sobre Níveis</a>
-                <button onclick="abrirChangelog()" class="footer-btn">Ver Changelog</button>
+                <a href="https://rewards.bing.com/about" target="_blank" rel="noopener noreferrer" class="footer-btn">🔗 Níveis</a>
+                <button onclick="abrirChangelog()" class="footer-btn">📜 Changelog</button>
                 <button onclick="toggleLayoutMode()" class="footer-btn" id="layout-btn">↔️ Modo Horizontal</button>
                 <button onclick="abrirResumoArquivos()" class="footer-btn">📊 Resumo Mensal</button>
                 <button onclick="abrirAnaliseSemanal()" class="footer-btn">📅 Padrão por Dia</button>
@@ -2608,11 +3263,14 @@
         </div>
     </div>
 
-    <!-- Modal de Tooltip -->
-    <div id="tooltip-modal" onclick="if(event.target.id==='tooltip-modal')fecharTooltip()">
-        <div id="tooltip-content" onclick="event.stopImmediatePropagation()" tabindex="-1">
-            <div id="tooltip-title"></div>
-            <div id="tooltip-text"></div>
+    <!-- Painel Flutuante Arrastável de Dicas (Tooltip) -->
+    <div id="tooltip-modal">
+        <div id="tooltip-content" tabindex="-1">
+            <div class="tooltip-drag-header" id="tooltip-drag-header">
+                <div id="tooltip-title" style="margin:0; font-size:15px; font-weight:700; display:flex; align-items:center; gap:6px;"></div>
+                <button onclick="fecharTooltip()" class="tooltip-close-btn" title="Fechar">✕</button>
+            </div>
+            <div id="tooltip-text" style="font-size:13px; line-height:1.5;"></div>
         </div>
     </div>
     
@@ -2698,8 +3356,8 @@
 
     <script>
         // ==================== CONFIGURAÇÕES INICIAIS ====================
-        const VERSION = "1.9.1";
-        const DATA_VERSION = "1.9.1";
+        const VERSION = "1.10";
+        const DATA_VERSION = "1.10";
         let isHorizontalMode = localStorage.getItem('horizontalMode') === 'true';
 
         // ==================== HELPER: LOCAL DATE FIX ====================
@@ -2723,6 +3381,68 @@
             return false;
         }
 
+        const SoundFX = {
+            ctx: null,
+            enabled: localStorage.getItem('rewardsSound') !== 'false',
+
+            init() {
+                if (!this.ctx && (window.AudioContext || window.webkitAudioContext)) {
+                    this.ctx = new (window.AudioContext || window.webkitAudioContext)();
+                }
+            },
+
+            play(freq, type = 'sine', duration = 0.1, startTime = 0) {
+                if (!this.enabled) return;
+                try {
+                    this.init();
+                    if (this.ctx.state === 'suspended') this.ctx.resume();
+                    const osc = this.ctx.createOscillator();
+                    const gain = this.ctx.createGain();
+                    osc.type = type;
+                    osc.frequency.setValueAtTime(freq, this.ctx.currentTime + startTime);
+                    gain.gain.setValueAtTime(0.12, this.ctx.currentTime + startTime);
+                    gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + startTime + duration);
+                    osc.connect(gain);
+                    gain.connect(this.ctx.destination);
+                    osc.start(this.ctx.currentTime + startTime);
+                    osc.stop(this.ctx.currentTime + startTime + duration);
+                } catch (e) {}
+            },
+
+            star() {
+                this.play(587.33, 'triangle', 0.12, 0);
+                this.play(880, 'triangle', 0.2, 0.08);
+            },
+
+            puzzle(piece = 1) {
+                const baseFreq = 329.63 * Math.pow(2, ((piece - 1) * 1.4) / 12);
+                this.play(baseFreq, 'sine', 0.09, 0);
+                this.play(baseFreq * 1.5, 'sine', 0.14, 0.05);
+            },
+
+            undo() {
+                this.play(330, 'sine', 0.08, 0);
+                this.play(220, 'sine', 0.12, 0.05);
+            },
+
+            fanfare() {
+                const notes = [523.25, 659.25, 783.99, 1046.50];
+                notes.forEach((freq, i) => {
+                    this.play(freq, 'square', 0.15, i * 0.1);
+                });
+                this.play(1318.51, 'triangle', 0.4, 0.45);
+            }
+        };
+
+        function toggleSound() {
+            SoundFX.enabled = !SoundFX.enabled;
+            localStorage.setItem('rewardsSound', SoundFX.enabled);
+            const btn = document.getElementById('sound-btn');
+            if (btn) btn.textContent = SoundFX.enabled ? '🔊' : '🔇';
+            showToast(SoundFX.enabled ? '🔊 Efeitos sonoros ativados!' : '🔇 Efeitos sonoros desativados.', 1500);
+            if (SoundFX.enabled) SoundFX.star();
+        }
+
         const ACTIVITY_NAMES = {
             bing: "Bing",
             conjunto: "Conjunto Diário",
@@ -2744,6 +3464,7 @@
             data: {
                 saldoConta: 0,
                 eventGoal: null,
+                puzzleData: null,
                 metaMensal: 0,
                 totalMensal: 0,
                 streak: 0,
@@ -2763,6 +3484,9 @@
                 if (savedData) {
                     this.data = { ...this.data, ...savedData };
                     if (this.data.saldoConta === undefined) this.data.saldoConta = 0;
+                    if (!this.data.puzzleData) {
+                        this.data.puzzleData = { pieces: 0, completedToday: false, lastCompletedDate: null };
+                    }
                     
                     // Migração/Inicialização das Atividades
                     if (!this.data.activitiesData || Object.keys(this.data.activitiesData).length === 0) {
@@ -2771,6 +3495,7 @@
                     }
                     return;
                 }
+                this.data.puzzleData = { pieces: 0, completedToday: false, lastCompletedDate: null };
                 // 2. Migração: Se não existir o novo formato, lê o antigo e salva no novo
                 this.data.saldoConta = parseFloat(localStorage.getItem('saldoConta')) || 0;
                 this.data.metaMensal = parseFloat(localStorage.getItem('metaMensal')) || 0;
@@ -2840,6 +3565,17 @@
                     this.data.lastStreakDate = todayStr;
                 } else if (!this.data.streakManualOverride) {
                     this.data.streak = calculateStreak();
+                }
+
+                if (fullDate === todayStr && this.data.activitiesData) {
+                    for (let key in this.data.activitiesData) {
+                        const act = this.data.activitiesData[key];
+                        if (act.day === 7 && act.completedToday && !act.puzzleGiven) {
+                            act.puzzleGiven = true;
+                            addPuzzlePiece(true);
+                            break;
+                        }
+                    }
                 }
 
                 this.save();
@@ -3020,6 +3756,7 @@
                 if (act.completedToday && act.lastDate !== today) {
                     if (act.day >= 7) {
                         act.day = 1; // Reseta o ciclo
+                        act.puzzleGiven = false;
                     } else {
                         act.day++; // Avança o dia
                     }
@@ -3031,6 +3768,8 @@
                 AppState.save();
                 renderActivities();
             }
+
+            checkPuzzleCycle();
         }
 
         function toggleActivity(key) {
@@ -3038,16 +3777,299 @@
             const today = getLocalDateString();
 
             if (act.completedToday && act.lastDate === today) {
-                // Desmarca se já estava preenchido hoje
                 act.completedToday = false;
                 act.lastDate = null;
+                if (act.day === 7 && act.puzzleGiven) {
+                    act.puzzleGiven = false;
+                    if (AppState.data.puzzleData && AppState.data.puzzleData.pieces > 0 && !AppState.data.puzzleData.completedToday) {
+                        AppState.data.puzzleData.pieces--;
+                        SoundFX.undo();
+                        renderPuzzle();
+                    }
+                }
             } else {
-                // Marca como concluído hoje
                 act.completedToday = true;
                 act.lastDate = today;
+                SoundFX.star();
+
+                const todayAlreadyLogged = AppState.data.history.some(h => h.fullDate === today);
+                if (act.day === 7 && !act.puzzleGiven && todayAlreadyLogged) {
+                    act.puzzleGiven = true;
+                    addPuzzlePiece(true);
+                }
             }
             AppState.save();
             renderActivities();
+        }
+
+        function checkPuzzleCycle() {
+            const today = getLocalDateString();
+            const pz = AppState.data.puzzleData;
+            if (!pz) return;
+
+            if (pz.completedToday && pz.lastCompletedDate !== today) {
+                pz.pieces = 0;
+                pz.completedToday = false;
+                AppState.save();
+                renderPuzzle();
+            }
+        }
+
+        function addPuzzlePiece(fromActivity = false) {
+            if (!AppState.data.puzzleData) {
+                AppState.data.puzzleData = { pieces: 0, completedToday: false, lastCompletedDate: null };
+            }
+            const pz = AppState.data.puzzleData;
+
+            if (pz.pieces < 12) {
+                pz.pieces++;
+                if (pz.pieces === 12) {
+                    completePuzzleReward();
+                } else {
+                    SoundFX.puzzle(pz.pieces);
+                    const extraMsg = fromActivity ? " (Bônus da atividade!)" : "";
+                    showToast(`🧩 Peça de quebra-cabeça obtida!${extraMsg} (${pz.pieces}/12)`, 2500);
+                }
+                AppState.save();
+                renderPuzzle();
+            }
+        }
+
+        function manualAddPuzzlePiece() {
+            const pz = AppState.data.puzzleData;
+            if (pz && pz.pieces >= 12) {
+                showToast("O quebra-cabeça já está completo hoje!", 2000);
+                return;
+            }
+            addPuzzlePiece(false);
+        }
+
+        function completePuzzleReward() {
+            const pz = AppState.data.puzzleData;
+            const today = getLocalDateString();
+            pz.completedToday = true;
+            pz.lastCompletedDate = today;
+
+            SoundFX.fanfare();
+            dispararConfetesEspeciais();
+            AppState.save();
+            renderPuzzle();
+            showToast("🎉 12/12 PEÇAS! Quebra-cabeça concluído!", 3500);
+        }
+
+        async function editPuzzlePieces() {
+            if (!AppState.data.puzzleData) {
+                AppState.data.puzzleData = { pieces: 0, completedToday: false, lastCompletedDate: null };
+            }
+            const pz = AppState.data.puzzleData;
+            const input = await Dialog.prompt(
+                "Definir quantidade atual de peças do quebra-cabeça (0 a 12):",
+                pz.pieces,
+                "Quebra-Cabeça"
+            );
+            if (input === null) return;
+
+            let val = parseInt(input);
+            if (isNaN(val) || val < 0 || val > 12) {
+                showToast("Valor inválido. Escolha entre 0 e 12.", 2000);
+                return;
+            }
+
+            const oldPieces = pz.pieces;
+            pz.pieces = val;
+
+            if (val === 12 && oldPieces < 12 && !pz.completedToday) {
+                completePuzzleReward();
+            } else {
+                if (val < 12) {
+                    pz.completedToday = false;
+                }
+                if (val < oldPieces) {
+                    SoundFX.undo();
+                } else if (val > oldPieces) {
+                    SoundFX.puzzle(val);
+                }
+                AppState.save();
+                renderPuzzle();
+                showToast(`Quebra-cabeça ajustado para ${val}/12 peças.`, 1800);
+            }
+        }
+
+        function getSmoothJigsawEdge(x1, y1, x2, y2, dir) {
+            if (dir === 0) return `L ${x2.toFixed(1)} ${y2.toFixed(1)} `;
+            const dx = x2 - x1;
+            const dy = y2 - y1;
+            const len = Math.hypot(dx, dy);
+            const ux = dx / len;
+            const uy = dy / len;
+            const nx = -uy * dir;
+            const ny = ux * dir;
+
+            const pt = (u, n) => `${(x1 + ux * u * len + nx * n * len).toFixed(1)} ${(y1 + uy * u * len + ny * n * len).toFixed(1)}`;
+
+            return `L ${pt(0.38, 0)} ` +
+                   `C ${pt(0.36, 0.05)} ${pt(0.32, 0.14)} ${pt(0.40, 0.17)} ` +
+                   `C ${pt(0.48, 0.21)} ${pt(0.52, 0.21)} ${pt(0.60, 0.17)} ` +
+                   `C ${pt(0.68, 0.14)} ${pt(0.64, 0.05)} ${pt(0.62, 0)} ` +
+                   `L ${x2.toFixed(1)} ${y2.toFixed(1)} `;
+        }
+
+        function renderPuzzle() {
+            const container = document.getElementById('puzzle-grid');
+            const badge = document.getElementById('puzzle-badge');
+            const statusText = document.getElementById('puzzle-status-text');
+            if (!container) return;
+
+            if (!AppState.data.puzzleData) {
+                AppState.data.puzzleData = { pieces: 0, completedToday: false, lastCompletedDate: null };
+            }
+            const pz = AppState.data.puzzleData;
+            const isLight = document.body.classList.contains('light');
+
+            const cols = 4;
+            const rows = 3;
+            const pw = 90;
+            const ph = 60;
+            const svgW = cols * pw;
+            const svgH = rows * ph;
+
+            const hEdges = [
+                [1, -1, 1, -1],
+                [-1, 1, -1, 1]
+            ];
+            const vEdges = [
+                [1, -1, 1],
+                [-1, 1, -1],
+                [1, -1, 1]
+            ];
+
+            let defsHtml = `
+                <defs>
+                    <linearGradient id="puzzleArtBg" x1="0" y1="0" x2="1" y2="1">
+                        <stop offset="0%" stop-color="${isLight ? '#dcfce7' : '#052e16'}" />
+                        <stop offset="50%" stop-color="${isLight ? '#fef3c7' : '#141713'}" />
+                        <stop offset="100%" stop-color="${isLight ? '#fed7aa' : '#271906'}" />
+                    </linearGradient>
+                    <radialGradient id="puzzleCenterGlow" cx="50%" cy="50%" r="50%">
+                        <stop offset="0%" stop-color="${isLight ? '#22c55e' : '#4ade80'}" stop-opacity="0.35" />
+                        <stop offset="100%" stop-color="${isLight ? '#22c55e' : '#4ade80'}" stop-opacity="0" />
+                    </radialGradient>
+            `;
+
+            const piecesPaths = [];
+
+            for (let r = 0; r < rows; r++) {
+                for (let c = 0; c < cols; c++) {
+                    const pieceNum = r * cols + c + 1;
+                    const x0 = c * pw;
+                    const x1 = (c + 1) * pw;
+                    const y0 = r * ph;
+                    const y1 = (r + 1) * ph;
+
+                    const dirTop = r === 0 ? 0 : -hEdges[r - 1][c];
+                    const dirRight = c === cols - 1 ? 0 : vEdges[r][c];
+                    const dirBottom = r === rows - 1 ? 0 : hEdges[r][c];
+                    const dirLeft = c === 0 ? 0 : -vEdges[r][c - 1];
+
+                    let d = `M ${x0} ${y0} `;
+                    d += getSmoothJigsawEdge(x0, y0, x1, y0, dirTop);
+                    d += getSmoothJigsawEdge(x1, y0, x1, y1, dirRight);
+                    d += getSmoothJigsawEdge(x1, y1, x0, y1, dirBottom);
+                    d += getSmoothJigsawEdge(x0, y1, x0, y0, dirLeft);
+                    d += 'Z';
+
+                    defsHtml += `<clipPath id="pclip-${pieceNum}"><path d="${d}" /></clipPath>`;
+                    piecesPaths.push({ num: pieceNum, path: d, cx: x0 + pw / 2, cy: y0 + ph / 2 });
+                }
+            }
+
+            defsHtml += `</defs>`;
+
+            let svgHtml = `<svg viewBox="0 0 ${svgW} ${svgH}" class="puzzle-svg">`;
+            svgHtml += defsHtml;
+
+            // Fundo da ilustração que vai sendo revelada
+            const artContent = `
+                <rect width="${svgW}" height="${svgH}" fill="url(#puzzleArtBg)" />
+                <circle cx="${svgW / 2}" cy="${svgH / 2}" r="${svgH * 0.7}" fill="url(#puzzleCenterGlow)" />
+                <text x="${svgW / 2}" y="32" font-size="10" font-weight="800" fill="${isLight ? '#15803d' : '#4ade80'}" text-anchor="middle" letter-spacing="1.5">RECOMPENSA SEMANAL</text>
+                <text x="${svgW / 2}" y="${svgH / 2 + 12}" font-size="42" text-anchor="middle">🎁</text>
+                <text x="${svgW / 2}" y="${svgH - 18}" font-size="12" font-weight="900" fill="${isLight ? '#b45309' : '#fde047'}" text-anchor="middle" letter-spacing="1">+1.000 PONTOS</text>
+            `;
+
+            piecesPaths.forEach(p => {
+                const isUnlocked = p.num <= pz.pieces;
+                const isFinal = p.num === 12;
+
+                let seamClass = 'jigsaw-seam ';
+                if (isUnlocked) {
+                    seamClass += isFinal ? 'final-unlocked' : 'unlocked';
+                } else {
+                    seamClass += 'locked';
+                }
+
+                svgHtml += `
+                    <g class="jigsaw-group" onclick="event.stopPropagation(); setPuzzlePieceDirectly(${p.num});" title="Peça ${p.num}/12 ${isUnlocked ? '(Desbloqueada)' : '(Pendente - clique para marcar)'}">
+                `;
+
+                if (isUnlocked) {
+                    // Revela a arte no pedaço desta peça
+                    svgHtml += `
+                        <g clip-path="url(#pclip-${p.num})">${artContent}</g>
+                    `;
+                } else {
+                    // Camada escura fosca na peça pendente
+                    svgHtml += `
+                        <path d="${p.path}" class="jigsaw-cover" />
+                        <text x="${p.cx}" y="${p.cy}" class="jigsaw-number-badge">${isFinal ? '🎁' : p.num}</text>
+                    `;
+                }
+
+                // Desenha a borda de corte do quebra-cabeça
+                svgHtml += `
+                        <path d="${p.path}" class="${seamClass}" />
+                    </g>
+                `;
+            });
+
+            svgHtml += `</svg>`;
+            container.innerHTML = svgHtml;
+
+            if (badge) {
+                badge.textContent = `${pz.pieces} / 12`;
+                badge.className = `puzzle-badge ${pz.pieces === 12 ? 'completed' : ''}`;
+            }
+
+            if (statusText) {
+                if (pz.pieces >= 12) {
+                    statusText.innerHTML = '<strong style="color:var(--accent);">🎁 1.000 pts resgatados! Reseta amanhã.</strong>';
+                } else {
+                    const faltam = 12 - pz.pieces;
+                    statusText.textContent = `Faltam ${faltam} peça${faltam > 1 ? 's' : ''} para o bônus de 1.000 pts`;
+                }
+            }
+        }
+
+        function setPuzzlePieceDirectly(num) {
+            const pz = AppState.data.puzzleData;
+            if (!pz) return;
+            const targetVal = (pz.pieces === num) ? num - 1 : num;
+            const oldPieces = pz.pieces;
+            pz.pieces = Math.max(0, Math.min(12, targetVal));
+
+            if (pz.pieces === 12 && oldPieces < 12 && !pz.completedToday) {
+                completePuzzleReward();
+            } else {
+                if (pz.pieces < 12) pz.completedToday = false;
+                if (pz.pieces > oldPieces) {
+                    SoundFX.puzzle(pz.pieces);
+                } else if (pz.pieces < oldPieces) {
+                    SoundFX.undo();
+                }
+                AppState.save();
+                renderPuzzle();
+                showToast(`Quebra-cabeça ajustado para ${pz.pieces}/12 peças.`, 1500);
+            }
         }
 
         async function editActivityDay(key) {
@@ -3230,8 +4252,34 @@
         }
 
         let toastTimeout = null;
-        function showToast(message, duration = 2500) {
+        function showToast(message, duration = 2500, onUndo = null) {
+            if (window.Swal && onUndo) {
+                const isLight = document.body.classList.contains('light');
+                Swal.fire({
+                    toast: true,
+                    position: 'bottom',
+                    icon: 'success',
+                    title: message,
+                    showConfirmButton: true,
+                    confirmButtonText: 'Desfazer',
+                    confirmButtonColor: isLight ? '#dc2626' : '#ef4444',
+                    timer: duration,
+                    timerProgressBar: true,
+                    background: isLight ? '#ffffff' : '#141714',
+                    color: isLight ? '#1f1f1f' : '#ffffff',
+                    customClass: {
+                        popup: 'rewards-swal-toast'
+                    }
+                }).then((result) => {
+                    if (result.isConfirmed && typeof onUndo === 'function') {
+                        onUndo();
+                    }
+                });
+                return;
+            }
+
             const toast = document.getElementById('toast');
+            if (!toast) return;
             toast.innerHTML = message;
             toast.style.opacity = '1';
             toast.style.transform = 'translateX(-50%) translateY(0)';
@@ -3242,17 +4290,222 @@
             }, duration);
         }
 
+        let tooltipUserDragged = false;
+
         function mostrarTooltip(titulo, htmlConteudo) {
             const safeTitulo = titulo.replace(/[<>]/g, '');
-            document.getElementById('tooltip-title').innerHTML = `<span style="font-size:24px;">ℹ️</span> ${safeTitulo}`;
+            document.getElementById('tooltip-title').innerHTML = `<span class="card-drag-handle" style="cursor:grab; margin-right:4px;">⠿</span> <span style="font-size:18px;">ℹ️</span> ${safeTitulo}`;
             const safeConteudo = htmlConteudo.replace(/<script\b[^>]*>(.*?)<\/script>/gis, '');
             document.getElementById('tooltip-text').innerHTML = safeConteudo;
-            document.getElementById('tooltip-modal').style.display = 'flex';
-            document.getElementById('tooltip-content').focus();
+            
+            const modal = document.getElementById('tooltip-modal');
+            modal.style.display = 'block';
+
+            const panel = document.getElementById('tooltip-content');
+            if (panel) {
+                if (!tooltipUserDragged) {
+                    const evt = window.event;
+                    const trigger = evt ? evt.target : null;
+                    const card = trigger ? trigger.closest('.section, .estimate, .top-unified-card, .taxa, .activities-box, .puzzle-box') : null;
+                    const appEl = document.getElementById('app-main') || document.querySelector('.app');
+                    
+                    if (card && appEl) {
+                        const appRect = appEl.getBoundingClientRect();
+                        const cardRect = card.getBoundingClientRect();
+                        panel.style.transform = 'none';
+                        panel.style.left = `${appRect.right + 14}px`;
+                        panel.style.top = `${cardRect.top}px`;
+                        panel.style.right = 'auto';
+                    } else {
+                        panel.style.transform = 'none';
+                        panel.style.right = '24px';
+                        panel.style.top = '80px';
+                        panel.style.left = 'auto';
+                    }
+                }
+            }
         }
 
         function fecharTooltip() {
-            document.getElementById('tooltip-modal').style.display = 'none';
+            const modal = document.getElementById('tooltip-modal');
+            if (modal) modal.style.display = 'none';
+        }
+
+        function initDraggableTooltip() {
+            const panel = document.getElementById('tooltip-content');
+            const header = document.getElementById('tooltip-drag-header');
+            if (!panel || !header) return;
+
+            let isDragging = false;
+            let startX, startY, initX, initY;
+
+            function onStart(e) {
+                if (e.target.closest('button, a, input')) return;
+                isDragging = true;
+                const clientX = e.clientX || (e.touches && e.touches[0].clientX);
+                const clientY = e.clientY || (e.touches && e.touches[0].clientY);
+                startX = clientX;
+                startY = clientY;
+                const rect = panel.getBoundingClientRect();
+                initX = rect.left;
+                initY = rect.top;
+                document.addEventListener('mousemove', onMove);
+                document.addEventListener('mouseup', onEnd);
+                document.addEventListener('touchmove', onMove, { passive: false });
+                document.addEventListener('touchend', onEnd);
+            }
+
+            function onMove(e) {
+                if (!isDragging) return;
+                tooltipUserDragged = true;
+                const clientX = e.clientX || (e.touches && e.touches[0].clientX);
+                const clientY = e.clientY || (e.touches && e.touches[0].clientY);
+                const deltaX = clientX - startX;
+                const deltaY = clientY - startY;
+
+                let newLeft = initX + deltaX;
+                let newTop = initY + deltaY;
+
+                panel.style.transform = 'none';
+                panel.style.left = `${newLeft}px`;
+                panel.style.top = `${newTop}px`;
+                panel.style.right = 'auto';
+                if (e.cancelable) e.preventDefault();
+            }
+
+            function onEnd() {
+                isDragging = false;
+                document.removeEventListener('mousemove', onMove);
+                document.removeEventListener('mouseup', onEnd);
+                document.removeEventListener('touchmove', onMove);
+                document.removeEventListener('touchend', onEnd);
+            }
+
+            header.addEventListener('mousedown', onStart);
+            header.addEventListener('touchstart', onStart, { passive: false });
+        }
+
+        function gerarWorkbookExcel() {
+            const taxa = AppState.getConversionRate();
+            const stats = AppState.getStats();
+            const wb = XLSX.utils.book_new();
+
+            const resumoData = [
+                ["Métrica", "Valor"],
+                ["Saldo Atual em Conta", `${AppState.data.saldoConta || 0} pts (R$ ${((AppState.data.saldoConta || 0) / taxa).toFixed(2)})`],
+                ["Total Acumulado no Mês", `${AppState.data.totalMensal} pts (R$ ${(AppState.data.totalMensal / taxa).toFixed(2)})`],
+                ["Meta Mensal", `${AppState.data.metaMensal} pts`],
+                ["Média Diária", `${stats.avg} pts/dia`],
+                ["Sequência (Streak)", `${AppState.data.streak} dias consecutivos`],
+                ["Taxa Base", `${AppState.data.exemploPontos} pts = R$ ${AppState.data.exemploReais}`],
+                ["Exportado em", new Date().toLocaleString('pt-BR')]
+            ];
+            const wsResumo = XLSX.utils.aoa_to_sheet(resumoData);
+            XLSX.utils.book_append_sheet(wb, wsResumo, "Resumo");
+
+            const histData = [
+                ["Data Completa", "Data de Exibição", "Pontos (+pts)", "Valor em Reais (R$)"]
+            ];
+            AppState.data.history.forEach(item => {
+                const reais = parseFloat((item.pontos / taxa).toFixed(2));
+                histData.push([item.fullDate || "", item.displayDate || "", item.pontos, reais]);
+            });
+            const wsHist = XLSX.utils.aoa_to_sheet(histData);
+            XLSX.utils.book_append_sheet(wb, wsHist, "Histórico Atual");
+
+            const archives = AppState.data.monthlyArchives || {};
+            const arcData = [
+                ["Mês / Ano", "Nome do Mês", "Total de Pontos", "Valor Total (R$)", "Streak Final"]
+            ];
+            Object.keys(archives).sort().forEach(k => {
+                const a = archives[k];
+                const reais = parseFloat(((a.totalPontos || 0) / taxa).toFixed(2));
+                arcData.push([a.month || k, a.monthName || k, a.totalPontos || 0, reais, a.streak || 0]);
+            });
+            if (arcData.length > 1) {
+                const wsArc = XLSX.utils.aoa_to_sheet(arcData);
+                XLSX.utils.book_append_sheet(wb, wsArc, "Meses Anteriores");
+            }
+
+            return wb;
+        }
+
+        function exportarExcel() {
+            if (typeof XLSX === 'undefined') {
+                showToast("Erro: Biblioteca Excel não carregada.", 2000);
+                return;
+            }
+            if (AppState.data.history.length === 0 && Object.keys(AppState.data.monthlyArchives).length === 0) {
+                showToast("Nenhum dado para exportar.", 2000);
+                return;
+            }
+
+            const wb = gerarWorkbookExcel();
+            XLSX.writeFile(wb, `MSRewards_Relatorio_Excel_${getLocalDateString()}.xlsx`);
+            showToast("📗 Planilha Excel (.xlsx) exportada com sucesso!", 3000);
+            SoundFX.star();
+        }
+
+        async function exportarPacoteCompleto() {
+            if (typeof JSZip === 'undefined' || typeof XLSX === 'undefined') {
+                showToast("Erro: Bibliotecas de exportação não carregadas.", 2000);
+                return;
+            }
+            showToast("📦 Gerando pacote completo...", 2000);
+
+            try {
+                const zip = new JSZip();
+                const dataIso = getLocalDateString();
+
+                // 1. Arquivo de Backup JSON
+                const dadosBackup = {
+                    saldoConta: AppState.data.saldoConta || 0,
+                    eventGoal: AppState.data.eventGoal || null,
+                    puzzleData: AppState.data.puzzleData || { pieces: 0, completedToday: false, lastCompletedDate: null },
+                    metaMensal: AppState.data.metaMensal,
+                    totalMensal: AppState.data.totalMensal,
+                    streak: AppState.data.streak,
+                    history: AppState.data.history,
+                    exemploPontos: AppState.data.exemploPontos,
+                    exemploReais: AppState.data.exemploReais,
+                    lastStreakDate: AppState.data.lastStreakDate,
+                    lastMonth: AppState.data.lastMonth,
+                    monthlyArchives: AppState.data.monthlyArchives,
+                    streakManualOverride: AppState.data.streakManualOverride,
+                    activitiesData: AppState.data.activitiesData,
+                    version: VERSION,
+                    exportedAt: new Date().toISOString()
+                };
+                zip.file(`MSRewards_Backup_${dataIso}.json`, JSON.stringify(dadosBackup, null, 2));
+
+                // 2. Planilha Excel (.xlsx)
+                const wb = gerarWorkbookExcel();
+                const excelBuffer = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
+                zip.file(`MSRewards_Planilha_${dataIso}.xlsx`, excelBuffer);
+
+                // 3. Renderiza o Card de Conquista para PNG
+                const canvas = document.createElement('canvas');
+                canvas.width = 1200;
+                canvas.height = 700;
+                await desenharCardNoCanvas(canvas);
+
+                const cardBlob = await new Promise(resolve => canvas.toBlob(resolve, 'image/png'));
+                if (cardBlob) {
+                    zip.file(`MSRewards_Card_Conquista_${dataIso}.png`, cardBlob);
+                }
+
+                const zipBlob = await zip.generateAsync({ type: 'blob' });
+                const link = document.createElement('a');
+                link.href = URL.createObjectURL(zipBlob);
+                link.download = `MSRewards_Pacote_Completo_${dataIso}.zip`;
+                link.click();
+                URL.revokeObjectURL(link.href);
+
+                showToast("📦 Pacote ZIP baixado com sucesso!", 3000);
+                SoundFX.star();
+            } catch (err) {
+                showToast(`❌ Erro ao gerar pacote: ${err.message}`, 3000);
+            }
         }
 
         function explicarMarcaFantasma() {
@@ -3356,6 +4609,8 @@
             const section = document.getElementById('streak-section');
             section.classList.add('streak-milestone');
             const streak = AppState.data.streak;
+            SoundFX.fanfare();
+            dispararConfetes();
             showToast(`🔥 Milestone! ${streak} dias consecutivos!`, 3000);
             setTimeout(() => section.classList.remove('streak-milestone'), 1800);
         }
@@ -3395,7 +4650,7 @@
             const rawPercent = meta > 0 ? parseFloat(((total / meta) * 100).toFixed(1)) : 0;
             const visualBarPercent = metaBatida ? 100 : Math.min(100, rawPercent);
 
-            document.getElementById('pontos-meta').textContent = `${formatarNumero(total)} pts`;
+            animateValue('pontos-meta', total, ' pts');
             document.getElementById('progress').style.width = `${visualBarPercent}%`;
 
             const agora = new Date();
@@ -3429,6 +4684,10 @@
             if (metaBatida) {
                 const extras = total - meta;
                 badgePacing = ` <small style="color:var(--gold); font-size:11.5px; font-weight:700; cursor:pointer;" onclick="explicarMarcaFantasma()">(🎉 +${formatarNumero(extras)} pts além da meta)</small>${infoBtnRitmo}`;
+                if (!AppState.metaCelebrated) {
+                    AppState.metaCelebrated = true;
+                    dispararConfetesEspeciais();
+                }
             } else if (meta > 0) {
                 const diffPacing = parseFloat((rawPercent - pctEsperada).toFixed(1));
                 if (diffPacing >= 0) {
@@ -3472,16 +4731,125 @@
             updateTier();
             updateStats();
             const saldoPts = AppState.data.saldoConta || 0;
-            const saldoPontosEl = document.getElementById('saldo-pontos');
+            animateValue('saldo-pontos', saldoPts, ' pts');
             const saldoReaisEl = document.getElementById('saldo-reais');
-            if (saldoPontosEl) saldoPontosEl.textContent = `${formatarNumero(saldoPts)} pts`;
             if (saldoReaisEl) saldoReaisEl.textContent = `≈ ${formatarReais(saldoPts / taxa)}`;
 
             document.getElementById('exemplo-pontos').textContent = formatarNumero(AppState.data.exemploPontos);
             document.getElementById('exemplo-reais').textContent = formatarReais(AppState.data.exemploReais);
             renderHistory();
             renderActivities(); // Atualiza as atividades junto com a interface
+            renderPuzzle();
             renderEventGoalCard();
+        }
+
+        const prevAnimatedValues = {};
+        function animateValue(elementId, endVal, suffix = '') {
+            const el = document.getElementById(elementId);
+            if (!el) return;
+            const startVal = prevAnimatedValues[elementId] !== undefined ? prevAnimatedValues[elementId] : 0;
+            prevAnimatedValues[elementId] = endVal;
+
+            if (window.countUp && window.countUp.CountUp) {
+                const cu = new window.countUp.CountUp(el, endVal, {
+                    startVal: startVal,
+                    duration: 1.1,
+                    separator: '.',
+                    decimal: ',',
+                    suffix: suffix
+                });
+                if (!cu.error) {
+                    cu.start();
+                    return;
+                }
+            }
+            el.textContent = `${formatarNumero(Math.round(endVal))}${suffix}`;
+        }
+
+        const jsConfettiInstance = typeof JSConfetti !== 'undefined' ? new JSConfetti() : null;
+
+        function dispararConfetes() {
+            const confettiObj = jsConfettiInstance || (typeof JSConfetti !== 'undefined' ? new JSConfetti() : null);
+            if (!confettiObj) return;
+            confettiObj.addConfetti({
+                confettiColors: ['#22c55e', '#fde047', '#4ade80', '#ffffff', '#ea580c'],
+                confettiNumber: 80
+            });
+        }
+
+        function dispararConfetesEspeciais() {
+            const confettiObj = jsConfettiInstance || (typeof JSConfetti !== 'undefined' ? new JSConfetti() : null);
+            if (!confettiObj) return;
+            confettiObj.addConfetti({
+                confettiColors: ['#22c55e', '#fde047', '#4ade80', '#ffffff'],
+                confettiNumber: 120
+            });
+            setTimeout(() => {
+                confettiObj.addConfetti({
+                    confettiColors: ['#fde047', '#22c55e', '#ffffff'],
+                    confettiNumber: 90
+                });
+            }, 350);
+        }
+
+        function initSortableDashboard() {
+            const container = document.querySelector('.main');
+            if (!container || typeof Sortable === 'undefined') return;
+
+            const savedOrder = JSON.parse(localStorage.getItem('dashboardCardOrder') || '[]');
+            if (savedOrder && savedOrder.length > 0) {
+                const cardMap = {};
+                Array.from(container.children).forEach(child => {
+                    const id = child.getAttribute('data-card-id');
+                    if (id) cardMap[id] = child;
+                });
+                savedOrder.forEach(id => {
+                    if (cardMap[id]) container.appendChild(cardMap[id]);
+                });
+            }
+
+            Sortable.create(container, {
+                animation: 250,
+                handle: '.card-drag-handle',
+                ghostClass: 'sortable-ghost',
+                onEnd: function () {
+                    const order = Array.from(container.children)
+                        .map(el => el.getAttribute('data-card-id'))
+                        .filter(Boolean);
+                    localStorage.setItem('dashboardCardOrder', JSON.stringify(order));
+                }
+            });
+        }
+
+        function resetarOrdemDashboard() {
+            localStorage.removeItem('dashboardCardOrder');
+            const container = document.querySelector('.main');
+            if (!container) return;
+
+            const defaultOrder = ['wallet-taxa', 'taxa', 'activities-puzzle', 'meta', 'estimate', 'streak', 'converter', 'history', 'stats'];
+            const cardMap = {};
+            Array.from(container.children).forEach(child => {
+                const id = child.getAttribute('data-card-id');
+                if (id) cardMap[id] = child;
+            });
+
+            defaultOrder.forEach(id => {
+                if (cardMap[id]) container.appendChild(cardMap[id]);
+            });
+
+            fecharTooltip();
+            showToast("✅ Ordem padrão restaurada!", 2000);
+            SoundFX.star();
+        }
+
+        function mostrarInfoReordenar() {
+            mostrarTooltip(
+                '🔀 Organizar Painel',
+                'Agora você pode personalizar a ordem de qualquer bloco do dashboard livremente!<br><br>' +
+                '• <strong>Como fazer:</strong> Segure e arraste qualquer card pelo ícone <strong>⠿</strong>.<br>' +
+                '• A sua ordem personalizada fica salva automaticamente no navegador.<br><br>' +
+                '<button onclick="resetarOrdemDashboard()" class="dialog-btn confirm" style="width:100%; margin-top:12px;">🔄 Restaurar Ordem Padrão</button>'
+            );
         }
 
         function renderEventGoalCard() {
@@ -4171,10 +5539,21 @@
                 }
             }
 
+            if (fpHistDate) fpHistDate.redraw();
+
             if (hitMilestone) {
                 triggerStreakMilestone();
             } else {
-                showToast(`+${formatarNumero(pts)} pontos adicionados!${diffMsg}`, 12000);
+                const undoDate = selectedDate;
+                showToast(`+${formatarNumero(pts)} pontos adicionados!${diffMsg}`, 6000, () => {
+                    const idx = AppState.data.history.findIndex(h => h.fullDate === undoDate);
+                    if (idx !== -1) {
+                        AppState.removeFromHistory(idx);
+                        atualizarInterfaceCompleta();
+                        if (fpHistDate) fpHistDate.redraw();
+                        showToast("Ação desfeita! Registro removido.", 2000);
+                    }
+                });
             }
         }
 
@@ -4206,6 +5585,15 @@
             AppState.clearHistory();
             atualizarInterfaceCompleta();
             showToast("Histórico limpo.");
+        }
+
+        function toggleBackupAccordion() {
+            const content = document.getElementById('backup-content');
+            const arrow = document.getElementById('backup-arrow');
+            if (!content) return;
+            const isOpen = content.style.display !== 'none';
+            content.style.display = isOpen ? 'none' : 'flex';
+            if (arrow) arrow.classList.toggle('open', !isOpen);
         }
 
         // ==================== FUNÇÕES DE META E STREAK ====================
@@ -4267,6 +5655,7 @@
             const dados = {
                 saldoConta: AppState.data.saldoConta || 0,
                 eventGoal: AppState.data.eventGoal || null,
+                puzzleData: AppState.data.puzzleData || { pieces: 0, completedToday: false, lastCompletedDate: null },
                 metaMensal: AppState.data.metaMensal,
                 totalMensal: AppState.data.totalMensal,
                 streak: AppState.data.streak,
@@ -4395,6 +5784,7 @@
                             localStorage.setItem('rewardsSafetyBackup', JSON.stringify({ data: JSON.parse(JSON.stringify(AppState.data)), timestamp: new Date().toISOString() }));
                             AppState.data.saldoConta = dados.saldoConta || 0;
                             AppState.data.eventGoal = dados.eventGoal || null;
+                            AppState.data.puzzleData = dados.puzzleData || { pieces: 0, completedToday: false, lastCompletedDate: null };
                             AppState.data.metaMensal = dados.metaMensal || 0;
                             AppState.data.totalMensal = dados.totalMensal || 0;
                             AppState.data.streak = dados.streak || 0;
@@ -4427,57 +5817,67 @@
             input.click();
         }
 
-        async function importarCSV() {
-            const ok = await Dialog.confirm("⚠️ Importar dados de CSV? Isso substituirá o histórico atual.", "Substituir Histórico");
-            if (!ok) return;
+        function importarExcel() {
+            if (typeof XLSX === 'undefined') {
+                showToast("Erro: Biblioteca Excel não carregada.", 2000);
+                return;
+            }
             const input = document.createElement('input');
             input.type = 'file';
-            input.accept = '.csv';
+            input.accept = '.xlsx, .xls';
             input.onchange = e => {
                 const file = e.target.files[0];
                 if (!file) return;
                 const reader = new FileReader();
                 reader.onload = async ev => {
                     try {
-                        const csv = ev.target.result;
-                        const lines = csv.split('\n');
+                        const data = new Uint8Array(ev.target.result);
+                        const workbook = XLSX.read(data, { type: 'array' });
+
+                        let sheetName = workbook.SheetNames.find(n => n.toLowerCase().includes("histórico") || n.toLowerCase().includes("historico"));
+                        if (!sheetName) sheetName = workbook.SheetNames[1] || workbook.SheetNames[0];
+
+                        const sheet = workbook.Sheets[sheetName];
+                        const rows = XLSX.utils.sheet_to_json(sheet, { header: 1 });
+                        if (!rows || rows.length <= 1) throw new Error("Aba de histórico vazia ou ilegível.");
+
                         const newHistory = [];
-                        for (let i = 1; i < lines.length; i++) {
-                            if (!lines[i].trim()) continue;
-                            let parts = lines[i].split(',');
-                            if (parts.length < 2) parts = lines[i].split(';');
-                            if (parts.length >= 2) {
-                                let pontosStr = parts[1].trim().replace(/[^\d]/g, '');
-                                const pontos = parseFloat(pontosStr) || 0;
-                                if (pontos > 0) {
-                                    let dateStr = parts[0].trim().replace(/["']/g, '');
-                                    let fullDate, displayDate;
-                                    if (/^\d{4}-\d{2}-\d{2}$/.test(dateStr)) {
-                                        fullDate = dateStr;
-                                        displayDate = new Date(dateStr + 'T00:00:00').toLocaleDateString('pt-BR', { day: 'numeric', month: 'short' }).replace('.', '');
-                                    } else {
-                                        fullDate = getLocalDateString(new Date(dateStr));
-                                        displayDate = dateStr;
-                                    }
-                                    newHistory.push({ fullDate, displayDate, pontos, timestamp: Date.now() });
+                        for (let i = 1; i < rows.length; i++) {
+                            const r = rows[i];
+                            if (!r || r.length < 2) continue;
+                            const dateVal = String(r[0] || "").trim();
+                            const pontosVal = parseFloat(String(r[2] || r[1] || "").replace(/[^\d]/g, '')) || 0;
+
+                            if (pontosVal > 0) {
+                                let fullDate = dateVal;
+                                let displayDate = String(r[1] || dateVal).trim();
+                                if (/^\d{4}-\d{2}-\d{2}$/.test(dateVal)) {
+                                    fullDate = dateVal;
+                                    displayDate = new Date(dateVal + 'T00:00:00').toLocaleDateString('pt-BR', { day: 'numeric', month: 'short' }).replace('.', '');
+                                } else {
+                                    fullDate = getLocalDateString(new Date(dateVal));
                                 }
+                                newHistory.push({ fullDate, displayDate, pontos: pontosVal, timestamp: Date.now() });
                             }
                         }
-                        if (newHistory.length === 0) throw new Error("Nenhum dado válido encontrado no CSV.");
-                        const okCsv = await Dialog.confirm(`Importar ${newHistory.length} entradas do CSV?`, "Importar CSV");
-                        if (okCsv) {
+
+                        if (newHistory.length === 0) throw new Error("Nenhum registro de pontos encontrado na planilha.");
+
+                        const ok = await Dialog.confirm(`Importar ${newHistory.length} registros da planilha Excel? Isso substituirá o histórico ativo.`, "Importar Planilha");
+                        if (ok) {
                             localStorage.setItem('rewardsSafetyBackup', JSON.stringify({ data: JSON.parse(JSON.stringify(AppState.data)), timestamp: new Date().toISOString() }));
                             AppState.data.history = newHistory;
                             AppState.data.totalMensal = newHistory.reduce((sum, item) => sum + item.pontos, 0);
                             normalizeHistory();
                             atualizarInterfaceCompleta();
-                            showToast(`✅ ${newHistory.length} entradas importadas!`);
+                            showToast(`✅ ${newHistory.length} registros importados da planilha!`, 3000);
+                            SoundFX.star();
                         }
                     } catch (err) {
-                        showToast(`❌ Erro ao importar CSV: ${err.message}`, 3000);
+                        showToast(`❌ Erro ao importar Excel: ${err.message}`, 3000);
                     }
                 };
-                reader.readAsText(file);
+                reader.readAsArrayBuffer(file);
             };
             input.click();
         }
@@ -4880,7 +6280,7 @@
             document.getElementById('archive-modal').style.display = 'none';
         }
 
-        function gerarCardConquista() {
+        async function desenharCardNoCanvas(canvas) {
             const stats = AppState.getStats();
             const taxa = AppState.getConversionRate();
             const totalPontos = AppState.data.totalMensal;
@@ -4891,10 +6291,6 @@
             const agora = new Date();
             const nomeMes = agora.toLocaleString('pt-BR', { month: 'long', year: 'numeric' });
             const tituloMes = nomeMes.toUpperCase();
-
-            const canvas = document.createElement('canvas');
-            canvas.width = 1200;
-            canvas.height = 700;
             const ctx = canvas.getContext('2d');
 
             if (isLight) {
@@ -5209,6 +6605,14 @@
             ctx.fillStyle = isLight ? '#64748b' : '#8b949e';
             ctx.font = '500 12.5px system-ui, -apple-system, sans-serif';
             ctx.fillText('Gerado via Rewards Tool • Feito para caçadores brasileiros', 50, 654);
+        }
+
+        async function gerarCardConquista() {
+            const isLight = document.body.classList.contains('light');
+            const canvas = document.createElement('canvas');
+            canvas.width = 1200;
+            canvas.height = 700;
+            await desenharCardNoCanvas(canvas);
 
             const link = document.createElement('a');
             const dataIso = getLocalDateString().slice(0, 7);
@@ -5341,6 +6745,7 @@
             localStorage.setItem('rewardsTheme', isLight ? 'light' : 'dark');
             document.querySelector('.theme-btn').textContent = isLight ? '🌙' : '☀️';
             atualizarInterfaceCompleta();
+            if (fpHistDate) fpHistDate.redraw();
         }
 
         function loadTheme() {
@@ -5476,7 +6881,7 @@
                         monthName: monthName,
                         totalPontos: totalPontos,
                         streak: streak,
-                        history: monthHistory, // 👈 DIAS INDIVIDUAIS RESTAURADOS!
+                        history: monthHistory,
                         archivedAt: new Date().toISOString()
                     };
                 });
@@ -5733,18 +7138,31 @@
         window.onload = () => {
             loadTheme();
 			initStarfield();
+            const soundBtn = document.getElementById('sound-btn');
+            if (soundBtn) soundBtn.textContent = SoundFX.enabled ? '🔊' : '🔇';
             AppState.init(); // <- Carrega os dados consolidados
             checkActivityCycles(); // <- Verifica e avança/resetou o ciclo de atividades
             document.getElementById('header-title').innerHTML = '<h1>Rewards Tool</h1>';
             normalizeHistory();
             checkNewMonth();
             applyLayoutMode();
+            initSortableDashboard();
+            initDraggableTooltip();
+            initFlatpickr();
+            initLottieFlame();
+            if (typeof autoAnimate === 'function') {
+                const histList = document.getElementById('history-list');
+                if (histList) autoAnimate(histList);
+                const bkpAccordion = document.getElementById('backup-accordion');
+                if (bkpAccordion) autoAnimate(bkpAccordion);
+            }
             setupInputValidation();
+
             document.getElementById('history-list').addEventListener('click', function(e) {
                 if (e.target && e.target.classList.contains('edit-history-btn')) {
                     const index = parseInt(e.target.getAttribute('data-index'));
                     editarItemHistorico(index);
-                    }
+                }
             });
             
             const todayStr = getLocalDateString();
@@ -5757,7 +7175,6 @@
             const pontosInput = document.getElementById('pontos');
             pontosInput.addEventListener('input', function() {
                 let val = this.value.replace(/\D/g, '');
-                // Se tiver mais de 1 dígito e começar com 0, remove o zero à esquerda
                 if (val.length > 1) {
                     val = val.replace(/^0+/, '');
                 }
@@ -5775,6 +7192,53 @@
             });
             setInterval(checkActivityCycles, 60000);
         };
+
+        let fpHistDate = null;
+        function initFlatpickr() {
+            if (typeof flatpickr === 'undefined') return;
+            const dateInput = document.getElementById('hist-date');
+            if (!dateInput) return;
+
+            fpHistDate = flatpickr(dateInput, {
+                locale: 'pt',
+                dateFormat: 'Y-m-d',
+                altInput: true,
+                altFormat: 'd/m/Y',
+                defaultDate: getLocalDateString(),
+                maxDate: getLocalDateString(),
+                disableMobile: true,
+                onDayCreate: function(dObj, dStr, fp, dayElem) {
+                    const dateStr = getLocalDateString(dayElem.dateObj);
+                    if (AppState.data.history && AppState.data.history.some(h => h.fullDate === dateStr)) {
+                        dayElem.classList.add('has-history-dot');
+                    }
+                }
+            });
+        }
+
+        function initLottieFlame() {
+            if (typeof lottie === 'undefined') return;
+            const container = document.getElementById('lottie-streak-flame');
+            if (!container) return;
+
+            try {
+                const anim = lottie.loadAnimation({
+                    container: container,
+                    renderer: 'svg',
+                    loop: true,
+                    autoplay: true,
+                    // Link de repositório público oficial e altamente estável (Google Fonts UI Animado)
+                    path: 'https://fonts.gstatic.com/s/e/notoemoji/latest/1f525/lottie.json'
+                });
+                
+                anim.addEventListener('DOMLoaded', () => {
+                    // Após a mágica 3D abrir no componente Lottie, tiramos do caminho o emoji text para render limpo
+                    Array.from(container.childNodes).forEach(node => {
+                        if (node.nodeType === 3) node.remove(); 
+                    });
+                });
+            } catch (e) { console.error('Erro na animação', e); }
+        }
 		// Redesenha gráficos e cards automaticamente ao rotacionar o celular
             window.addEventListener('resize', debounce(() => {
                 applyLayoutMode();
