@@ -4,27 +4,27 @@
     <link rel="icon" type="image/png" href="rewards.png">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.2/Sortable.min.js"></script>
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/countup.js/2.8.0/countUp.umd.min.js"></script>
-	<script src="https://cdn.jsdelivr.net/npm/js-confetti@latest/dist/js-confetti.browser.js"></script>
-	<script src="https://cdn.jsdelivr.net/npm/@formkit/auto-animate@0.8.2/index.min.js"></script>
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.12.2/lottie.min.js"></script>
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+	<script defer src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+	<script defer src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.2/Sortable.min.js"></script>
+	<script defer src="https://cdnjs.cloudflare.com/ajax/libs/countup.js/2.8.0/countUp.umd.min.js"></script>
+	<script defer src="https://cdn.jsdelivr.net/npm/js-confetti@latest/dist/js-confetti.browser.js"></script>
+	<script type="module">
+		import autoAnimate from 'https://cdn.jsdelivr.net/npm/@formkit/auto-animate@0.8.2/index.mjs';
+		window.autoAnimate = autoAnimate;
+	</script>
+	<script defer src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.12.2/lottie.min.js"></script>
+	<script defer src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/flatpickr/4.6.13/flatpickr.min.css">
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/flatpickr/4.6.13/flatpickr.min.js"></script>
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/flatpickr/4.6.13/l10n/pt.min.js"></script>
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/11.10.8/sweetalert2.all.min.js"></script>
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+	<script defer src="https://cdnjs.cloudflare.com/ajax/libs/flatpickr/4.6.13/flatpickr.min.js"></script>
+	<script defer src="https://cdnjs.cloudflare.com/ajax/libs/flatpickr/4.6.13/l10n/pt.min.js"></script>
+	<script defer src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/11.10.8/sweetalert2.all.min.js"></script>
+	<script defer src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
     <title>Rewards Tool</title>
     <style>
         :root {
-            --bg: #0a0a0a;
             --card: #1c1c1c;
             --card-subtle: #252525;
-            --header-bg: #111111;
             --border: #333333;
-            --input-bg: #000000;
             --text: #ffffff;
             --text-subtle: #aaaaaa;
             --text-muted: #888888;
@@ -35,12 +35,9 @@
         }
 
         body.light {
-            --bg: #f8f9fa;
             --card: #ffffff;
             --card-subtle: #f1f3f5;
-            --header-bg: #f1f3f5;
             --border: #dddddd;
-            --input-bg: #f1f3f5;
             --text: #1f1f1f;
             --text-subtle: #555555;
             --text-muted: #666666;
@@ -63,7 +60,6 @@
             min-height: 100vh;
             padding: 12px;
             transition: background 0.4s ease, color 0.4s ease;
-            color-scheme: dark;
             overflow-x: hidden;
         }
 
@@ -119,7 +115,7 @@
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.04);
         }
 
-        .header-logo svg, .header-logo img {
+        .header-logo img {
             width: 40px;
             height: 40px;
             flex-shrink: 0;
@@ -376,16 +372,6 @@
             background: rgba(234, 88, 12, 0.12);
             color: #c2410c;
         }
-        
-        .stats-row {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            margin: 0;
-            padding: 0;
-            width: 100%;
-            box-sizing: border-box;
-        }
 
         .taxa {
             text-align: center;
@@ -632,10 +618,13 @@
 
         .act-title {
             font-size: 12px;
-            text-align: center;
+            text-align: left;
             font-weight: 600;
             color: var(--text-muted);
-            margin-bottom: 4px;
+            margin-bottom: 2px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
         }
 
         .act-item {
@@ -660,11 +649,6 @@
             font-size: 12.5px;
             font-weight: 500;
             color: var(--text);
-        }
-
-        .act-day-info {
-            font-size: 10px;
-            color: var(--text-muted);
         }
 
         .act-track {
@@ -935,14 +919,6 @@
             box-shadow: 0 4px 15px rgba(234, 88, 12, 0.07);
         }
 
-        .stats {
-            background: linear-gradient(135deg, rgba(34, 197, 94, 0.14) 0%, #131313 50%, rgba(249, 115, 22, 0.09) 100%);
-        }
-
-        body.light .stats {
-            background: linear-gradient(135deg, rgba(22, 163, 74, 0.08) 0%, #ffffff 50%, rgba(217, 119, 6, 0.06) 100%);
-        }
-
         .tooltip-icon {
             position: absolute;
             top: 18px;
@@ -1070,17 +1046,6 @@
             color: #000000;
         }
 
-        /* CARD DE ESTATÍSTICAS */
-        .stats {
-            background: radial-gradient(circle at 75% 20%, rgba(34, 197, 94, 0.12) 0%, #111111 65%);
-            color: var(--text);
-        }
-
-        body.light .stats {
-            background: radial-gradient(circle at 75% 20%, rgba(22, 163, 74, 0.07) 0%, #f8f9fa 65%);
-            border-color: rgba(0, 0, 0, 0.06);
-        }
-
         /* MODO HORIZONTAL: COLUNA ÚNICA (UM ATRÁS DO OUTRO, NUNCA 2x2) */
         .app.horizontal {
             max-width: 890px;
@@ -1143,10 +1108,6 @@
             }
             .streak-number {
                 font-size: 68px;
-            }
-            .stats-row {
-                flex-direction: column;
-                padding: 0 12px;
             }
         }
 
@@ -1704,6 +1665,20 @@
             box-sizing: border-box;
         }
 
+        .estimate-drag-handle {
+            position: absolute;
+            top: 20px;
+            left: 18px;
+            font-size: 15px;
+        }
+
+        @media (max-width: 480px) {
+            .estimate-drag-handle {
+                top: 17px;
+                left: 14px;
+            }
+        }
+
         .history {
             background: linear-gradient(135deg, rgba(34, 197, 94, 0.1) 0%, #121212 50%, rgba(249, 115, 22, 0.08) 100%);
             border: 1px solid rgba(255, 255, 255, 0.07);
@@ -1734,7 +1709,7 @@
         
         .footer {
             text-align: center;
-            padding: 16px 12px;
+            padding: 10px 24px 18px 24px;
             font-size: 13px;
             color: #666;
             display: flex;
@@ -1777,16 +1752,16 @@
             border-color: rgba(255, 255, 255, 0.25);
         }
 
-        /* NO MODO HORIZONTAL: LINHA ÚNICA ESTICANDO DE CANTO A CANTO */
+        /* NO MODO HORIZONTAL: LINHA ÚNICA COM RECUO ALINHADO AOS CARDS */
         .app.horizontal .footer {
-            padding: 14px 6px;
+            padding: 10px 38px 18px 38px;
         }
 
         .app.horizontal .footer-buttons {
             display: flex;
             flex-wrap: nowrap;
             width: 100%;
-            gap: 3px;
+            gap: 4px;
             box-sizing: border-box;
         }
 
@@ -1897,8 +1872,8 @@
         }
 
         #tooltip-text {
-            font-size: 14.5px;
-            line-height: 1.6;
+            font-size: 13.5px;
+            line-height: 1.55;
             color: var(--text);
         }
 
@@ -1973,20 +1948,24 @@
             box-shadow: 0 20px 50px rgba(0, 0, 0, 0.15);
         }
 
-        #tooltip-title, #dialog-title, #archive-title, #weekday-title {
-            font-size: 20px !important;
-            font-weight: 700 !important;
+        #tooltip-title {
+            font-size: 15px;
+            font-weight: 700;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            color: var(--text);
+        }
+
+        #dialog-title, #archive-title, #weekday-title {
+            font-size: 20px;
+            font-weight: 700;
             margin-top: 0;
             margin-bottom: 12px;
             display: flex;
             align-items: center;
             gap: 10px;
-            color: var(--text);
-        }
-
-        #tooltip-text {
-            line-height: 1.6;
-            font-size: 15.5px;
             color: var(--text);
         }
 
@@ -2125,16 +2104,17 @@
             opacity: 1;
         }
 
+        /* CARD DE ESTATÍSTICAS */
         .stats {
-            background: linear-gradient(135deg, rgba(34, 197, 94, 0.16) 0%, #141715 45%, #181410 75%, rgba(249, 115, 22, 0.14) 100%) !important;
-            border: 1px solid rgba(255, 255, 255, 0.09) !important;
+            background: linear-gradient(135deg, rgba(34, 197, 94, 0.16) 0%, #141715 45%, #181410 75%, rgba(249, 115, 22, 0.14) 100%);
+            border: 1px solid rgba(255, 255, 255, 0.09);
             color: var(--text);
             box-shadow: 0 4px 25px rgba(0, 0, 0, 0.45);
         }
 
         body.light .stats {
-            background: linear-gradient(135deg, rgba(22, 163, 74, 0.09) 0%, #ffffff 50%, rgba(217, 119, 6, 0.07) 100%) !important;
-            border: 1px solid rgba(0, 0, 0, 0.08) !important;
+            background: linear-gradient(135deg, rgba(22, 163, 74, 0.09) 0%, #ffffff 50%, rgba(217, 119, 6, 0.07) 100%);
+            border: 1px solid rgba(0, 0, 0, 0.08);
         }
 
         /* As 3 caixas de métricas com acabamento fumê integrado */
@@ -2182,10 +2162,6 @@
 
         body.light .stat-box small {
             color: #666;
-        }
-
-        body.light .stat-box {
-            background: rgba(0, 0, 0, 0.08);
         }
 
         .chart-tooltip {
@@ -2415,6 +2391,25 @@
             gap: 4px;
         }
 
+        .archive-month-name {
+            font-weight: 700;
+            font-size: 14.5px;
+            color: var(--text);
+        }
+
+        .archive-points {
+            font-weight: 700;
+            font-size: 15px;
+            color: var(--accent);
+        }
+
+        .archive-empty {
+            text-align: center;
+            color: var(--text-muted);
+            padding: 20px;
+            font-size: 14px;
+        }
+
         .archive-header-right {
             display: flex;
             align-items: center;
@@ -2607,29 +2602,6 @@
             }
         }
 
-        .sync-btn {
-            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
-            color: #ffffff;
-            padding: 13px;
-            border: none;
-            border-radius: 10px;
-            font-weight: 700;
-            font-size: 14.5px;
-            cursor: pointer;
-            width: 100%;
-            margin-top: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            box-shadow: 0 4px 15px rgba(37, 99, 235, 0.25);
-            transition: transform 0.2s ease, opacity 0.2s ease;
-        }
-        .sync-btn:hover {
-            opacity: 0.95;
-            transform: translateY(-1px);
-        }
-
         /* MODAL QR CODE */
         #sync-content {
             text-align: center;
@@ -2698,7 +2670,9 @@
         }
 
         #archive-list {
-            max-height: 75vh !important;
+            max-height: 75vh;
+            overflow-y: auto;
+            padding-right: 8px;
         }
 
         .consolidated-badge {
@@ -2813,61 +2787,9 @@
             font-weight: 500;
         }
 
-        .card-share-btn {
-            background: var(--card-subtle);
-            color: var(--text);
-            border: 1px solid var(--border);
-            padding: 11px;
-            border-radius: 10px;
-            font-weight: 600;
-            font-size: 13px;
-            cursor: pointer;
-            width: 100%;
-            margin-top: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            transition: all 0.2s ease;
-        }
-        .card-share-btn:hover {
-            background: var(--border);
-            transform: translateY(-1px);
-        }
-
         .sortable-ghost {
             opacity: 0.35 !important;
             transform: scale(0.98);
-        }
-
-        .zip-btn {
-            background: linear-gradient(135deg, #8b5cf6 0%, #6366f1 100%);
-            color: #ffffff;
-            padding: 13px;
-            border: none;
-            border-radius: 10px;
-            font-weight: 700;
-            font-size: 14.5px;
-            cursor: pointer;
-            width: 100%;
-            margin-top: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            box-shadow: 0 4px 15px rgba(99, 102, 241, 0.25);
-            transition: transform 0.2s ease, opacity 0.2s ease;
-        }
-
-        .zip-btn:hover {
-            opacity: 0.95;
-            transform: translateY(-1px);
-        }
-
-        body.light .zip-btn {
-            background: linear-gradient(135deg, #7c3aed 0%, #4f46e5 100%);
-            color: #ffffff;
-            box-shadow: 0 4px 15px rgba(124, 58, 237, 0.2);
         }
 
         /* TEMA DO FLATPICKR (MODO ESCURO) */
@@ -2993,7 +2915,7 @@
                     <img src="rewards.png" alt="Rewards Tool Logo" width="40" height="40" style="flex-shrink: 0; display: block;">
              </div>
             <div class="header-title" id="header-title"></div>
-            <button class="header-btn order-btn" id="order-btn" onclick="mostrarInfoReordenar()" title="Organizar Painel">🔀</button>
+            <button class="header-btn order-btn" id="order-btn" onclick="mostrarInfoReordenar(this)" title="Organizar Painel">🔀</button>
             <button class="header-btn sound-btn" id="sound-btn" onclick="toggleSound()" title="Ativar/Desativar Sons">🔊</button>
             <button class="header-btn theme-btn" onclick="toggleTheme()">☀️</button>
         </div>
@@ -3037,7 +2959,7 @@
             <!-- ATIVIDADES E QUEBRA-CABEÇA -->
             <div class="activities-puzzle-card" data-card-id="activities-puzzle">
                 <div class="col-activities">
-                    <div class="act-title" style="text-align: left; display: flex; align-items: center; justify-content: space-between; margin-bottom: 2px;">
+                    <div class="act-title">
                         <span><span class="card-drag-handle" title="Segure e arraste para reordenar">⠿</span> Atividades (7d)</span>
                     </div>
                     <div id="activities-list"></div>
@@ -3066,7 +2988,7 @@
                     '🥉 <strong>Membro:</strong> Até 499 pts/mês (Buscas: 15, ganhos por dólar gasto na MS Store: 1x)<br>' +
                     '🥈 <strong>Prata:</strong> 500 a 749 pts/mês (Buscas: 30, ganhos por dólar gasto na MS Store: 10x)<br>' +
                     '🥇 <strong>Gold:</strong> 750+ pts/mês (Buscas: 60, ganhos por dólar gasto na MS Store: 10x)<br><br>' +
-                    '💡 <strong>Dica:</strong> Clique no botão &quot;🔗 Níveis&quot; no rodapé da página para abrir a página oficial da Microsoft com a tabela completa de níveis e benefícios.')" class="tooltip-icon">ℹ️</span>
+                    '💡 <strong>Dica:</strong> Clique no botão &quot;🔗 Níveis&quot; no rodapé da página para abrir a página oficial da Microsoft com a tabela completa de níveis e benefícios.', this)" class="tooltip-icon">ℹ️</span>
                 <div class="meta-title">
                     <span><span class="card-drag-handle" title="Segure e arraste para reordenar">⠿</span> Meta Mensal <span id="current-tier" class="tier-badge tier-membro">Membro</span></span>
                     <div class="meta-value-group">
@@ -3076,7 +2998,7 @@
                 </div>
                 <div class="progress-bar">
                     <div class="progress" id="progress"></div>
-                    <div class="progress-marker" id="progress-marker" onclick="explicarMarcaFantasma()" title="Clique para entender o Ritmo Ideal"></div>
+                    <div class="progress-marker" id="progress-marker" onclick="explicarMarcaFantasma(this)" title="Clique para entender o Ritmo Ideal"></div>
                 </div>
                 <div class="meta-info">
                     <span id="pontos-meta">0 pts</span>
@@ -3086,11 +3008,12 @@
 
             <!-- ESTIMATIVAS & META POR DATA -->
             <div class="estimate" data-card-id="estimate">
+                <span class="card-drag-handle estimate-drag-handle" title="Segure e arraste para reordenar">⠿</span>
                 <span onclick="mostrarTooltip('Estimativas & Meta por Data', 'Mostra quantos dias faltam para acabar o mês, projeções baseadas no seu histórico e estimativa de saldo para datas especiais (Black Friday, Natal, aniversário, etc.).<br><br>' +
                     '• Média diária = total de pontos ÷ dias registrados<br>' +
                     '• Projeções mensais aparecem a partir do 7º dia registrado.<br>' +
-                    '• A Meta por Data calcula seu saldo em conta somado aos ganhos até o evento desejado.')" class="tooltip-icon">ℹ️</span>
-                <div id="tempo-mensal"><span class="card-drag-handle" title="Segure e arraste para reordenar">⠿</span> Faltam <strong>0 dias</strong> para acabar o mês</div>
+                    '• A Meta por Data calcula seu saldo em conta somado aos ganhos até o evento desejado.', this)" class="tooltip-icon">ℹ️</span>
+                <div id="tempo-mensal">Faltam <strong>0 dias</strong> para acabar o mês</div>
                 <div class="estimate-grid">
                     <div class="estimate-box">
                         <small>Média diária</small><br>
@@ -3119,7 +3042,7 @@
             <div class="section streak" id="streak-section" data-card-id="streak">
                 <div class="streak-label">
                     <span class="card-drag-handle" title="Segure e arraste para reordenar">⠿</span> 
-                    <span id="lottie-streak-flame" style="width:34px; height:34px; display:inline-flex; align-items:center; justify-content:center; vertical-align:middle; filter:drop-shadow(0 0 6px rgba(234,88,12,0.6)); margin-top: -3px;" data-html2canvas-ignore="true">🔥</span> 
+                    <span id="lottie-streak-flame" style="width:34px; height:34px; display:inline-flex; align-items:center; justify-content:center; vertical-align:middle; filter:drop-shadow(0 0 6px rgba(234,88,12,0.6)); margin-top: -3px;">🔥</span> 
                     Sequência de Dias
                 </div>
                 <div class="streak-row">
@@ -3131,7 +3054,7 @@
                 <span onclick="mostrarTooltip('Sequência de Dias (Streak)', 'Dias consecutivos em que você completa o Conjunto Diário.<br><br>' +
                     'O sistema conta automaticamente os dias seguidos no seu histórico, do mais recente para trás.<br><br>' +
                     'No novo MS Rewards, manter a sequência garante seus bônus diários e multiplicadores do seu nível atual (Prata ou Gold).<br><br>' +
-                    '⚠️ <strong>Atenção:</strong> Se você não registrar pontos em um dia, a sequência será quebrada automaticamente!')" class="tooltip-icon">ℹ️</span>
+                    '⚠️ <strong>Atenção:</strong> Se você não registrar pontos em um dia, a sequência será quebrada automaticamente!', this)" class="tooltip-icon">ℹ️</span>
             </div>
 
             <!-- CONVERSOR -->
@@ -3151,7 +3074,7 @@
                 </div>
                 <span onclick="mostrarTooltip('Conversor Pontos → Reais', 'Calcula quanto valem seus pontos em reais brasileiros.<br><br>' +
                     'A taxa é definida pelo seu exemplo personalizado (ex: 5.165 pts = R$ 30,00).<br><br>' +
-                    'Atualiza automaticamente conforme você edita o exemplo acima.')" class="tooltip-icon">ℹ️</span>
+                    'Atualiza automaticamente conforme você edita o exemplo acima.', this)" class="tooltip-icon">ℹ️</span>
             </div>
 
             <!-- HISTÓRICO -->
@@ -3195,7 +3118,7 @@
                 </div>
                 <span onclick="mostrarTooltip('Histórico de Pontos', 'Registre aqui os pontos que você ganha todo dia.<br><br>' +
                     'Usado para calcular sua média diária, projeções de meta e sequência de dias.<br><br>' +
-                    'Dica da comunidade brasileira: registre todos os dias para ter projeções precisas e acompanhar seu progresso real.')" class="tooltip-icon">ℹ️</span>
+                    'Dica da comunidade brasileira: registre todos os dias para ter projeções precisas e acompanhar seu progresso real.', this)" class="tooltip-icon">ℹ️</span>
             </div>
 
             <!-- ESTATÍSTICAS -->
@@ -3235,6 +3158,8 @@
                         <strong id="stat-total">0 pts</strong>
                     </div>
                 </div>
+            </div>
+        </div>
 
         <div class="footer">
             <span class="footer-text">Microsoft Rewards Tool — Feito para caçadores brasileiros • <strong>v1.10</strong></span>
@@ -3267,25 +3192,25 @@
     <div id="tooltip-modal">
         <div id="tooltip-content" tabindex="-1">
             <div class="tooltip-drag-header" id="tooltip-drag-header">
-                <div id="tooltip-title" style="margin:0; font-size:15px; font-weight:700; display:flex; align-items:center; gap:6px;"></div>
+                <div id="tooltip-title"></div>
                 <button onclick="fecharTooltip()" class="tooltip-close-btn" title="Fechar">✕</button>
             </div>
-            <div id="tooltip-text" style="font-size:13px; line-height:1.5;"></div>
+            <div id="tooltip-text"></div>
         </div>
     </div>
     
     <!-- Modal Resumo de Arquivos -->
     <div id="archive-modal" onclick="if(event.target.id==='archive-modal')fecharResumoArquivos()">
         <div id="archive-content">
-            <h3 id="archive-title" style="margin-top:0; display:flex; align-items:center; gap:8px;">📊 Histórico de Meses</h3>
-            <div id="archive-list" style="max-height: 400px; overflow-y: auto; padding-right: 8px;"></div>
+            <h3 id="archive-title">📊 Histórico de Meses</h3>
+            <div id="archive-list"></div>
         </div>
     </div>
 
     <!-- Modal Análise por Dia da Semana -->
     <div id="weekday-modal" onclick="if(event.target.id==='weekday-modal')fecharAnaliseSemanal()">
         <div id="weekday-content">
-            <h3 id="weekday-title" style="margin-top:0; display:flex; align-items:center; gap:8px;">📅 Padrão por Dia da Semana</h3>
+            <h3 id="weekday-title">📅 Padrão por Dia da Semana</h3>
             <p style="color:var(--text-subtle); font-size:12.5px; margin:0 0 14px 0; line-height:1.4;">
                 Média real de pontos por dia da semana baseada no histórico de caçadas registradas.
             </p>
@@ -3302,7 +3227,8 @@
                 <input type="text" id="dialog-input" class="dialog-input">
             </div>
             <div class="dialog-buttons" style="margin-top: 20px;">
-                <button id="dialog-confirm-btn" class="dialog-btn confirm" style="width:100%;">Confirmar</button>
+                <button id="dialog-cancel-btn" class="dialog-btn cancel">Cancelar</button>
+                <button id="dialog-confirm-btn" class="dialog-btn confirm">Confirmar</button>
             </div>
         </div>
     </div>
@@ -3461,6 +3387,7 @@
 
         // ==================== GERENCIAMENTO DE ESTADO ====================
         const AppState = {
+            _initialized: false,
             data: {
                 saldoConta: 0,
                 eventGoal: null,
@@ -3475,56 +3402,111 @@
                 lastMonth: null,
                 monthlyArchives: {},
                 streakManualOverride: false,
-                activitiesData: null // Inicializado lazy no init()
+                metaCelebratedMonth: null,
+                activitiesData: null
             },
 
             init() {
-                // 1. Tenta carregar do novo formato consolidado
-                const savedData = JSON.parse(localStorage.getItem('rewardsData'));
-                if (savedData) {
+                let savedData = null;
+                try {
+                    const raw = localStorage.getItem('rewardsData');
+                    if (raw) savedData = JSON.parse(raw);
+                } catch (e) {
+                    console.error('Erro ao carregar rewardsData:', e);
+                }
+
+                if (savedData && typeof savedData === 'object') {
                     this.data = { ...this.data, ...savedData };
                     if (this.data.saldoConta === undefined) this.data.saldoConta = 0;
+                    if (!Array.isArray(this.data.history)) this.data.history = [];
+                    if (!this.data.monthlyArchives || typeof this.data.monthlyArchives !== 'object') {
+                        this.data.monthlyArchives = {};
+                    }
+                    if (!this.data.exemploPontos || this.data.exemploPontos <= 0) this.data.exemploPontos = 5165;
+                    if (!this.data.exemploReais || this.data.exemploReais <= 0) this.data.exemploReais = 30;
                     if (!this.data.puzzleData) {
                         this.data.puzzleData = { pieces: 0, completedToday: false, lastCompletedDate: null };
                     }
-                    
-                    // Migração/Inicialização das Atividades
                     if (!this.data.activitiesData || Object.keys(this.data.activitiesData).length === 0) {
                         this.data.activitiesData = getDefaultActivities();
                         this.save();
                     }
+                    const currentMonth = getLocalDateString().substring(0, 7);
+                    if (this.data.history.some(h => h.fullDate && h.fullDate.startsWith(currentMonth))) {
+                        this.recalculateMonthlyTotal();
+                    }
+                    this._initialized = true;
                     return;
                 }
+
                 this.data.puzzleData = { pieces: 0, completedToday: false, lastCompletedDate: null };
-                // 2. Migração: Se não existir o novo formato, lê o antigo e salva no novo
                 this.data.saldoConta = parseFloat(localStorage.getItem('saldoConta')) || 0;
                 this.data.metaMensal = parseFloat(localStorage.getItem('metaMensal')) || 0;
                 this.data.totalMensal = parseFloat(localStorage.getItem('totalMensal')) || 0;
                 this.data.streak = parseInt(localStorage.getItem('rewardsStreak')) || 0;
-                this.data.history = JSON.parse(localStorage.getItem('rewardsHistory')) || [];
+                try {
+                    this.data.history = JSON.parse(localStorage.getItem('rewardsHistory')) || [];
+                } catch (e) {
+                    this.data.history = [];
+                }
                 this.data.exemploPontos = parseFloat(localStorage.getItem('exemploPontos')) || 5165;
                 this.data.exemploReais = parseFloat(localStorage.getItem('exemploReais')) || 30;
                 this.data.lastStreakDate = localStorage.getItem('lastStreakDate') || null;
                 this.data.lastMonth = localStorage.getItem('lastMonth') || null;
-                this.data.monthlyArchives = JSON.parse(localStorage.getItem('monthlyArchives')) || {};
+                try {
+                    this.data.monthlyArchives = JSON.parse(localStorage.getItem('monthlyArchives')) || {};
+                } catch (e) {
+                    this.data.monthlyArchives = {};
+                }
                 this.data.streakManualOverride = localStorage.getItem('streakManualOverride') === 'true';
                 this.data.activitiesData = getDefaultActivities();
-                this.save(); // Salva no novo formato para não precisar migrar de novo
+                this.recalculateMonthlyTotal();
+                this._initialized = true;
+                this.save();
             },
 
-            save() {
-                // Salva tudo de uma vez só
-                localStorage.setItem('rewardsData', JSON.stringify(this.data));
-                if (Math.random() < 0.2) this.createBackup();
+            save(backupReason = null) {
+                const nextJson = JSON.stringify(this.data);
+                const prevRaw = localStorage.getItem('rewardsData');
+
+                if (backupReason && prevRaw && prevRaw !== nextJson) {
+                    this.createBackup(prevRaw, backupReason);
+                }
+
+                localStorage.setItem('rewardsData', nextJson);
             },
 
-            createBackup() {
-                const backup = {
-                    data: JSON.parse(JSON.stringify(this.data)),
-                    timestamp: new Date().toISOString(),
-                    version: DATA_VERSION
-                };
-                localStorage.setItem('rewardsBackup', JSON.stringify(backup));
+            createBackup(rawStateStr = null, reason = 'Alteração manual') {
+                try {
+                    const sourceRaw = rawStateStr || localStorage.getItem('rewardsData');
+                    if (!sourceRaw) return;
+                    const parsed = JSON.parse(sourceRaw);
+                    if (!parsed || typeof parsed !== 'object') return;
+
+                    const snapshot = {
+                        data: parsed,
+                        timestamp: new Date().toISOString(),
+                        reason: reason,
+                        version: DATA_VERSION
+                    };
+
+                    localStorage.setItem('rewardsBackup', JSON.stringify(snapshot));
+
+                    let list = [];
+                    try {
+                        const rawList = localStorage.getItem('rewardsBackupHistory');
+                        if (rawList) list = JSON.parse(rawList);
+                        if (!Array.isArray(list)) list = [];
+                    } catch (e) {
+                        list = [];
+                    }
+
+                    list.unshift(snapshot);
+                    if (list.length > 5) list = list.slice(0, 5);
+                    localStorage.setItem('rewardsBackupHistory', JSON.stringify(list));
+                } catch (e) {
+                    console.error('Erro ao criar backup:', e);
+                }
             },
 
             recalculateMonthlyTotal() {
@@ -3537,6 +3519,11 @@
             addToHistory(pontos, fullDate) {
                 const dateObj = new Date(fullDate + 'T00:00:00'); 
                 const displayDate = dateObj.toLocaleDateString('pt-BR', { day: 'numeric', month: 'short' }).replace('.', '');
+
+                const todayStr = getLocalDateString();
+                if (!this.data.streakManualOverride && fullDate === todayStr && this.data.lastStreakDate !== todayStr) {
+                    this.data.streak = calculateStreak();
+                }
 
                 let diffPontos = pontos;
                 const existingIndex = this.data.history.findIndex(h => h.fullDate === fullDate);
@@ -3554,15 +3541,17 @@
 
                 this.data.saldoConta = Math.max(0, (this.data.saldoConta || 0) + diffPontos);
 
-                this.data.history.sort((a, b) => b.fullDate.localeCompare(a.fullDate));
+                this.data.history.sort((a, b) => (b.fullDate || '').localeCompare(a.fullDate || ''));
                 this.recalculateMonthlyTotal();
 
-                const todayStr = getLocalDateString();
                 const oldStreak = this.data.streak;
 
                 if (fullDate === todayStr && this.data.lastStreakDate !== todayStr) {
                     this.data.streak++;
                     this.data.lastStreakDate = todayStr;
+                    if (!this.data.streakManualOverride) {
+                        this.data.streak = Math.max(this.data.streak, calculateStreak());
+                    }
                 } else if (!this.data.streakManualOverride) {
                     this.data.streak = calculateStreak();
                 }
@@ -3572,28 +3561,39 @@
                         const act = this.data.activitiesData[key];
                         if (act.day === 7 && act.completedToday && !act.puzzleGiven) {
                             act.puzzleGiven = true;
-                            addPuzzlePiece(true);
-                            break;
+                            addPuzzlePiece(true, true);
                         }
                     }
                 }
 
-                this.save();
+                this.save('Adicionar/editar histórico');
                 
                 return this.data.streak > oldStreak && isStreakMilestone(this.data.streak);
             },
 
             removeFromHistory(index) {
-                const removedPontos = this.data.history[index].pontos;
+                const removedItem = this.data.history[index];
+                if (!removedItem) return;
+
+                const removedPontos = removedItem.pontos;
+                const removedDate = removedItem.fullDate;
+                const todayStr = getLocalDateString();
+
                 this.data.history.splice(index, 1);
                 this.data.saldoConta = Math.max(0, (this.data.saldoConta || 0) - removedPontos);
                 this.recalculateMonthlyTotal();
-                
+
+                if (removedDate === todayStr && this.data.lastStreakDate === todayStr) {
+                    this.data.streak = Math.max(0, (this.data.streak || 0) - 1);
+                    const prevRecent = this.data.history.map(h => h.fullDate).filter(Boolean).sort().reverse()[0] || null;
+                    this.data.lastStreakDate = prevRecent;
+                }
+
                 if (!this.data.streakManualOverride) {
                     this.data.streak = calculateStreak();
                 }
                 
-                this.save();
+                this.save('Excluir item do histórico');
             },
 
             editHistoryItem(index, newPontos) {
@@ -3601,7 +3601,7 @@
                 this.data.history[index].pontos = newPontos;
                 this.data.saldoConta = Math.max(0, (this.data.saldoConta || 0) + diff);
                 this.recalculateMonthlyTotal();
-                this.save();
+                this.save('Editar pontos no histórico');
             },
 
             clearHistory() {
@@ -3610,87 +3610,120 @@
                 this.data.streak = 0;
                 this.data.lastStreakDate = null;
                 this.data.streakManualOverride = false;
-                this.data.monthlyArchives = {}; 
-                // ATENÇÃO: Não resetamos as activitiesData aqui conforme pedido.
-                this.save();
+                this.data.monthlyArchives = {};
+                this.data.metaCelebratedMonth = null;
+                this.save('Limpar todo o histórico');
             },
 
             setSaldoConta(newSaldo) {
                 this.data.saldoConta = validatePositiveNumber(newSaldo, 2000000);
-                this.save();
+                this.save('Editar Saldo em Conta');
             },
 
             setMeta(newMeta) {
                 this.data.metaMensal = validatePositiveNumber(newMeta, 100000);
-                this.save();
+                this.save('Editar Meta Mensal');
             },
 
             setStreak(newStreak, isManual) {
                 this.data.streak = validatePositiveNumber(newStreak, 20000);
                 this.data.streakManualOverride = isManual;
-                this.save();
+                this.save('Editar Sequência');
             },
 
             setExample(points, reais) {
-                this.data.exemploPontos = validatePositiveNumber(points, 100000);
-                this.data.exemploReais = validatePositiveNumber(reais, 10000);
-                this.save();
+                const validPts = validatePositiveNumber(points, 100000);
+                const validReais = parsePositiveDecimal(reais, 10000);
+                if (validPts <= 0 || validReais <= 0) return false;
+                this.data.exemploPontos = validPts;
+                this.data.exemploReais = validReais;
+                this.save('Editar Taxa Base');
+                return true;
             },
 
             getConversionRate() {
+                if (!this.data.exemploPontos || !this.data.exemploReais || this.data.exemploReais <= 0) {
+                    return 5165 / 30;
+                }
                 return this.data.exemploPontos / this.data.exemploReais;
             },
 
-            getMetaProgress() {
-                if (this.data.metaMensal <= 0) return 0;
-                const rawPercent = (this.data.totalMensal / this.data.metaMensal) * 100;
-                return parseFloat(Math.min(rawPercent, 100).toFixed(3));
-            },
-
             getStats() {
-                if (this.data.history.length === 0) {
+                const currentMonth = getLocalDateString().substring(0, 7);
+                const monthEntries = this.data.history.filter(item => item.fullDate && item.fullDate.startsWith(currentMonth));
+                const source = monthEntries.length > 0 ? monthEntries : this.data.history;
+
+                if (source.length === 0) {
                     return { avg: 0, best: 0, bestDate: '', worst: 0, worstDate: '', total: 0 };
                 }
-                let bestItem = this.data.history[0];
-                let worstItem = this.data.history[0];
-                let total = 0;
-                
-                this.data.history.forEach(item => {
-                    total += item.pontos;
+
+                let bestItem = source[0];
+                let worstItem = source[0];
+                let sourceTotal = 0;
+
+                source.forEach(item => {
+                    sourceTotal += item.pontos;
                     if (item.pontos > bestItem.pontos) bestItem = item;
                     if (item.pontos < worstItem.pontos) worstItem = item;
                 });
 
                 return {
-                    avg: Math.round(total / this.data.history.length),
+                    avg: Math.round(sourceTotal / source.length),
                     best: bestItem.pontos,
                     bestDate: bestItem.displayDate || '',
                     worst: worstItem.pontos,
                     worstDate: worstItem.displayDate || '',
-                    total: this.data.totalMensal || total
+                    total: monthEntries.length > 0 ? this.data.totalMensal : (this.data.totalMensal || sourceTotal)
                 };
             }
-        }; // 👈 ESSE fechamento que estava faltando!
+        };
 
         // ==================== DYNAMIC STREAK CALCULATOR ====================
+        function getLatestArchivedDate() {
+            const dates = [];
+            const archives = AppState.data.monthlyArchives || {};
+            for (let m in archives) {
+                const arc = archives[m];
+                if (arc && Array.isArray(arc.history)) {
+                    arc.history.forEach(h => {
+                        if (h.fullDate) dates.push(h.fullDate);
+                    });
+                }
+            }
+            if (AppState.data.lastStreakDate) {
+                dates.push(AppState.data.lastStreakDate);
+            }
+            dates.sort().reverse();
+            return dates[0] || null;
+        }
+
         function calculateStreak() {
             const today = getLocalDateString();
             const yesterday = getPreviousDay(today);
             
             let activeDates = [];
             if (AppState.data.history.length > 0) {
-                activeDates = [...new Set(AppState.data.history.map(h => h.fullDate))];
+                activeDates = [...new Set(AppState.data.history.map(h => h.fullDate).filter(Boolean))];
             }
             activeDates.sort().reverse();
 
+            // Se o histórico ativo estiver vazio (ex: após reset mensal), verifica a última data conhecida
+            if (activeDates.length === 0) {
+                const lastKnown = getLatestArchivedDate();
+                if (!lastKnown) return 0;
+                if (lastKnown !== today && lastKnown !== yesterday) return 0;
+                return AppState.data.streak || 0;
+            }
+
             // Se o último registro foi antes de ontem, a sequência realmente quebrou!
-            if (activeDates.length > 0 && activeDates[0] !== today && activeDates[0] !== yesterday) {
+            if (activeDates[0] !== today && activeDates[0] !== yesterday) {
                 return 0;
             }
 
-            let checkDate = activeDates.length > 0 ? activeDates[0] : yesterday;
+            let checkDate = activeDates[0];
             let streakTabela = 0;
             let activeIndex = 0;
+            let streakBrokenInHistory = false;
 
             while (activeIndex < activeDates.length) {
                 if (activeDates[activeIndex] === checkDate) {
@@ -3698,18 +3731,19 @@
                     checkDate = getPreviousDay(checkDate);
                     activeIndex++;
                 } else if (activeDates[activeIndex] < checkDate) {
+                    streakBrokenInHistory = true;
                     break;
                 } else {
                     activeIndex++;
                 }
             }
 
-            if (activeIndex >= activeDates.length && streakTabela > 0) {
+            if (!streakBrokenInHistory && activeIndex >= activeDates.length && streakTabela > 0) {
                 let missingMonthKey = checkDate.substring(0, 7);
                 let archiveToCheck = AppState.data.monthlyArchives[missingMonthKey];
 
                 while (archiveToCheck && archiveToCheck.history) {
-                    let archiveDates = [...new Set(archiveToCheck.history.map(h => h.fullDate))].sort().reverse();
+                    let archiveDates = [...new Set(archiveToCheck.history.map(h => h.fullDate).filter(Boolean))].sort().reverse();
                     let archiveIndex = 0;
                     let foundInThisArchive = false;
                     
@@ -3720,11 +3754,14 @@
                             archiveIndex++;
                             foundInThisArchive = true;
                         } else if (archiveDates[archiveIndex] < checkDate) {
+                            streakBrokenInHistory = true;
                             break;
                         } else {
                             archiveIndex++;
                         }
                     }
+
+                    if (streakBrokenInHistory) break;
 
                     if (!foundInThisArchive || archiveIndex >= archiveDates.length) {
                         const nextMonthKey = checkDate.substring(0, 7);
@@ -3735,16 +3772,24 @@
                 }
             }
 
-            // NUNCA rebaixa sua streak real (ex: 418) para a quantidade de dias da tabela (120)!
+            // Se houve quebra explícita dentro do histórico gravado, usa a contagem real pós-quebra.
+            // Caso a cadeia seja contínua até o início dos registros, preserva streak pré-existente maior (ex: 418).
+            if (streakBrokenInHistory) {
+                return streakTabela;
+            }
             return Math.max(AppState.data.streak || 0, streakTabela);
         }
 
         // ==================== ATIVITIES LOGIC ====================
+        let fpHistDate = null;
         function checkActivityCycles() {
             const today = getLocalDateString();
             const dateInput = document.getElementById('hist-date');
             if (dateInput && dateInput.max !== today) {
                 dateInput.max = today;
+                if (fpHistDate) {
+                    fpHistDate.set('maxDate', today);
+                }
             }
 
             const acts = AppState.data.activitiesData;
@@ -3752,15 +3797,14 @@
 
             for (let key in acts) {
                 const act = acts[key];
-                // Se foi completado em um dia anterior ao de hoje
                 if (act.completedToday && act.lastDate !== today) {
                     if (act.day >= 7) {
-                        act.day = 1; // Reseta o ciclo
+                        act.day = 1;
                         act.puzzleGiven = false;
                     } else {
-                        act.day++; // Avança o dia
+                        act.day++;
                     }
-                    act.completedToday = false; // Reseta a conclusão para o novo dia
+                    act.completedToday = false;
                     changed = true;
                 }
             }
@@ -3795,10 +3839,10 @@
                 const todayAlreadyLogged = AppState.data.history.some(h => h.fullDate === today);
                 if (act.day === 7 && !act.puzzleGiven && todayAlreadyLogged) {
                     act.puzzleGiven = true;
-                    addPuzzlePiece(true);
+                    addPuzzlePiece(true, true);
                 }
             }
-            AppState.save();
+            AppState.save('Marcar atividade');
             renderActivities();
         }
 
@@ -3815,7 +3859,7 @@
             }
         }
 
-        function addPuzzlePiece(fromActivity = false) {
+        function addPuzzlePiece(fromActivity = false, deferSave = false) {
             if (!AppState.data.puzzleData) {
                 AppState.data.puzzleData = { pieces: 0, completedToday: false, lastCompletedDate: null };
             }
@@ -3824,13 +3868,13 @@
             if (pz.pieces < 12) {
                 pz.pieces++;
                 if (pz.pieces === 12) {
-                    completePuzzleReward();
+                    completePuzzleReward(deferSave);
                 } else {
                     SoundFX.puzzle(pz.pieces);
                     const extraMsg = fromActivity ? " (Bônus da atividade!)" : "";
                     showToast(`🧩 Peça de quebra-cabeça obtida!${extraMsg} (${pz.pieces}/12)`, 2500);
+                    if (!deferSave) AppState.save('Adicionar peça do quebra-cabeça');
                 }
-                AppState.save();
                 renderPuzzle();
             }
         }
@@ -3844,7 +3888,7 @@
             addPuzzlePiece(false);
         }
 
-        function completePuzzleReward() {
+        function completePuzzleReward(deferSave = false) {
             const pz = AppState.data.puzzleData;
             const today = getLocalDateString();
             pz.completedToday = true;
@@ -3852,7 +3896,7 @@
 
             SoundFX.fanfare();
             dispararConfetesEspeciais();
-            AppState.save();
+            if (!deferSave) AppState.save('Completar quebra-cabeça');
             renderPuzzle();
             showToast("🎉 12/12 PEÇAS! Quebra-cabeça concluído!", 3500);
         }
@@ -3889,7 +3933,7 @@
                 } else if (val > oldPieces) {
                     SoundFX.puzzle(val);
                 }
-                AppState.save();
+                AppState.save('Editar quebra-cabeça');
                 renderPuzzle();
                 showToast(`Quebra-cabeça ajustado para ${val}/12 peças.`, 1800);
             }
@@ -3988,7 +4032,6 @@
             let svgHtml = `<svg viewBox="0 0 ${svgW} ${svgH}" class="puzzle-svg">`;
             svgHtml += defsHtml;
 
-            // Fundo da ilustração que vai sendo revelada
             const artContent = `
                 <rect width="${svgW}" height="${svgH}" fill="url(#puzzleArtBg)" />
                 <circle cx="${svgW / 2}" cy="${svgH / 2}" r="${svgH * 0.7}" fill="url(#puzzleCenterGlow)" />
@@ -4013,19 +4056,16 @@
                 `;
 
                 if (isUnlocked) {
-                    // Revela a arte no pedaço desta peça
                     svgHtml += `
                         <g clip-path="url(#pclip-${p.num})">${artContent}</g>
                     `;
                 } else {
-                    // Camada escura fosca na peça pendente
                     svgHtml += `
                         <path d="${p.path}" class="jigsaw-cover" />
                         <text x="${p.cx}" y="${p.cy}" class="jigsaw-number-badge">${isFinal ? '🎁' : p.num}</text>
                     `;
                 }
 
-                // Desenha a borda de corte do quebra-cabeça
                 svgHtml += `
                         <path d="${p.path}" class="${seamClass}" />
                     </g>
@@ -4066,7 +4106,7 @@
                 } else if (pz.pieces < oldPieces) {
                     SoundFX.undo();
                 }
-                AppState.save();
+                AppState.save('Editar quebra-cabeça');
                 renderPuzzle();
                 showToast(`Quebra-cabeça ajustado para ${pz.pieces}/12 peças.`, 1500);
             }
@@ -4086,7 +4126,8 @@
             act.day = newDay;
             act.completedToday = false;
             act.lastDate = null;
-            AppState.save();
+            act.puzzleGiven = false;
+            AppState.save('Ajustar dia da atividade');
             renderActivities();
             showToast(`${ACTIVITY_NAMES[key]} ajustado para o Dia ${newDay}.`, 1500);
         }
@@ -4101,6 +4142,7 @@
                 const act = acts[key];
                 const isCompleted = act.completedToday;
                 const isDay7 = act.day === 7;
+                const safeDay = parseInt(act.day) || 1;
                 const item = document.createElement('div');
                 item.className = 'act-item';
 
@@ -4114,9 +4156,9 @@
                 let pillsHtml = '<div class="act-track">';
                 for (let i = 1; i <= 7; i++) {
                     let statusClass = '';
-                    if (i < act.day) {
+                    if (i < safeDay) {
                         statusClass = 'done';
-                    } else if (i === act.day) {
+                    } else if (i === safeDay) {
                         if (isCompleted) {
                             statusClass = 'done';
                         } else {
@@ -4139,15 +4181,15 @@
                     : 'Marcar como concluído';
 
                 item.innerHTML = `
-                    <div class="act-info" onclick="editActivityDay('${key}')">
+                    <div class="act-info" onclick="editActivityDay('${escapeHtml(key)}')">
                         <span class="act-name">
-                            ${ACTIVITY_NAMES[key]} 
-                            <small style="color:var(--text-muted); font-size:11px; font-weight:normal;">(${act.day}/7)</small>
+                            ${escapeHtml(ACTIVITY_NAMES[key] || key)} 
+                            <small style="color:var(--text-muted); font-size:11px; font-weight:normal;">(${safeDay}/7)</small>
                             ${bonusBadgeHtml}
                         </span>
                         ${pillsHtml}
                     </div>
-                    <button class="act-star ${starClass}" onclick="toggleActivity('${key}')" title="${starTitle}">
+                    <button class="act-star ${starClass}" onclick="toggleActivity('${escapeHtml(key)}')" title="${escapeHtml(starTitle)}">
                         ${isCompleted ? '★' : '☆'}
                     </button>
                 `;
@@ -4166,11 +4208,12 @@
             confirm(message, title = "Confirmação") {
                 return new Promise(resolve => {
                     const modal = document.getElementById('dialog-modal');
-                    document.getElementById('dialog-title').innerHTML = `<span style="font-size:22px;">❓</span> ${title}`;
-                    document.getElementById('dialog-message').innerHTML = message.replace(/\n/g, '<br>');
+                    document.getElementById('dialog-title').innerHTML = `<span style="font-size:22px;">❓</span> ${escapeHtml(title)}`;
+                    document.getElementById('dialog-message').innerHTML = escapeHtml(message).replace(/\n/g, '<br>');
                     document.getElementById('dialog-input-wrap').style.display = 'none';
                     
                     const btnConfirm = document.getElementById('dialog-confirm-btn');
+                    const btnCancel = document.getElementById('dialog-cancel-btn');
                     btnConfirm.textContent = "Confirmar";
 
                     modal.style.display = 'flex';
@@ -4178,6 +4221,7 @@
                     const close = (val) => {
                         modal.style.display = 'none';
                         btnConfirm.onclick = null;
+                        btnCancel.onclick = null;
                         document.removeEventListener('keydown', keyHandler);
                         dialogCloseHandler = null;
                         resolve(Boolean(val));
@@ -4190,6 +4234,7 @@
 
                     dialogCloseHandler = () => close(false);
                     btnConfirm.onclick = () => close(true);
+                    btnCancel.onclick = () => close(false);
                     document.addEventListener('keydown', keyHandler);
                 });
             },
@@ -4198,12 +4243,13 @@
                 return new Promise(resolve => {
                     const modal = document.getElementById('dialog-modal');
                     const input = document.getElementById('dialog-input');
-                    document.getElementById('dialog-title').innerHTML = `<span style="font-size:22px;">✏️</span> ${title}`;
-                    document.getElementById('dialog-message').innerHTML = message.replace(/\n/g, '<br>');
+                    document.getElementById('dialog-title').innerHTML = `<span style="font-size:22px;">✏️</span> ${escapeHtml(title)}`;
+                    document.getElementById('dialog-message').innerHTML = escapeHtml(message).replace(/\n/g, '<br>');
                     document.getElementById('dialog-input-wrap').style.display = 'block';
                     input.value = defaultValue;
 
                     const btnConfirm = document.getElementById('dialog-confirm-btn');
+                    const btnCancel = document.getElementById('dialog-cancel-btn');
                     btnConfirm.textContent = "Confirmar";
 
                     modal.style.display = 'flex';
@@ -4213,6 +4259,7 @@
                     const close = (val) => {
                         modal.style.display = 'none';
                         btnConfirm.onclick = null;
+                        btnCancel.onclick = null;
                         input.onkeydown = null;
                         dialogCloseHandler = null;
                         resolve(val);
@@ -4220,6 +4267,7 @@
 
                     dialogCloseHandler = () => close(null);
                     btnConfirm.onclick = () => close(input.value);
+                    btnCancel.onclick = () => close(null);
                     input.onkeydown = (e) => {
                         if (e.key === 'Enter') { e.preventDefault(); close(input.value); }
                         if (e.key === 'Escape') { e.preventDefault(); close(null); }
@@ -4227,14 +4275,31 @@
                 });
             }
         };
+
         // ==================== FUNÇÕES DE VALIDAÇÃO ====================
         function validatePositiveNumber(input, max = Infinity) {
             const num = parseFloat(String(input).replace(/\D/g, '')) || 0;
             return Math.min(Math.max(num, 0), max);
         }
 
+        function parsePositiveDecimal(input, max = Infinity) {
+            let str = String(input).trim().replace(/[^\d.,]/g, '');
+            if (!str) return 0;
+            if (str.includes(',')) {
+                str = str.replace(/\./g, '').replace(',', '.');
+            } else {
+                const parts = str.split('.');
+                if (parts.length > 2) {
+                    const dec = parts.pop();
+                    str = parts.join('') + '.' + dec;
+                }
+            }
+            const num = parseFloat(str) || 0;
+            return Math.min(Math.max(num, 0), max);
+        }
+
         function escapeHtml(unsafe) {
-            return unsafe
+            return String(unsafe)
                 .replace(/&/g, "&amp;")
                 .replace(/</g, "&lt;")
                 .replace(/>/g, "&gt;")
@@ -4292,8 +4357,8 @@
 
         let tooltipUserDragged = false;
 
-        function mostrarTooltip(titulo, htmlConteudo) {
-            const safeTitulo = titulo.replace(/[<>]/g, '');
+        function mostrarTooltip(titulo, htmlConteudo, triggerEl = null) {
+            const safeTitulo = escapeHtml(titulo);
             document.getElementById('tooltip-title').innerHTML = `<span class="card-drag-handle" style="cursor:grab; margin-right:4px;">⠿</span> <span style="font-size:18px;">ℹ️</span> ${safeTitulo}`;
             const safeConteudo = htmlConteudo.replace(/<script\b[^>]*>(.*?)<\/script>/gis, '');
             document.getElementById('tooltip-text').innerHTML = safeConteudo;
@@ -4304,24 +4369,44 @@
             const panel = document.getElementById('tooltip-content');
             if (panel) {
                 if (!tooltipUserDragged) {
-                    const evt = window.event;
-                    const trigger = evt ? evt.target : null;
-                    const card = trigger ? trigger.closest('.section, .estimate, .top-unified-card, .taxa, .activities-box, .puzzle-box') : null;
+                    const card = triggerEl ? triggerEl.closest('.section, .estimate, .top-unified-card, .taxa, .activities-puzzle-card') : null;
                     const appEl = document.getElementById('app-main') || document.querySelector('.app');
-                    
+
+                    panel.style.transform = 'none';
+                    panel.style.right = 'auto';
+
+                    const panelRect = panel.getBoundingClientRect();
+                    const panelW = panelRect.width || Math.min(440, window.innerWidth - 32);
+                    const panelH = panelRect.height || 260;
+                    const margin = 12;
+
+                    let targetLeft;
+                    let targetTop;
+
                     if (card && appEl) {
                         const appRect = appEl.getBoundingClientRect();
                         const cardRect = card.getBoundingClientRect();
-                        panel.style.transform = 'none';
-                        panel.style.left = `${appRect.right + 14}px`;
-                        panel.style.top = `${cardRect.top}px`;
-                        panel.style.right = 'auto';
+
+                        if (appRect.right + 14 + panelW <= window.innerWidth - margin) {
+                            targetLeft = appRect.right + 14;
+                            targetTop = cardRect.top;
+                        } else if (appRect.left - 14 - panelW >= margin) {
+                            targetLeft = appRect.left - 14 - panelW;
+                            targetTop = cardRect.top;
+                        } else {
+                            targetLeft = (window.innerWidth - panelW) / 2;
+                            targetTop = Math.min(Math.max(margin, cardRect.top + 36), window.innerHeight - panelH - margin);
+                        }
                     } else {
-                        panel.style.transform = 'none';
-                        panel.style.right = '24px';
-                        panel.style.top = '80px';
-                        panel.style.left = 'auto';
+                        targetLeft = Math.max(margin, window.innerWidth - panelW - 24);
+                        targetTop = 80;
                     }
+
+                    targetLeft = Math.max(margin, Math.min(targetLeft, window.innerWidth - panelW - margin));
+                    targetTop = Math.max(margin, Math.min(targetTop, window.innerHeight - panelH - margin));
+
+                    panel.style.left = `${targetLeft}px`;
+                    panel.style.top = `${targetTop}px`;
                 }
             }
         }
@@ -4329,6 +4414,7 @@
         function fecharTooltip() {
             const modal = document.getElementById('tooltip-modal');
             if (modal) modal.style.display = 'none';
+            tooltipUserDragged = false;
         }
 
         function initDraggableTooltip() {
@@ -4363,8 +4449,12 @@
                 const deltaX = clientX - startX;
                 const deltaY = clientY - startY;
 
-                let newLeft = initX + deltaX;
-                let newTop = initY + deltaY;
+                const rect = panel.getBoundingClientRect();
+                const maxLeft = Math.max(0, window.innerWidth - rect.width);
+                const maxTop = Math.max(0, window.innerHeight - rect.height);
+
+                const newLeft = Math.max(0, Math.min(initX + deltaX, maxLeft));
+                const newTop = Math.max(0, Math.min(initY + deltaY, maxTop));
 
                 panel.style.transform = 'none';
                 panel.style.left = `${newLeft}px`;
@@ -4457,7 +4547,6 @@
                 const zip = new JSZip();
                 const dataIso = getLocalDateString();
 
-                // 1. Arquivo de Backup JSON
                 const dadosBackup = {
                     saldoConta: AppState.data.saldoConta || 0,
                     eventGoal: AppState.data.eventGoal || null,
@@ -4472,18 +4561,17 @@
                     lastMonth: AppState.data.lastMonth,
                     monthlyArchives: AppState.data.monthlyArchives,
                     streakManualOverride: AppState.data.streakManualOverride,
+                    metaCelebratedMonth: AppState.data.metaCelebratedMonth,
                     activitiesData: AppState.data.activitiesData,
                     version: VERSION,
                     exportedAt: new Date().toISOString()
                 };
                 zip.file(`MSRewards_Backup_${dataIso}.json`, JSON.stringify(dadosBackup, null, 2));
 
-                // 2. Planilha Excel (.xlsx)
                 const wb = gerarWorkbookExcel();
                 const excelBuffer = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
                 zip.file(`MSRewards_Planilha_${dataIso}.xlsx`, excelBuffer);
 
-                // 3. Renderiza o Card de Conquista para PNG
                 const canvas = document.createElement('canvas');
                 canvas.width = 1200;
                 canvas.height = 700;
@@ -4508,12 +4596,13 @@
             }
         }
 
-        function explicarMarcaFantasma() {
+        function explicarMarcaFantasma(triggerEl = null) {
             mostrarTooltip('📍 Marca de Ritmo Ideal', 
                 'Esta linha na barra de meta indica <strong>onde o calendário está hoje</strong> no mês.<br><br>' +
                 '• <strong>Linha Branca (Meta em andamento):</strong> Mostra onde você deveria estar. Se a barra verde passou da marca, você está adiantado no mês.<br>' +
                 '• <strong>Linha Dourada (Meta concluída):</strong> Mesmo após bater 100%, ela marca a data de hoje para você ver o quanto você já ultrapassou a meta antes do fim do mês!<br><br>' +
-                '🏆 <strong>Pontos Extras:</strong> Tudo o que você pontuar além dos 100% passa a ser contabilizado como saldo excedente.'
+                '🏆 <strong>Pontos Extras:</strong> Tudo o que você pontuar além dos 100% passa a ser contabilizado como saldo excedente.',
+                triggerEl
             );
         }
 
@@ -4548,10 +4637,8 @@
             const hojeStr = getLocalDateString();
             const jaRegistrouHoje = AppState.data.history.some(h => h.fullDate === hojeStr);
 
-            // Dias que faltam registrar no mês (se já registrou hoje, conta de amanhã até o fim)
             const diasRestantes = Math.max(0, (totalDiasNoMes - diaAtual) + (jaRegistrouHoje ? 0 : 1));
 
-            // Filtra entradas registradas estritamente no mês atual
             const mesPrefixo = hojeStr.substring(0, 7);
             const historicoMesAtual = AppState.data.history.filter(h => h.fullDate && h.fullDate.startsWith(mesPrefixo));
             const diasRegistradosMes = historicoMesAtual.length;
@@ -4651,12 +4738,22 @@
             const visualBarPercent = metaBatida ? 100 : Math.min(100, rawPercent);
 
             animateValue('pontos-meta', total, ' pts');
-            document.getElementById('progress').style.width = `${visualBarPercent}%`;
+            const progressBar = document.getElementById('progress');
+            progressBar.style.width = `${visualBarPercent}%`;
+
+            if (rawPercent < 30) {
+                progressBar.style.background = 'linear-gradient(90deg, #ef4444, #f87171)';
+            } else if (rawPercent < 70) {
+                progressBar.style.background = 'linear-gradient(90deg, #fde047, #fbbf24)';
+            } else {
+                progressBar.style.background = 'linear-gradient(90deg, #22c55e, #4ade80)';
+            }
 
             const agora = new Date();
             const diaHoje = agora.getDate();
             const totalDiasMes = new Date(agora.getFullYear(), agora.getMonth() + 1, 0).getDate();
             const pctEsperada = parseFloat(((diaHoje / totalDiasMes) * 100).toFixed(1));
+            const currentMonthKey = getLocalDateString().substring(0, 7);
 
             const marker = document.getElementById('progress-marker');
 
@@ -4664,7 +4761,6 @@
                 marker.style.display = 'block';
 
                 if (metaBatida) {
-                    // Gamificação: A marca dourada recua para o ponto onde você atingiu 100%!
                     const pos100 = parseFloat(((meta / total) * 100).toFixed(1));
                     marker.style.left = `${pos100}%`;
                     marker.classList.add('meta-done');
@@ -4679,21 +4775,28 @@
             }
 
             let badgePacing = '';
-            const infoBtnRitmo = ` <span onclick="explicarMarcaFantasma()" style="cursor:pointer; font-size:13px; opacity:0.85; margin-left:3px; vertical-align:middle;" title="Entenda o Ritmo Ideal">ℹ️</span>`;
+            const infoBtnRitmo = ` <span onclick="explicarMarcaFantasma(this)" style="cursor:pointer; font-size:13px; opacity:0.85; margin-left:3px; vertical-align:middle;" title="Entenda o Ritmo Ideal">ℹ️</span>`;
 
             if (metaBatida) {
                 const extras = total - meta;
-                badgePacing = ` <small style="color:var(--gold); font-size:11.5px; font-weight:700; cursor:pointer;" onclick="explicarMarcaFantasma()">(🎉 +${formatarNumero(extras)} pts além da meta)</small>${infoBtnRitmo}`;
-                if (!AppState.metaCelebrated) {
-                    AppState.metaCelebrated = true;
+                badgePacing = ` <small style="color:var(--gold); font-size:11.5px; font-weight:700; cursor:pointer;" onclick="explicarMarcaFantasma(this)">(🎉 +${formatarNumero(extras)} pts além da meta)</small>${infoBtnRitmo}`;
+                if (AppState.data.metaCelebratedMonth !== currentMonthKey) {
+                    AppState.data.metaCelebratedMonth = currentMonthKey;
+                    AppState.save();
                     dispararConfetesEspeciais();
                 }
-            } else if (meta > 0) {
-                const diffPacing = parseFloat((rawPercent - pctEsperada).toFixed(1));
-                if (diffPacing >= 0) {
-                    badgePacing = ` <small style="color:var(--accent); font-size:11.5px; font-weight:600; cursor:pointer;" onclick="explicarMarcaFantasma()">(+${diffPacing}% 🚀)</small>${infoBtnRitmo}`;
-                } else {
-                    badgePacing = ` <small style="color:#ef4444; font-size:11.5px; font-weight:600; cursor:pointer;" onclick="explicarMarcaFantasma()">(${diffPacing}% ⚠️)</small>${infoBtnRitmo}`;
+            } else {
+                if (AppState.data.metaCelebratedMonth === currentMonthKey) {
+                    AppState.data.metaCelebratedMonth = null;
+                    AppState.save();
+                }
+                if (meta > 0) {
+                    const diffPacing = parseFloat((rawPercent - pctEsperada).toFixed(1));
+                    if (diffPacing >= 0) {
+                        badgePacing = ` <small style="color:var(--accent); font-size:11.5px; font-weight:600; cursor:pointer;" onclick="explicarMarcaFantasma(this)">(+${diffPacing}% 🚀)</small>${infoBtnRitmo}`;
+                    } else {
+                        badgePacing = ` <small style="color:#ef4444; font-size:11.5px; font-weight:600; cursor:pointer;" onclick="explicarMarcaFantasma(this)">(${diffPacing}% ⚠️)</small>${infoBtnRitmo}`;
+                    }
                 }
             }
 
@@ -4705,14 +4808,6 @@
                 document.getElementById('percent').textContent = `${rawPercent}%`;
             }
 
-            const progressBar = document.getElementById('progress');
-            if (percent < 30) {
-                progressBar.style.background = 'linear-gradient(90deg, #ef4444, #f87171)';
-            } else if (percent < 70) {
-                progressBar.style.background = 'linear-gradient(90deg, #fde047, #fbbf24)';
-            } else {
-                progressBar.style.background = 'linear-gradient(90deg, #22c55e, #4ade80)';
-            }
             document.getElementById('meta-value').textContent = `${formatarNumero(AppState.data.metaMensal)} pts`;
             atualizarTempoMensal();
             calcularEstimativaMeta();
@@ -4738,9 +4833,10 @@
             document.getElementById('exemplo-pontos').textContent = formatarNumero(AppState.data.exemploPontos);
             document.getElementById('exemplo-reais').textContent = formatarReais(AppState.data.exemploReais);
             renderHistory();
-            renderActivities(); // Atualiza as atividades junto com a interface
+            renderActivities();
             renderPuzzle();
             renderEventGoalCard();
+            if (fpHistDate) fpHistDate.redraw();
         }
 
         const prevAnimatedValues = {};
@@ -4766,10 +4862,16 @@
             el.textContent = `${formatarNumero(Math.round(endVal))}${suffix}`;
         }
 
-        const jsConfettiInstance = typeof JSConfetti !== 'undefined' ? new JSConfetti() : null;
+        let jsConfettiInstance = null;
+        function getConfettiInstance() {
+            if (!jsConfettiInstance && typeof JSConfetti !== 'undefined') {
+                jsConfettiInstance = new JSConfetti();
+            }
+            return jsConfettiInstance;
+        }
 
         function dispararConfetes() {
-            const confettiObj = jsConfettiInstance || (typeof JSConfetti !== 'undefined' ? new JSConfetti() : null);
+            const confettiObj = getConfettiInstance();
             if (!confettiObj) return;
             confettiObj.addConfetti({
                 confettiColors: ['#22c55e', '#fde047', '#4ade80', '#ffffff', '#ea580c'],
@@ -4778,7 +4880,7 @@
         }
 
         function dispararConfetesEspeciais() {
-            const confettiObj = jsConfettiInstance || (typeof JSConfetti !== 'undefined' ? new JSConfetti() : null);
+            const confettiObj = getConfettiInstance();
             if (!confettiObj) return;
             confettiObj.addConfetti({
                 confettiColors: ['#22c55e', '#fde047', '#4ade80', '#ffffff'],
@@ -4796,8 +4898,14 @@
             const container = document.querySelector('.main');
             if (!container || typeof Sortable === 'undefined') return;
 
-            const savedOrder = JSON.parse(localStorage.getItem('dashboardCardOrder') || '[]');
-            if (savedOrder && savedOrder.length > 0) {
+            let savedOrder = [];
+            try {
+                savedOrder = JSON.parse(localStorage.getItem('dashboardCardOrder') || '[]');
+            } catch (e) {
+                savedOrder = [];
+            }
+
+            if (Array.isArray(savedOrder) && savedOrder.length > 0) {
                 const cardMap = {};
                 Array.from(container.children).forEach(child => {
                     const id = child.getAttribute('data-card-id');
@@ -4842,13 +4950,14 @@
             SoundFX.star();
         }
 
-        function mostrarInfoReordenar() {
+        function mostrarInfoReordenar(triggerEl = null) {
             mostrarTooltip(
                 '🔀 Organizar Painel',
                 'Agora você pode personalizar a ordem de qualquer bloco do dashboard livremente!<br><br>' +
                 '• <strong>Como fazer:</strong> Segure e arraste qualquer card pelo ícone <strong>⠿</strong>.<br>' +
                 '• A sua ordem personalizada fica salva automaticamente no navegador.<br><br>' +
-                '<button onclick="resetarOrdemDashboard()" class="dialog-btn confirm" style="width:100%; margin-top:12px;">🔄 Restaurar Ordem Padrão</button>'
+                '<button onclick="resetarOrdemDashboard()" class="dialog-btn confirm" style="width:100%; margin-top:12px;">🔄 Restaurar Ordem Padrão</button>',
+                triggerEl
             );
         }
 
@@ -5016,7 +5125,7 @@
         function calcularProjEvento() {
             const displayEl = document.getElementById('event-goal-display');
             const dateVal = document.getElementById('event-goal-date').value;
-            const costVal = parseFloat(document.getElementById('event-goal-cost').value.replace(',', '.')) || 0;
+            const costVal = parsePositiveDecimal(document.getElementById('event-goal-cost').value);
             const nameVal = document.getElementById('event-goal-name').value.trim() || 'Evento';
 
             if (!dateVal) {
@@ -5077,7 +5186,7 @@
         function salvarMetaEvento() {
             const name = document.getElementById('event-goal-name').value.trim() || 'Evento';
             const date = document.getElementById('event-goal-date').value;
-            const cost = parseFloat(document.getElementById('event-goal-cost').value.replace(',', '.')) || 0;
+            const cost = parsePositiveDecimal(document.getElementById('event-goal-cost').value);
 
             if (!date) {
                 showToast("Por favor, selecione uma data.", 2000);
@@ -5085,7 +5194,7 @@
             }
 
             AppState.data.eventGoal = { name, date, cost };
-            AppState.save();
+            AppState.save('Configurar Meta por Data');
             fecharModalMetaEvento();
             atualizarInterfaceCompleta();
             showToast(`Meta para "${name}" salva com sucesso!`, 2000);
@@ -5094,18 +5203,17 @@
         function updateStats() {
             const stats = AppState.getStats();
 
-            // 1a e 1b: Melhor dia, Pior dia (com datas) e Total no mês (com R$)
             const bestEl = document.getElementById('stat-best');
             if (bestEl) {
                 bestEl.innerHTML = stats.best > 0 
-                    ? `${formatarNumero(stats.best)} pts <span class="stat-subdate">(${stats.bestDate})</span>` 
+                    ? `${formatarNumero(stats.best)} pts <span class="stat-subdate">(${escapeHtml(stats.bestDate)})</span>` 
                     : `0 pts`;
             }
 
             const worstEl = document.getElementById('stat-worst');
             if (worstEl) {
                 worstEl.innerHTML = stats.worst > 0 
-                    ? `${formatarNumero(stats.worst)} pts <span class="stat-subdate">(${stats.worstDate})</span>` 
+                    ? `${formatarNumero(stats.worst)} pts <span class="stat-subdate">(${escapeHtml(stats.worstDate)})</span>` 
                     : `0 pts`;
             }
 
@@ -5117,14 +5225,24 @@
             }
 
             const chartContainer = document.getElementById('mini-chart');
-            if (!chartContainer) return;
+            if (!chartContainer) {
+                renderHeatmap();
+                return;
+            }
             chartContainer.innerHTML = '';
             
             const agoraStats = new Date();
+            const mesPrefixo = getLocalDateString(agoraStats).substring(0, 7);
             const maxDiasGrafico = new Date(agoraStats.getFullYear(), agoraStats.getMonth() + 1, 0).getDate();
-            const ultimosDias = AppState.data.history.slice(0, maxDiasGrafico).reverse();
+            const monthHistory = AppState.data.history.filter(h => h.fullDate && h.fullDate.startsWith(mesPrefixo));
+            const chartSource = monthHistory.length > 0 ? monthHistory : AppState.data.history;
+            const ultimosDias = chartSource
+                .slice(0, maxDiasGrafico)
+                .reverse();
+
             if (ultimosDias.length === 0) {
                 chartContainer.style.display = 'none';
+                renderHeatmap();
                 return;
             }
             chartContainer.style.display = 'block';
@@ -5141,8 +5259,8 @@
                 `;
                 archiveKeys.forEach(k => {
                     const arc = archives[k];
-                    const label = arc.monthName || k;
-                    optionsHtml += `<option value="${k}">vs ${label}</option>`;
+                    const label = escapeHtml(arc.monthName || k);
+                    optionsHtml += `<option value="${escapeHtml(k)}">vs ${label}</option>`;
                 });
                 selectEl.innerHTML = optionsHtml;
                 if (currentVal && Array.from(selectEl.options).some(o => o.value === currentVal)) {
@@ -5248,12 +5366,12 @@
 
                 if (currD) {
                     const reais = (currD.pontos / AppState.getConversionRate()).toFixed(2);
-                    html += `${currD.displayDate}: <strong style="color:var(--accent);">+${formatarNumero(currD.pontos)} pts</strong> <span style="opacity:0.8;">(${formatarReais(parseFloat(reais))})</span>`;
+                    html += `${escapeHtml(currD.displayDate || '')}: <strong style="color:var(--accent);">+${formatarNumero(currD.pontos)} pts</strong> <span style="opacity:0.8;">(${formatarReais(parseFloat(reais))})</span>`;
                 }
 
                 if (prevD) {
                     const prevReais = (prevD.pontos / AppState.getConversionRate()).toFixed(2);
-                    const dataComparada = prevD.displayDate || prevD.fullDate || compareLabel;
+                    const dataComparada = escapeHtml(prevD.displayDate || prevD.fullDate || compareLabel);
                     if (html) html += "<br>";
                     html += `<span style="color:var(--text-muted); font-size:11px; font-weight:normal;">vs ${dataComparada}: +${formatarNumero(prevD.pontos)} pts (${formatarReais(parseFloat(prevReais))})</span>`;
                 }
@@ -5329,6 +5447,9 @@
             renderHeatmap();
 		}
 
+        let heatmapTouchResetBound = false;
+        let currentHeatmapDefaultStatus = '—';
+
         function renderHeatmap() {
             const grid = document.getElementById('heatmap-grid');
             const statusEl = document.getElementById('heatmap-status');
@@ -5349,7 +5470,6 @@
                 titleEl.textContent = `📅 Presença (${nomeMes.charAt(0).toUpperCase() + nomeMes.slice(1)})`;
             }
 
-            // Mapeia os pontos registrados no mês atual
             const monthMap = {};
             let diasRegistrados = 0;
             AppState.data.history.forEach(item => {
@@ -5360,8 +5480,8 @@
             });
 
             const pct = Math.round((diasRegistrados / totalDias) * 100);
-			const defaultStatus = `${diasRegistrados} de ${totalDias} dias (${pct}%)`;
-            if (statusEl) statusEl.textContent = defaultStatus;
+			currentHeatmapDefaultStatus = `${diasRegistrados} de ${totalDias} dias (${pct}%)`;
+            if (statusEl) statusEl.textContent = currentHeatmapDefaultStatus;
 
             grid.innerHTML = '';
 
@@ -5417,7 +5537,6 @@
                     box.classList.add('heat-missed');
                 }
 
-                // Interação: Hover (PC) e Touch (Celular)
                 const showInfo = () => {
                     if (isFuture) {
                         statusEl.innerHTML = `Dia ${d}: <span style="color:var(--text-muted); font-weight:normal;">Dia futuro</span>`;
@@ -5430,7 +5549,7 @@
                 };
 
                 const resetInfo = () => {
-                    statusEl.textContent = defaultStatus;
+                    statusEl.textContent = currentHeatmapDefaultStatus;
                 };
 
                 box.addEventListener('mouseenter', showInfo);
@@ -5450,12 +5569,17 @@
                 grid.appendChild(box);
             }
 
-            document.addEventListener('touchstart', (e) => {
-                if (!grid.contains(e.target)) {
-                    grid.querySelectorAll('.heat-day').forEach(b => delete b.dataset.activeTouch);
-                    statusEl.textContent = defaultStatus;
-                }
-            }, { passive: true });
+            if (!heatmapTouchResetBound) {
+                heatmapTouchResetBound = true;
+                document.addEventListener('touchstart', (e) => {
+                    const g = document.getElementById('heatmap-grid');
+                    const s = document.getElementById('heatmap-status');
+                    if (g && s && !g.contains(e.target)) {
+                        g.querySelectorAll('.heat-day').forEach(b => delete b.dataset.activeTouch);
+                        s.textContent = currentHeatmapDefaultStatus;
+                    }
+                }, { passive: true });
+            }
         }
 		
         function toggleHeatmapView() {
@@ -5485,17 +5609,18 @@
             });
         }
 
-        function normalizeHistory() {
-            AppState.data.history = AppState.data.history.map(item => {
-                if (item && typeof item === 'object') {
+        function normalizeHistory(persist = true) {
+            AppState.data.history = AppState.data.history
+                .filter(item => item && typeof item === 'object')
+                .map(item => {
                     if (!item.displayDate && item.date) item.displayDate = item.date;
                     if (!item.fullDate && item.date) item.fullDate = item.date;
                     if (item.date) delete item.date;
-                }
-                return item;
-            });
-            AppState.data.history.sort((a, b) => b.fullDate.localeCompare(a.fullDate)); 
-            AppState.save();
+                    return item;
+                })
+                .filter(item => item.fullDate);
+            AppState.data.history.sort((a, b) => (b.fullDate || '').localeCompare(a.fullDate || '')); 
+            if (persist) AppState.save();
         }
 
         // ==================== FUNÇÕES DE HISTÓRICO ====================
@@ -5514,7 +5639,6 @@
             }
 
             const hitMilestone = AppState.addToHistory(pts, selectedDate);
-          // Se o usuário adicionar um ponto no mês atual, fecha o modal de novo mês e atualiza o lastMonth
             const hoje = new Date();
             const currentMonth = `${hoje.getFullYear()}-${String(hoje.getMonth() + 1).padStart(2, '0')}`;
             if (selectedDate.startsWith(currentMonth) && AppState.data.lastMonth !== currentMonth) {
@@ -5539,8 +5663,6 @@
                 }
             }
 
-            if (fpHistDate) fpHistDate.redraw();
-
             if (hitMilestone) {
                 triggerStreakMilestone();
             } else {
@@ -5550,7 +5672,6 @@
                     if (idx !== -1) {
                         AppState.removeFromHistory(idx);
                         atualizarInterfaceCompleta();
-                        if (fpHistDate) fpHistDate.redraw();
                         showToast("Ação desfeita! Registro removido.", 2000);
                     }
                 });
@@ -5559,7 +5680,8 @@
 
         async function editarItemHistorico(index) {
             const item = AppState.data.history[index];
-            const opcao = await Dialog.prompt(`Item: ${item.displayDate} (+${formatarNumero(item.pontos)} pts)\n\n1 = Editar pontos\n2 = Excluir item\n\nDigite 1 ou 2:`, "1", "Gerenciar Item");
+            const safeDate = item.displayDate || item.fullDate || '';
+            const opcao = await Dialog.prompt(`Item: ${safeDate} (+${formatarNumero(item.pontos)} pts)\n\n1 = Editar pontos\n2 = Excluir item\n\nDigite 1 ou 2:`, "1", "Gerenciar Item");
             if (opcao === null) return;
             
             if (opcao === "1") {
@@ -5570,7 +5692,7 @@
                 AppState.editHistoryItem(index, validado);
                 showToast(`Item atualizado para ${formatarNumero(validado)} pts`, 1800);
             } else if (opcao === "2") {
-                const confirmado = await Dialog.confirm(`Excluir este item do histórico?\n\nData: ${item.displayDate}\nPontos: +${formatarNumero(item.pontos)}`, "Excluir Registro");
+                const confirmado = await Dialog.confirm(`Excluir este item do histórico?\n\nData: ${safeDate}\nPontos: +${formatarNumero(item.pontos)}`, "Excluir Registro");
                 if (confirmado) {
                     AppState.removeFromHistory(index);
                     showToast("Item removido do histórico.", 1800);
@@ -5620,7 +5742,7 @@
             if (novo === 'auto' || novo === 'automático') {
                 AppState.data.streakManualOverride = false;
                 AppState.data.streak = calculateStreak();
-                AppState.save();
+                AppState.save('Ativar sequência automática');
                 atualizarInterfaceCompleta();
                 showToast("✨ Modo automático ativado!", 1800);
             } else {
@@ -5641,11 +5763,14 @@
         }
 
         async function editarExemplo() {
-            let p = await Dialog.prompt("Quantidade de pontos no exemplo:", AppState.data.exemploPontos, "Pontos do Exemplo");
+            let p = await Dialog.prompt("Quantidade de pontos no exemplo (maior que 0):", AppState.data.exemploPontos, "Pontos do Exemplo");
             if (p === null) return;
-            let r = await Dialog.prompt("Valor em reais (R$):", AppState.data.exemploReais, "Reais do Exemplo");
+            let r = await Dialog.prompt("Valor em reais (R$, maior que 0):", String(AppState.data.exemploReais).replace('.', ','), "Reais do Exemplo");
             if (r === null) return;
-            AppState.setExample(p, r);
+            if (!AppState.setExample(p, r)) {
+                showToast("⚠️ Pontos e valor em reais devem ser maiores que zero.", 2500);
+                return;
+            }
             atualizarInterfaceCompleta();
             showToast("Exemplo atualizado!", 1800);
         }
@@ -5666,6 +5791,7 @@
                 lastMonth: AppState.data.lastMonth,
                 monthlyArchives: AppState.data.monthlyArchives,
                 streakManualOverride: AppState.data.streakManualOverride,
+                metaCelebratedMonth: AppState.data.metaCelebratedMonth,
                 activitiesData: AppState.data.activitiesData,
                 version: VERSION,
                 exportedAt: new Date().toISOString()
@@ -5678,53 +5804,6 @@
             a.click();
             URL.revokeObjectURL(url);
             showToast('✅ Backup JSON exportado com sucesso!');
-        }
-
-        function exportarCSV() {
-            if (AppState.data.history.length === 0 && Object.keys(AppState.data.monthlyArchives).length === 0) {
-                showToast("Nenhum dado para exportar.", 2000);
-                return;
-            }
-            let csv = "";
-            const taxa = AppState.getConversionRate();
-            const archives = AppState.data.monthlyArchives;
-
-            // 1. Exportar meses arquivados anteriores
-            const sortedMonths = Object.keys(archives).sort();
-            sortedMonths.forEach(monthKey => {
-                const archive = archives[monthKey];
-                if (archive.history && archive.history.length > 0) {
-                    csv += `--- Mês: ${archive.monthName || monthKey} ---\n`;
-                    csv += "Data,Pontos,Reais (R$)\n";
-                    archive.history.forEach(item => {
-                        const reais = (item.pontos / taxa).toFixed(2).replace('.', ',');
-                        csv += `"${item.displayDate || item.fullDate}","${item.pontos}","R$ ${reais}"\n`;
-                    });
-                    csv += `,"Total:","R$ ${formatarReais(archive.totalPontos / taxa)}"\n\n`;
-                }
-            });
-
-            // 2. Exportar mês atual
-            if (AppState.data.history.length > 0) {
-                const hoje = new Date();
-                const currentMonthName = hoje.toLocaleString('pt-BR', { month: 'long', year: 'numeric' });
-                csv += `--- Mês Atual: ${currentMonthName} ---\n`;
-                csv += "Data,Pontos,Reais (R$)\n";
-                AppState.data.history.forEach(item => {
-                    const reais = (item.pontos / taxa).toFixed(2).replace('.', ',');
-                    csv += `"${item.displayDate}","${item.pontos}","R$ ${reais}"\n`;
-                });
-                csv += `,"Total:","R$ ${formatarReais(AppState.data.totalMensal / taxa)}"`;
-            }
-
-            const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8;' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = `MSRewards_Historico_Completo_${new Date().toISOString().slice(0,10)}.csv`;
-            a.click();
-            URL.revokeObjectURL(url);
-            showToast('✅ CSV completo exportado!');
         }
 
         function importarDados() {
@@ -5766,7 +5845,7 @@
                                     AppState.data.lastMonth = mesesOrdenados[0];
                                 }
                                 
-                                AppState.save();
+                                AppState.save('Importar meses arquivados');
                                 atualizarInterfaceCompleta();
                                 checkNewMonth();
                                 showToast(`✅ ${chaves.length} mês(es) importado(s) e streak atualizada!`);
@@ -5789,11 +5868,12 @@
                             AppState.data.totalMensal = dados.totalMensal || 0;
                             AppState.data.streak = dados.streak || 0;
                             AppState.data.history = dados.history || [];
-                            AppState.data.exemploPontos = dados.exemploPontos || 5165;
-                            AppState.data.exemploReais = dados.exemploReais || 30;
+                            AppState.data.exemploPontos = (dados.exemploPontos > 0) ? dados.exemploPontos : 5165;
+                            AppState.data.exemploReais = (dados.exemploReais > 0) ? dados.exemploReais : 30;
                             AppState.data.lastStreakDate = dados.lastStreakDate || null;
                             AppState.data.lastMonth = dados.lastMonth || null;
                             AppState.data.monthlyArchives = dados.monthlyArchives || {};
+                            AppState.data.metaCelebratedMonth = dados.metaCelebratedMonth || null;
                             AppState.data.activitiesData = dados.activitiesData || getDefaultActivities();
                             
                             if (dados.streakManualOverride !== undefined) {
@@ -5802,7 +5882,8 @@
                                 AppState.data.streakManualOverride = (AppState.data.streak > 0);
                             }
                             
-                            normalizeHistory();
+                            normalizeHistory(false);
+                            AppState.recalculateMonthlyTotal();
                             AppState.save();
                             atualizarInterfaceCompleta();
                             checkNewMonth();
@@ -5815,6 +5896,34 @@
                 reader.readAsText(file);
             };
             input.click();
+        }
+
+        function parseExcelRowDate(rawDate) {
+            if (typeof rawDate === 'number' && rawDate > 20000 && rawDate < 90000) {
+                const utcMs = Math.round((rawDate - 25569) * 86400 * 1000);
+                const d = new Date(utcMs);
+                const y = d.getUTCFullYear();
+                const m = String(d.getUTCMonth() + 1).padStart(2, '0');
+                const day = String(d.getUTCDate()).padStart(2, '0');
+                return `${y}-${m}-${day}`;
+            }
+
+            const dateVal = String(rawDate || '').trim();
+            if (/^\d{4}-\d{2}-\d{2}$/.test(dateVal)) {
+                return dateVal;
+            }
+
+            const brMatch = dateVal.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/);
+            if (brMatch) {
+                const [, d, m, y] = brMatch;
+                return `${y}-${m.padStart(2, '0')}-${d.padStart(2, '0')}`;
+            }
+
+            const parsed = new Date(dateVal);
+            if (!isNaN(parsed.getTime())) {
+                return getLocalDateString(parsed);
+            }
+            return null;
         }
 
         function importarExcel() {
@@ -5845,30 +5954,33 @@
                         for (let i = 1; i < rows.length; i++) {
                             const r = rows[i];
                             if (!r || r.length < 2) continue;
-                            const dateVal = String(r[0] || "").trim();
-                            const pontosVal = parseFloat(String(r[2] || r[1] || "").replace(/[^\d]/g, '')) || 0;
 
-                            if (pontosVal > 0) {
-                                let fullDate = dateVal;
-                                let displayDate = String(r[1] || dateVal).trim();
-                                if (/^\d{4}-\d{2}-\d{2}$/.test(dateVal)) {
-                                    fullDate = dateVal;
-                                    displayDate = new Date(dateVal + 'T00:00:00').toLocaleDateString('pt-BR', { day: 'numeric', month: 'short' }).replace('.', '');
-                                } else {
-                                    fullDate = getLocalDateString(new Date(dateVal));
-                                }
+                            const rawPoints = (r.length >= 3 && r[2] !== undefined && r[2] !== null && r[2] !== '') ? r[2] : r[1];
+                            const pontosVal = typeof rawPoints === 'number'
+                                ? Math.round(rawPoints)
+                                : (parseFloat(String(rawPoints || "").replace(/[^\d]/g, '')) || 0);
+
+                            const fullDate = parseExcelRowDate(r[0]);
+                            if (pontosVal > 0 && fullDate) {
+                                const displayDate = new Date(fullDate + 'T00:00:00')
+                                    .toLocaleDateString('pt-BR', { day: 'numeric', month: 'short' })
+                                    .replace('.', '');
                                 newHistory.push({ fullDate, displayDate, pontos: pontosVal, timestamp: Date.now() });
                             }
                         }
 
-                        if (newHistory.length === 0) throw new Error("Nenhum registro de pontos encontrado na planilha.");
+                        if (newHistory.length === 0) throw new Error("Nenhum registro de pontos válido encontrado na planilha.");
 
                         const ok = await Dialog.confirm(`Importar ${newHistory.length} registros da planilha Excel? Isso substituirá o histórico ativo.`, "Importar Planilha");
                         if (ok) {
                             localStorage.setItem('rewardsSafetyBackup', JSON.stringify({ data: JSON.parse(JSON.stringify(AppState.data)), timestamp: new Date().toISOString() }));
                             AppState.data.history = newHistory;
-                            AppState.data.totalMensal = newHistory.reduce((sum, item) => sum + item.pontos, 0);
-                            normalizeHistory();
+                            normalizeHistory(false);
+                            AppState.recalculateMonthlyTotal();
+                            if (!AppState.data.streakManualOverride) {
+                                AppState.data.streak = calculateStreak();
+                            }
+                            AppState.save();
                             atualizarInterfaceCompleta();
                             showToast(`✅ ${newHistory.length} registros importados da planilha!`, 3000);
                             SoundFX.star();
@@ -5884,50 +5996,130 @@
 
         // ==================== FUNÇÕES DE BACKUP ====================
         async function restoreBackup() {
-            const autoBackupRaw = localStorage.getItem('rewardsBackup');
-            const safetyBackupRaw = localStorage.getItem('rewardsSafetyBackup');
+            const options = [];
 
-            if (!autoBackupRaw && !safetyBackupRaw) {
-                showToast("Nenhum ponto de restauração encontrado.", 2000);
-                return;
-            }
+            try {
+                const rawHistoryList = localStorage.getItem('rewardsBackupHistory');
+                if (rawHistoryList) {
+                    const parsedList = JSON.parse(rawHistoryList);
+                    if (Array.isArray(parsedList)) {
+                        parsedList.forEach(item => {
+                            if (item && item.data && typeof item.data === 'object') {
+                                options.push({
+                                    label: `Antes de: ${item.reason || 'Alteração'}`,
+                                    timestamp: item.timestamp,
+                                    data: item.data
+                                });
+                            }
+                        });
+                    }
+                }
+            } catch (e) {}
 
-            let targetData = null;
-
-            if (autoBackupRaw && safetyBackupRaw) {
-                const auto = JSON.parse(autoBackupRaw);
-                const safety = JSON.parse(safetyBackupRaw);
-
-                const choice = await Dialog.prompt(
-                    `Pontos de restauração disponíveis:\n\n` +
-                    `1 = Backup Automático (${new Date(auto.timestamp).toLocaleString('pt-BR')})\n` +
-                    `2 = Ponto Seguro Pré-Importação (${new Date(safety.timestamp).toLocaleString('pt-BR')})\n\n` +
-                    `Digite 1 ou 2:`,
-                    "1",
-                    "Restaurar Dados"
-                );
-
-                if (choice === "1") targetData = auto.data;
-                else if (choice === "2") targetData = safety.data;
-                else return;
-            } else {
-                const raw = autoBackupRaw || safetyBackupRaw;
-                const parsed = JSON.parse(raw);
-                const tipo = safetyBackupRaw ? "Ponto Seguro Pré-Importação" : "Backup Automático";
-                const ok = await Dialog.confirm(`Restaurar ${tipo} de ${new Date(parsed.timestamp).toLocaleString('pt-BR')}?`, "Restaurar Dados");
-                if (ok) targetData = parsed.data;
-                else return;
+            if (options.length === 0) {
+                try {
+                    const autoBackupRaw = localStorage.getItem('rewardsBackup');
+                    if (autoBackupRaw) {
+                        const auto = JSON.parse(autoBackupRaw);
+                        if (auto && auto.data && typeof auto.data === 'object') {
+                            options.push({
+                                label: auto.reason ? `Antes de: ${auto.reason}` : 'Backup Automático',
+                                timestamp: auto.timestamp,
+                                data: auto.data
+                            });
+                        }
+                    }
+                } catch (e) {}
             }
 
             try {
-                AppState.data = targetData;
-                if (!AppState.data.activitiesData) {
-                    AppState.data.activitiesData = getDefaultActivities();
+                const safetyBackupRaw = localStorage.getItem('rewardsSafetyBackup');
+                if (safetyBackupRaw) {
+                    const safety = JSON.parse(safetyBackupRaw);
+                    if (safety && safety.data && typeof safety.data === 'object') {
+                        options.push({
+                            label: 'Ponto Seguro Pré-Importação',
+                            timestamp: safety.timestamp,
+                            data: safety.data
+                        });
+                    }
                 }
-                normalizeHistory();
+            } catch (e) {}
+
+            if (options.length === 0) {
+                showToast("Nenhum ponto de restauração anterior encontrado.", 2500);
+                return;
+            }
+
+            const formatSummary = (opt) => {
+                const d = opt.data || {};
+                const saldo = formatarNumero(d.saldoConta || 0);
+                const reg = Array.isArray(d.history) ? d.history.length : 0;
+                const dt = opt.timestamp ? new Date(opt.timestamp).toLocaleString('pt-BR') : 'Sem data';
+                return `${opt.label} (${dt} — Saldo: ${saldo} pts • ${reg} reg.)`;
+            };
+
+            let targetData = null;
+
+            try {
+                if (options.length === 1) {
+                    const ok = await Dialog.confirm(
+                        `Deseja restaurar este estado anterior?\n\n• ${formatSummary(options[0])}`,
+                        "Restaurar Dados"
+                    );
+                    if (!ok) return;
+                    targetData = options[0].data;
+                } else {
+                    const listaTexto = options
+                        .map((opt, idx) => `${idx + 1} = ${formatSummary(opt)}`)
+                        .join('\n');
+
+                    const choice = await Dialog.prompt(
+                        `Escolha o estado anterior que deseja restaurar:\n\n${listaTexto}\n\nDigite de 1 a ${options.length}:`,
+                        "1",
+                        "Restaurar Dados"
+                    );
+                    if (choice === null) return;
+
+                    const selectedIdx = parseInt(choice.trim(), 10) - 1;
+                    if (isNaN(selectedIdx) || selectedIdx < 0 || selectedIdx >= options.length) {
+                        showToast("Opção inválida.", 2000);
+                        return;
+                    }
+                    targetData = options[selectedIdx].data;
+                }
+
+                if (!targetData || typeof targetData !== 'object') {
+                    throw new Error("Backup inválido.");
+                }
+
+                AppState.data = {
+                    saldoConta: 0,
+                    eventGoal: null,
+                    puzzleData: { pieces: 0, completedToday: false, lastCompletedDate: null },
+                    metaMensal: 0,
+                    totalMensal: 0,
+                    streak: 0,
+                    history: [],
+                    exemploPontos: 5165,
+                    exemploReais: 30,
+                    lastStreakDate: null,
+                    lastMonth: null,
+                    monthlyArchives: {},
+                    streakManualOverride: false,
+                    metaCelebratedMonth: null,
+                    activitiesData: getDefaultActivities(),
+                    ...targetData
+                };
+
+                normalizeHistory(false);
+                const currentMonth = getLocalDateString().substring(0, 7);
+                if (AppState.data.history.some(h => h.fullDate && h.fullDate.startsWith(currentMonth))) {
+                    AppState.recalculateMonthlyTotal();
+                }
                 AppState.save();
                 atualizarInterfaceCompleta();
-                showToast("Dados restaurados com sucesso!");
+                showToast("✅ Estado anterior restaurado com sucesso!");
             } catch (e) {
                 showToast("Erro ao processar dados de restauração.", 2000);
             }
@@ -5938,41 +6130,38 @@
             const hoje = new Date();
             const currentMonth = `${hoje.getFullYear()}-${String(hoje.getMonth() + 1).padStart(2, '0')}`;
             
-            // Se o usuário já clicou em "Ignorar" para ESTE mês, não pergunta de novo
             if (AppState.data.lastMonth === currentMonth) return;
 
-            // CHECAGEM REAL E ÚNICA: Varre o histórico procurando QUALQUER ponto do mês atual
             const temDadosNoMesAtual = AppState.data.history.some(h => h.fullDate && h.fullDate.startsWith(currentMonth));
 
             if (temDadosNoMesAtual) {
-                // Tem pontos reais no mês atual. Marca como tratado silenciosamente.
                 AppState.data.lastMonth = currentMonth;
                 AppState.save();
                 return;
             }
 
-            // NÃO tem pontos no mês atual e NÃO foi ignorado. Mostra o modal.
             const monthName = hoje.toLocaleString('pt-BR', { month: 'long', year: 'numeric' });
             document.getElementById('month-change-message').textContent = `O mês de ${monthName} começou e não há pontos registrados. Deseja resetar os dados?`;
             document.getElementById('month-change-modal').style.display = 'flex';
         }
 
         function resetMonthlyData(archive = true) {
-            if (archive) archiveMonthlyData();
+            if (archive) archiveMonthlyData(true);
             AppState.data.totalMensal = 0;
             AppState.data.history = [];
             AppState.data.lastStreakDate = null;
+            AppState.data.metaCelebratedMonth = null;
             
             const hoje = new Date();
             AppState.data.lastMonth = `${hoje.getFullYear()}-${String(hoje.getMonth() + 1).padStart(2, '0')}`;
             
-            AppState.save();
+            AppState.save('Reset mensal');
             document.getElementById('month-change-modal').style.display = 'none';
             atualizarInterfaceCompleta();
-            showToast("Dados mensais resetados!", 2000);
+            showToast(archive ? "Dados mensais arquivados e resetados!" : "Dados mensais resetados!", 2200);
         }
 
-        function archiveMonthlyData() {
+        function archiveMonthlyData(silent = false) {
             const groupedByMonth = {};
             const currentStreak = AppState.data.streak; 
             
@@ -5987,7 +6176,7 @@
             });
 
             if (Object.keys(groupedByMonth).length === 0) {
-                showToast("Nenhum dado para arquivar.", 2000);
+                if (!silent) showToast("Nenhum dado para arquivar.", 2000);
                 document.getElementById('month-change-modal').style.display = 'none';
                 return;
             }
@@ -6007,14 +6196,14 @@
                     history: items,
                     streak: currentStreak,
                     metaMensal: AppState.data.metaMensal,
-                    activitiesData: AppState.data.activitiesData, // <- Adiciona os dias das atividades ao JSON
+                    activitiesData: AppState.data.activitiesData,
                     archivedAt: new Date().toISOString()
                 };
             });
 
             const hoje = new Date();
             AppState.data.lastMonth = `${hoje.getFullYear()}-${String(hoje.getMonth() + 1).padStart(2, '0')}`;
-            AppState.save();
+            AppState.save(silent ? null : 'Arquivar meses');
 
             const blob = new Blob([JSON.stringify(AppState.data.monthlyArchives, null, 2)], { type: 'application/json' });
             const url = URL.createObjectURL(blob);
@@ -6024,7 +6213,7 @@
             a.click();
             URL.revokeObjectURL(url);
             
-            showToast('Todos os meses arquivados exportados!', 2500);
+            if (!silent) showToast('Todos os meses arquivados exportados!', 2500);
             document.getElementById('month-change-modal').style.display = 'none';
         }
 
@@ -6044,19 +6233,24 @@
             
             const chronologicalKeys = Object.keys(archives).sort();
             
-            // 1. Calcula o Total Consolidado (Todos os meses arquivados + Mês atual ativo)
             const taxa = AppState.getConversionRate();
             const pontosArquivados = chronologicalKeys.reduce((acc, k) => acc + (archives[k].totalPontos || 0), 0);
-            const totalConsolidado = pontosArquivados + (AppState.data.totalMensal || 0);
+            const pontosAtivosNaoArquivados = AppState.data.history
+                .filter(h => h.fullDate && !archives[h.fullDate.substring(0, 7)])
+                .reduce((sum, h) => sum + h.pontos, 0);
+            const totalConsolidado = pontosArquivados + pontosAtivosNaoArquivados;
             const reaisConsolidado = formatarReais(totalConsolidado / taxa);
-            const totalMeses = chronologicalKeys.length + (AppState.data.totalMensal > 0 ? 1 : 0);
+            const mesesAtivosNaoArquivados = new Set(
+                AppState.data.history
+                    .map(h => h.fullDate ? h.fullDate.substring(0, 7) : null)
+                    .filter(m => m && !archives[m])
+            );
+            const totalMeses = chronologicalKeys.length + mesesAtivosNaoArquivados.size;
 
-            // Projeção anual baseada no ritmo diário atual
             const stats = AppState.getStats();
             const projecaoAnualPts = Math.round(stats.avg * 365);
             const projecaoAnualReais = formatarReais(projecaoAnualPts / taxa);
 
-            // Banner superior consolidado + Projeção Anual (365d)
             const consolidatedBannerHtml = `
                 <div class="archive-consolidated-card">
                     <div class="consolidated-header">
@@ -6147,9 +6341,10 @@
                         historyDetailHtml = '<div style="color:#888; text-align:center; padding:6px;">Sem histórico diário detalhado.</div>';
                     }
 
+                    const safeKey = escapeHtml(key);
                     return `
                         <div class="archive-card">
-                            <div class="archive-header" onclick="toggleArchiveDetail('${key}')">
+                            <div class="archive-header" onclick="toggleArchiveDetail('${safeKey}')">
                                 <div class="archive-main-info">
                                     <span class="archive-month-name">📅 ${escapeHtml(data.monthName || key)}</span>
                                     <div style="display:flex; gap:6px; flex-wrap:wrap; align-items:center;">
@@ -6159,10 +6354,10 @@
                                 </div>
                                 <div class="archive-header-right">
                                     <span class="archive-points">${formatarNumero(currTotal)} pts</span>
-                                    <span class="archive-arrow" id="arrow-${key}">▼</span>
+                                    <span class="archive-arrow" id="arrow-${safeKey}">▼</span>
                                 </div>
                             </div>
-                            <div class="archive-details" id="detail-${key}" style="display:none;">
+                            <div class="archive-details" id="detail-${safeKey}" style="display:none;">
                                 <div style="margin-bottom:8px; font-weight:600; color:var(--text);">
                                     Histórico diário (${data.history ? data.history.length : 0} dias registrados):
                                 </div>
@@ -6484,7 +6679,11 @@
             ctx.font = '600 12px system-ui, -apple-system, sans-serif';
             ctx.fillText('CURVA DE PONTUAÇÃO DIÁRIA (DESTAQUES DOS MAIORES PICOS)', chartBoxX + 18, chartBoxY + 28);
 
-            const maxPontos = AppState.data.history.slice(0, totalDiasMes).reverse();
+            const maxPontos = AppState.data.history
+                .filter(h => h.fullDate && h.fullDate.startsWith(mesPrefixo))
+                .slice(0, totalDiasMes)
+                .reverse();
+
             if (maxPontos.length > 1) {
                 const padX = 35;
                 const padY = 38;
@@ -6622,12 +6821,12 @@
 
             showToast(`📸 Card Full HD com QR Code (${isLight ? 'Modo Claro' : 'Modo Escuro'}) gerado!`);
         }
+
 		// ==================== ANÁLISE POR DIA DA SEMANA ====================
         function abrirAnaliseSemanal() {
             const list = document.getElementById('weekday-list');
             if (!list) return;
 
-            // 1. Compila todo o histórico disponível (mês ativo + arquivos anteriores) para máxima precisão
             const allEntries = [...AppState.data.history];
             const archives = AppState.data.monthlyArchives;
             for (let m in archives) {
@@ -6646,7 +6845,6 @@
                 return;
             }
 
-            // 2. Estrutura os 7 dias (começando na Segunda-feira até Domingo)
             const weekdays = [
                 { id: 1, name: "Segunda-feira", short: "Seg", total: 0, count: 0, max: 0 },
                 { id: 2, name: "Terça-feira", short: "Ter", total: 0, count: 0, max: 0 },
@@ -6657,12 +6855,11 @@
                 { id: 0, name: "Domingo", short: "Dom", total: 0, count: 0, max: 0 }
             ];
 
-            // 3. Agrupa os pontos nos dias da semana corretos
             allEntries.forEach(item => {
                 if (!item.fullDate) return;
                 const [y, m, d] = item.fullDate.split('-').map(Number);
                 const dt = new Date(y, m - 1, d);
-                const dayOfWeek = dt.getDay(); // 0 a 6
+                const dayOfWeek = dt.getDay();
                 const target = weekdays.find(w => w.id === dayOfWeek);
                 if (target) {
                     target.total += item.pontos;
@@ -6671,7 +6868,6 @@
                 }
             });
 
-            // 4. Calcula médias e encontra o dia mais forte e o mais fraco
             let highestAvg = 0;
             let lowestAvg = Infinity;
             let bestDayId = null;
@@ -6691,7 +6887,6 @@
 
             const taxa = AppState.getConversionRate();
 
-            // 5. Renderiza as linhas estatísticas
             list.innerHTML = weekdays.map(w => {
                 const percent = highestAvg > 0 ? Math.round((w.avg / highestAvg) * 100) : 0;
                 let badge = '';
@@ -6745,7 +6940,6 @@
             localStorage.setItem('rewardsTheme', isLight ? 'light' : 'dark');
             document.querySelector('.theme-btn').textContent = isLight ? '🌙' : '☀️';
             atualizarInterfaceCompleta();
-            if (fpHistDate) fpHistDate.redraw();
         }
 
         function loadTheme() {
@@ -6761,20 +6955,21 @@
             applyLayoutMode();
         }
 
-        // Detecta a orientação física do celular automaticamente
+        function isMobileDevice() {
+            const uaMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+            const coarseSmall = window.matchMedia && window.matchMedia('(pointer: coarse)').matches && Math.min(window.screen.width, window.screen.height) <= 900;
+            return uaMobile || coarseSmall;
+        }
+
         function checkAutoOrientation() {
-            const isTouchMobile = ('ontouchstart' in window) || navigator.maxTouchPoints > 0;
             const app = document.querySelector('.app');
             if (!app) return false;
 
-            // Se for celular / tela touch
-            if (isTouchMobile) {
-                // Celular virado de lado (largura maior que altura) -> MODO HORIZONTAL
+            if (isMobileDevice()) {
                 if (window.innerWidth > window.innerHeight) {
                     app.classList.add('horizontal');
                     return true;
                 } else {
-                    // Celular em pé (altura maior que largura) -> MODO VERTICAL
                     app.classList.remove('horizontal');
                     return false;
                 }
@@ -6782,22 +6977,18 @@
             return false;
         }
 
-        // applyLayoutMode atualizada: Gerencia Celular e PC de forma independente
         function applyLayoutMode() {
             const app = document.querySelector('.app');
             const btn = document.getElementById('layout-btn');
             if (!app) return;
 
-            // 1. NO CELULAR: A orientação física manda em tudo e o botão de alternar fica oculto
-            const isMobile = ('ontouchstart' in window) || navigator.maxTouchPoints > 0;
-            if (isMobile) {
+            if (isMobileDevice()) {
                 if (btn) btn.style.display = 'none';
                 checkAutoOrientation();
-                if (typeof updateStats === 'function') updateStats();
+                if (AppState._initialized && typeof updateStats === 'function') updateStats();
                 return;
             }
 
-            // 2. NO COMPUTADOR: O botão manual do rodapé e a preferência salva mandam
             if (btn) btn.style.display = '';
             if (isHorizontalMode) {
                 app.classList.add('horizontal');
@@ -6807,10 +6998,9 @@
                 if (btn) btn.textContent = '↔️ Modo Horizontal';
             }
 
-            if (typeof updateStats === 'function') updateStats();
+            if (AppState._initialized && typeof updateStats === 'function') updateStats();
         }
 
-        // Helper: Avisa os gráficos e o heatmap quando o modo horizontal está ativo (PC ou celular)
         function isLandscapeActive() {
             const app = document.querySelector('.app');
             return app ? app.classList.contains('horizontal') : false;
@@ -6832,12 +7022,15 @@
 		// ==================== SINCRONIZAÇÃO VIA QR CODE ====================
         let currentSyncUrl = "";
 
-        // Empacota dados essenciais incluindo o histórico detalhado dos meses arquivados
-        function packSyncData(data) {
+        function packSyncData(data, includeAllArchivesHistory = true) {
             const sortedKeys = Object.keys(data.monthlyArchives || {}).sort();
             const latestArchivedKey = sortedKeys.length > 0 ? sortedKeys[sortedKeys.length - 1] : null;
 
             return {
+                sc: data.saldoConta || 0,
+                eg: data.eventGoal || null,
+                pz: data.puzzleData || null,
+                lm: data.lastMonth || null,
                 m: data.metaMensal,
                 s: data.streak,
                 o: data.streakManualOverride ? 1 : 0,
@@ -6846,8 +7039,9 @@
                 a: data.activitiesData,
                 arc: sortedKeys.map(k => {
                     const a = data.monthlyArchives[k];
-                    const diasCompactos = (k === latestArchivedKey) ? (a.history || []).map(i => {
-                        const partes = i.fullDate.split('-');
+                    const includeDays = includeAllArchivesHistory || k === latestArchivedKey;
+                    const diasCompactos = includeDays ? (a.history || []).map(i => {
+                        const partes = (i.fullDate || '').split('-');
                         const dia = parseInt(partes[2]) || i.fullDate;
                         return [dia, i.pontos];
                     }) : [];
@@ -6856,7 +7050,6 @@
             };
         }
 
-        // Reconstrói o histórico ativo E todos os dias dos meses arquivados
         function unpackSyncData(packed) {
             const history = (packed.h || []).map(([fullDate, pontos]) => {
                 const dateObj = new Date(fullDate + 'T00:00:00');
@@ -6888,17 +7081,21 @@
             }
 
             return {
+                saldoConta: packed.sc !== undefined ? packed.sc : (AppState.data.saldoConta || 0),
+                eventGoal: packed.eg !== undefined ? packed.eg : (AppState.data.eventGoal || null),
+                puzzleData: packed.pz || AppState.data.puzzleData || { pieces: 0, completedToday: false, lastCompletedDate: null },
+                lastMonth: packed.lm !== undefined ? packed.lm : null,
                 metaMensal: packed.m || 0,
                 totalMensal: 0,
                 streak: packed.s || 0,
                 streakManualOverride: Boolean(packed.o),
-                exemploPontos: packed.e ? packed.e[0] : 5165,
-                exemploReais: packed.e ? packed.e[1] : 30,
+                exemploPontos: packed.e && packed.e[0] > 0 ? packed.e[0] : 5165,
+                exemploReais: packed.e && packed.e[1] > 0 ? packed.e[1] : 30,
                 history: history,
                 monthlyArchives: monthlyArchives,
                 activitiesData: packed.a || getDefaultActivities(),
                 lastStreakDate: null,
-                lastMonth: null
+                metaCelebratedMonth: null
             };
         }
 
@@ -6906,7 +7103,11 @@
             try {
                 const stream = new Blob([str]).stream().pipeThrough(new CompressionStream('deflate'));
                 const buffer = await new Response(stream).arrayBuffer();
-                const binary = String.fromCharCode(...new Uint8Array(buffer));
+                const bytes = new Uint8Array(buffer);
+                let binary = '';
+                for (let i = 0; i < bytes.length; i++) {
+                    binary += String.fromCharCode(bytes[i]);
+                }
                 return btoa(binary).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
             } catch (e) {
                 return encodeURIComponent(str);
@@ -6933,21 +7134,25 @@
             modal.style.display = 'flex';
 
             try {
-                const minified = packSyncData(AppState.data);
-                const payload = JSON.stringify(minified);
-                const compressed = await compressData(payload);
-
                 const baseUrl = (window.location.protocol === 'file:' || window.location.hostname === 'localhost' || !window.location.hostname)
                     ? 'https://y4sh1r01.github.io/MSRewardsTool/'
                     : `${window.location.origin}${window.location.pathname}`;
 
-                // Link encurtado usando #s= para reduzir ainda mais os pixels
-                currentSyncUrl = `${baseUrl}#s=${compressed}`;
+                const minifiedFull = packSyncData(AppState.data, true);
+                const compressedFull = await compressData(JSON.stringify(minifiedFull));
+                currentSyncUrl = `${baseUrl}#s=${compressedFull}`;
+
+                let qrUrl = currentSyncUrl;
+                if (qrUrl.length > 2200) {
+                    const minifiedCompact = packSyncData(AppState.data, false);
+                    const compressedCompact = await compressData(JSON.stringify(minifiedCompact));
+                    qrUrl = `${baseUrl}#s=${compressedCompact}`;
+                }
 
                 qrcodeContainer.innerHTML = '';
                 const qrSize = Math.max(220, Math.min(340, window.innerWidth - 70));
                 new QRCode(qrcodeContainer, {
-                    text: currentSyncUrl,
+                    text: qrUrl,
                     width: qrSize,
                     height: qrSize,
                     colorDark: "#000000",
@@ -6973,7 +7178,6 @@
         }
 
         async function verificarSincronizacaoURL() {
-            // Suporta tanto #s= quanto #sync=
             let hash = window.location.hash;
             if (!hash.startsWith('#s=') && !hash.startsWith('#sync=')) return;
 
@@ -6984,11 +7188,12 @@
 
                 if (!parsed || typeof parsed !== 'object') throw new Error("Dados inválidos");
 
-                const dados = parsed.h ? unpackSyncData(parsed) : parsed;
+                const dados = parsed.h ? unpackSyncData(parsed) : { ...AppState.data, ...parsed };
 
                 const ok = await Dialog.confirm(
                     `Dados de sincronização recebidos do outro aparelho!\n\n` +
                     `• Meta: ${formatarNumero(dados.metaMensal || 0)} pts\n` +
+                    `• Saldo em Conta: ${formatarNumero(dados.saldoConta || 0)} pts\n` +
                     `• Sequência (Streak): ${dados.streak || 0} dias\n` +
                     `• Registros no Histórico: ${dados.history ? dados.history.length : 0}\n\n` +
                     `Deseja aplicar esses dados neste aparelho agora?`,
@@ -6997,16 +7202,23 @@
 
                 if (ok) {
                     AppState.data = dados;
-                    AppState.recalculateMonthlyTotal();
-                    normalizeHistory();
-                    AppState.save();
+                    normalizeHistory(false);
+                    const currentMonth = getLocalDateString().substring(0, 7);
+                    if (AppState.data.history.some(h => h.fullDate && h.fullDate.startsWith(currentMonth))) {
+                        AppState.recalculateMonthlyTotal();
+                    }
+                    AppState.save('Sincronização via QR/Link');
                     atualizarInterfaceCompleta();
                     showToast("✅ Aparelho sincronizado com sucesso!", 3000);
                 }
             } catch (err) {
                 showToast("❌ Erro ao ler dados de sincronização.", 3000);
             } finally {
-                history.replaceState(null, '', window.location.pathname + window.location.search);
+                try {
+                    history.replaceState(null, '', window.location.pathname + window.location.search);
+                } catch (e) {
+                    window.location.hash = '';
+                }
             }
         }
 		
@@ -7052,26 +7264,24 @@
                 h = window.innerHeight;
                 canvas.width = w * dpr;
                 canvas.height = h * dpr;
-                ctx.scale(dpr, dpr);
+                ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
                 generateStars();
             }
 
             function generateStars() {
                 stars = [];
-                // Densidade calibrada para visual estelar imersivo
                 const count = Math.floor((w * h) / 10000);
                 
                 for (let i = 0; i < count; i++) {
                     const rand = Math.random();
                     let colorDark = '#ffffff';
-                    if (rand < 0.12) colorDark = '#4ade80';      // 12% esmeralda
-                    else if (rand < 0.24) colorDark = '#fde047'; // 12% douradas
+                    if (rand < 0.12) colorDark = '#4ade80';
+                    else if (rand < 0.24) colorDark = '#fde047';
 
                     stars.push({
                         x: Math.random() * w,
                         y: Math.random() * h,
                         size: Math.random() * 1.3 + 0.6,
-                        // Velocidade física individual (deriva suave em direções aleatórias)
                         vx: (Math.random() - 0.5) * 0.28,
                         vy: (Math.random() - 0.5) * 0.28,
                         baseAlpha: Math.random() * 0.45 + 0.25,
@@ -7084,48 +7294,43 @@
 
             let lastTime = 0;
 
-            // Render loop sincronizado com os Hz nativos do monitor via Delta Time
             function render(currentTime) {
                 if (!lastTime) lastTime = currentTime;
-                // Calcula o tempo exato decorrido entre os quadros (60Hz, 120Hz, 144Hz, 240Hz...)
                 const delta = Math.min((currentTime - lastTime) / 1000, 0.1);
                 lastTime = currentTime;
 
                 const isLight = document.body.classList.contains('light');
                 ctx.clearRect(0, 0, w, h);
 
-                // Fator de escala normalizado para 60fps base
                 const timeFactor = delta * 60;
+                if (isLight) ctx.fillStyle = '#0f172a';
 
                 for (let i = 0; i < stars.length; i++) {
                     const s = stars[i];
 
-                    // 1. Movimento e deriva contínua pelo espaço
                     s.x += s.vx * timeFactor;
                     s.y += s.vy * timeFactor;
 
-                    // Reaparece do lado oposto ao sair da tela (Wrap infinito)
                     if (s.x < -10) s.x = w + 10;
                     else if (s.x > w + 10) s.x = -10;
                     if (s.y < -10) s.y = h + 10;
                     else if (s.y > h + 10) s.y = -10;
 
-                    // 2. Cintilação orgânica frame-rate independent
                     s.phase += s.twinkleSpeed * delta;
                     const alpha = s.baseAlpha + Math.sin(s.phase) * (1 - s.baseAlpha) * 0.65;
-                    const clampedAlpha = Math.max(0.08, Math.min(1, alpha));
 
-                    ctx.save();
-                    ctx.globalAlpha = isLight ? Math.max(0.25, Math.min(0.85, alpha)) : clampedAlpha;
-                    ctx.fillStyle = isLight ? '#0f172a' : s.colorDark;
-                    
+                    ctx.globalAlpha = isLight
+                        ? Math.max(0.25, Math.min(0.85, alpha))
+                        : Math.max(0.08, Math.min(1, alpha));
+                    if (!isLight) ctx.fillStyle = s.colorDark;
+
                     const starRadius = isLight ? (s.size * 1.25) : s.size;
                     ctx.beginPath();
                     ctx.arc(s.x, s.y, starRadius, 0, Math.PI * 2);
                     ctx.fill();
-                    ctx.restore();
                 }
 
+                ctx.globalAlpha = 1;
                 requestAnimationFrame(render);
             }
 
@@ -7140,8 +7345,8 @@
 			initStarfield();
             const soundBtn = document.getElementById('sound-btn');
             if (soundBtn) soundBtn.textContent = SoundFX.enabled ? '🔊' : '🔇';
-            AppState.init(); // <- Carrega os dados consolidados
-            checkActivityCycles(); // <- Verifica e avança/resetou o ciclo de atividades
+            AppState.init();
+            checkActivityCycles();
             document.getElementById('header-title').innerHTML = '<h1>Rewards Tool</h1>';
             normalizeHistory();
             checkNewMonth();
@@ -7150,11 +7355,11 @@
             initDraggableTooltip();
             initFlatpickr();
             initLottieFlame();
-            if (typeof autoAnimate === 'function') {
+            if (typeof window.autoAnimate === 'function') {
                 const histList = document.getElementById('history-list');
-                if (histList) autoAnimate(histList);
+                if (histList) window.autoAnimate(histList);
                 const bkpAccordion = document.getElementById('backup-accordion');
-                if (bkpAccordion) autoAnimate(bkpAccordion);
+                if (bkpAccordion) window.autoAnimate(bkpAccordion);
             }
             setupInputValidation();
 
@@ -7172,11 +7377,12 @@
             
             atualizarInterfaceCompleta();
             verificarSincronizacaoURL();
+
             const pontosInput = document.getElementById('pontos');
             pontosInput.addEventListener('input', function() {
                 let val = this.value.replace(/\D/g, '');
                 if (val.length > 1) {
-                    val = val.replace(/^0+/, '');
+                    val = val.replace(/^0+/, '') || '0';
                 }
                 this.value = val;
 
@@ -7184,16 +7390,34 @@
                 const taxa = AppState.getConversionRate();
                 document.getElementById('resultado').textContent = formatarReais(pontos / taxa);
             });
+
             if (isStreakMilestone(AppState.data.streak)) {
                 setTimeout(() => triggerStreakMilestone(), 600);
             }
+
 			document.addEventListener('visibilitychange', () => {
-                if (!document.hidden) checkActivityCycles();
+                if (!document.hidden) {
+                    checkActivityCycles();
+                    atualizarTempoMensal();
+                }
             });
-            setInterval(checkActivityCycles, 60000);
+
+            setInterval(() => {
+                checkActivityCycles();
+                atualizarTempoMensal();
+            }, 60000);
+
+            window.addEventListener('resize', debounce(() => {
+                applyLayoutMode();
+            }, 100));
+
+            window.addEventListener('orientationchange', () => {
+                setTimeout(() => {
+                    applyLayoutMode();
+                }, 150);
+            });
         };
 
-        let fpHistDate = null;
         function initFlatpickr() {
             if (typeof flatpickr === 'undefined') return;
             const dateInput = document.getElementById('hist-date');
@@ -7227,30 +7451,16 @@
                     renderer: 'svg',
                     loop: true,
                     autoplay: true,
-                    // Link de repositório público oficial e altamente estável (Google Fonts UI Animado)
                     path: 'https://fonts.gstatic.com/s/e/notoemoji/latest/1f525/lottie.json'
                 });
                 
                 anim.addEventListener('DOMLoaded', () => {
-                    // Após a mágica 3D abrir no componente Lottie, tiramos do caminho o emoji text para render limpo
                     Array.from(container.childNodes).forEach(node => {
                         if (node.nodeType === 3) node.remove(); 
                     });
                 });
             } catch (e) { console.error('Erro na animação', e); }
         }
-		// Redesenha gráficos e cards automaticamente ao rotacionar o celular
-            window.addEventListener('resize', debounce(() => {
-                applyLayoutMode();
-                if (typeof updateStats === 'function') updateStats();
-            }, 100));
-
-            window.addEventListener('orientationchange', () => {
-                setTimeout(() => {
-                    applyLayoutMode();
-                    if (typeof updateStats === 'function') updateStats();
-                }, 150);
-            });
     </script>
 </body>
 </html>
